@@ -1,12 +1,11 @@
 import Layout from "@/components/Layout/Layout";
 import Link from "next/link";
-import Dashboard from "@/components/Dashboard/Dashboard";
-export default function DashboardPage() {
+import Orders from "@/components/Orders/Orders";
+export default function OrdersPage() {
   return (
     <Layout>
       <div className="">
-        {/* <Dashboard /> */}
-        <Dashboard />
+        <Orders />
       </div>
     </Layout>
 

@@ -1,125 +1,424 @@
-import React from 'react';
-import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-import { GiHamburgerMenu } from "react-icons/gi";
+import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { GrClose } from "react-icons/gr";
+
+import { FiSearch } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
+import { FaUserCircle } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
-import { useState } from 'react';
+import { useRouter } from "next/router";
 const Layout = ({ Content, children }) => {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
-
+  const [hideHamb, setHideHamb] = useState(false);
   const handleSubMenuClick = (label) => {
-    if (activeSubMenu === label) {
-      setActiveSubMenu(null); 
-    } else {
-      setActiveSubMenu(label); 
-    }
+    setActiveSubMenu(activeSubMenu === label ? null : label);
   };
+  const router = useRouter();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const sidebarRef = useRef(null);
+
+  // Close sidebar on outside click
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div className='flex flex-col gap-y-'>
-      <div className="flex h-full pl-4 pt-5  bg-[#EEF3FE] pb-5">
-        <nav className='h-full text-2xl hidden lg:flex flex-col gap-2 items-start transition-all duration-300 ease-in-out w-52 bg-white rounded-t-xl rounded-b-xl '>
-          <div className='h-20 bg-black w-full rounded-t-2xl'></div>
-          <Sidebar width='210px' className='text-sm pt-5 text-black'>
-            <Menu>
-              <MenuItem>
-                <p className='flex items-center justify-between'>
+    <div className="flex flex-col gap-y-0">
+      <div className="flex h-full lg:pl-4 px-4 pt-5  pb-5">
+        <nav className="h-screen pb-10 text-2xl  lg:flex hidden flex-col gap-2 items-start w-48  rounded-t-xl rounded-b-xl fixed top-10">
+          <div className="h-full w-full overflow-hidden">
+            <div className="h-20 bg-black w-full rounded-lg"></div>
+            <ul className="px-2 text-sm  pt-6 flex flex-col gap-1">
+              <li className=" py-1">
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${router.asPath === "/dashboard"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
                   <span>Dashboard</span>
-                  <span><IoIosArrowForward /></span>
-                  <p></p>
-                </p>
-              </MenuItem>
-
-              <SubMenu
-                label="Orders"
-                isOpen={activeSubMenu === "Orders"}
-                onClick={() => handleSubMenuClick("Orders")}
-              >
-                <MenuItem>Confirmed</MenuItem>
-                <MenuItem>In Delivery</MenuItem>
-                <MenuItem>Confirmed</MenuItem>
-                <MenuItem>In Progress</MenuItem>
-                <MenuItem>Completed</MenuItem>
-                <MenuItem>Cancelled</MenuItem>
-              </SubMenu>
-
-              <SubMenu
-                label="Pending Stores"
-                isOpen={activeSubMenu === "Pending Stores"}
-                onClick={() => handleSubMenuClick("Pending Stores")}
-              >
-                <MenuItem>Pie charts</MenuItem>
-                <MenuItem>Line charts</MenuItem>
-              </SubMenu>
-
-              <SubMenu
-                label="Delivery Boys"
-                isOpen={activeSubMenu === "Delivery Boys"}
-                onClick={() => handleSubMenuClick("Delivery Boys")}
-              >
-                <MenuItem>Pie charts</MenuItem>
-                <MenuItem>Line charts</MenuItem>
-              </SubMenu>
-
-              <SubMenu
-                label="Add Store Admin"
-                isOpen={activeSubMenu === "Add Store Admin"}
-                onClick={() => handleSubMenuClick("Add Store Admin")}
-              >
-                <MenuItem>Pie charts</MenuItem>
-                <MenuItem>Line charts</MenuItem>
-              </SubMenu>
-
-              <SubMenu
-                label="System Configs"
-                isOpen={activeSubMenu === "System Configs"}
-                onClick={() => handleSubMenuClick("System Configs")}
-              >
-                <MenuItem>Pie charts</MenuItem>
-                <MenuItem>Line charts</MenuItem>
-              </SubMenu>
-
-              <SubMenu
-                label="Store Bank Details"
-                isOpen={activeSubMenu === "Store Bank Details"}
-                onClick={() => handleSubMenuClick("Store Bank Details")}
-              >
-                <MenuItem>Pie charts</MenuItem>
-                <MenuItem>Line charts</MenuItem>
-              </SubMenu>
-
-              <MenuItem>Pending Stores</MenuItem>
-              <MenuItem>Total Stores</MenuItem>
-              <MenuItem>Calendar</MenuItem>
-            </Menu>
-          </Sidebar>
-          <div className='flex items-center justify-center w-full px-2'>
-            <button className='bg-[#DA3647] h-10 px-4 rounded-lg text-white cursor-pointer w-full text-left text-lg'>Logout</button>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" py-1 border-t-2 border-t-gray-50">
+                <Link
+                  href={"/orders"}
+                  className={` py-2 px-3 ${router.asPath === "/orders"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Orders</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" py-1 border-t-2 border-t-gray-50">
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Pending Stores</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" py-1 border-t-2 border-t-gray-50">
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Total Stores</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" py-1 border-t-2 border-t-gray-50">
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Delivery Boys</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" py-1 border-t-2 border-t-gray-50">
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Add Store Admin</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" py-1 border-t-2 border-t-gray-50">
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>System Configs</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" py-1 border-t-2 border-t-gray-50">
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Store Bank Details</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" py-1 border-t-2 border-t-gray-50">
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Ads Manager</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" py-1 border-t-2 border-t-gray-50">
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Customer Details</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li>
+              <li className=" px-1 mt-6">
+                <button className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
+                  Logout
+                </button>
+              </li>
+            </ul>
           </div>
         </nav>
-        <main className="flex-1 overflow-auto  px-10">
-          <div className='flex justify-between xl:gap-x-[520px] items-center bg-white p-2  rounded-xl fixed'>
-            <div className='flex items-center gap-2  text-black'>
-              <GiHamburgerMenu className='font-light' size={30} />
-              <input type="text" className='bg-gray-100 rounded-lg w-96 h-10 pl-2' placeholder='Search...' />
-              <button className='bg-[#493D9E] h-10 px-4 rounded-lg text-white cursor-pointer w-28'>Search</button>
-            </div>
-            <div className='flex items-center justify-center gap-2 pr-5 text-white'>
-              <select className='rounded-lg h-10 bg-[#493D9E] p-2 w-32'>
-                <option value="option1">All Cities</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-                <option value="option4">Option 4</option>
-                <option value="option5">Option 5</option>
-              </select>
-              <CgProfile className='text-gray-500' size={30} />
+        <main className="flex-1 overflow-auto lg:px-10">
+          <div className="lg:block hidden z-50 bg-white pt-10 fixed left-56 top-0">
+            <div className="flex justify-between xl:w-[1256px] lg:w-[764px]  items-center bg- border-2 border-[#F5F5F5] p-2 rounded-xl ">
+              <div className="flex items-center gap-2 text-black">
+                <FiSearch className="font-light absolute left-4 size-6" />
+                <input
+                  type="text"
+                  className="bg-gray-100 rounded-lg xl:w-96 lg:w-64 h-10 pl-12 lg:block hidden"
+                  placeholder="Search..."
+                />
+                <button className="bg-[#793FDF] h-10 px-4 rounded-lg text-white cursor-pointer w-28 lg:block hidden">
+                  Search
+                </button>
+              </div>
+              <div className="flex items-center justify-center gap-2 pr-5 text-white">
+                <select className="rounded-lg h-10 bg-[#793FDF] p-2 w-32 outline-none">
+                  <option value="option1">All Cities</option>
+                  <option value="option2">Option 2</option>
+                  <option value="option3">Option 3</option>
+                  <option value="option4">Option 4</option>
+                  <option value="option5">Option 5</option>
+                </select>
+                <FaUserCircle className="text-gray-500" size={30} />
+              </div>
             </div>
           </div>
-          <div className='pt-20'>{Content || children}
-          </div>
-        </main>
+          <div className="lg:hidden z-50 bg-white w-full flex flex-col gap-y-3">
+            <div className="flex justify-between items-center w-full j gap-2 text-black">
+              <div className="flex items-center gap-5 text-black">
+                <RxHamburgerMenu onClick={() => setIsOpen(!isOpen)}
+                  size={30} />
+                <div className="text-white">
+                  <select className="rounded-lg h-10 bg-[#793FDF] p-2 w-32 outline-none">
+                    <option value="option1">All Cities</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                    <option value="option4">Option 4</option>
+                    <option value="option5">Option 5</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <FaUserCircle className="text-gray-500" size={30} />
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-black w-full py-5">
+              <FiSearch className="font-light absolute left-6 size-6" />
+              <input
+                type="text"
+                className="bg-gray-100 rounded-xl w-full py-3 pl-12 outline-none"
+                placeholder="Search..."
+              />
+            </div>
+            <div>
+              <div
+                ref={sidebarRef}
+                className={`fixed top-0 left-0 h-full w-3/4 max-w-xs bg-white shadow-lg z-40 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                  }`}
+              >
+                <button onClick={() => { setIsOpen(false) }} className=" text-black absolute top-5 right-5"><GrClose size={20} />
+                </button>
+                <div className="lg:p-6 flex flex-col h-full space-y-6">
+                  <ul className="px-2 text-sm  pt-12 flex flex-col gap-1">
+                    <li className=" py-1">
+                      <Link
+                        href={"/dashboard"}
+                        className={` py-2 px-3 ${router.asPath === "/dashboard"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>Dashboard</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" py-1 border-t-2 border-t-gray-50">
+                      <Link
+                        href={"/orders"}
+                        className={` py-2 px-3 ${router.asPath === "/orders"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>Orders</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" py-1 border-t-2 border-t-gray-50">
+                      <Link
+                        href={"/dashboard"}
+                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>Pending Stores</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" py-1 border-t-2 border-t-gray-50">
+                      <Link
+                        href={"/dashboard"}
+                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>Total Stores</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" py-1 border-t-2 border-t-gray-50">
+                      <Link
+                        href={"/dashboard"}
+                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>Delivery Boys</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" py-1 border-t-2 border-t-gray-50">
+                      <Link
+                        href={"/dashboard"}
+                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>Add Store Admin</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" py-1 border-t-2 border-t-gray-50">
+                      <Link
+                        href={"/dashboard"}
+                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>System Configs</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" py-1 border-t-2 border-t-gray-50">
+                      <Link
+                        href={"/dashboard"}
+                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>Store Bank Details</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" py-1 border-t-2 border-t-gray-50">
+                      <Link
+                        href={"/dashboard"}
+                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>Ads Manager</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" py-1 border-t-2 border-t-gray-50">
+                      <Link
+                        href={"/dashboard"}
+                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                          : ""
+                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                      >
+                        <span>Customer Details</span>
+                        <span>
+                          <IoIosArrowForward />
+                        </span>
+                      </Link>
+                    </li>
+                    <li className=" px-1 mt-6">
+                      <button className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
 
+                  <div className="flex-grow" />
+
+                  <button className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition">
+                    Logout-
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="lg:mt-28 lg:ml-[170px]">{Content || children}</div>
+        </main>
       </div>
-      {/* <div className=' text-center pt-5'>Copyright © 2025 Tboo Services Private Limited | All Rights Reserved.</div> */}
     </div>
   );
 };
