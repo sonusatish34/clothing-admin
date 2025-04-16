@@ -117,16 +117,8 @@ const Login = (props) => {
       if (response.ok && data.status === 'success') {
         setOtpValidated(true);
         window.localStorage.setItem('user_phone', phoneNumber);
-        window.localStorage.setItem('' + phoneNumber + '_roleid', roleId);
-        window.localStorage.setItem('' + phoneNumber + '_role', data.role_name);
         window.localStorage.setItem('' + phoneNumber + '_token', data.jwt_token);
-        window.localStorage.setItem('' + phoneNumber + '_expiry', data.expiry);
-        window.localStorage.setItem('' + phoneNumber + '_details', JSON.stringify(data.app_user_data));
-
-      
-
-          router.push('/dashboard');
-        
+        router.push('/dashboard');
       } else {
         setOtpError('Invalid OTP.');
       }

@@ -18,7 +18,7 @@ const Orders = (props) => {
         <div className='flex flex-col gap-y-6'>
             <div className=''>
                 <ul className='hidden lg:flex xl:gap-x-10 lg:gap-x-2 border-2 border-[#F5F5F5] p-3 rounded-t-2xl'>
-                    <li className={`${router.asPath === '/orders' ? 'text-[#793FDF] font-bold' : ' '} cursor-pointer`}>Confirmed - 2003</li>
+                    <li className={`${router.asPath === '/orders' ? 'text-[#793FDF] font-bold' : ' '} cursor-pointer`}><Link href={'/orders/confirmed'}>Confirmed - 2003</Link></li>
                     <li className='cursor-pointer'><Link href={'/returned'}>Returned</Link> </li>
                     <li className='cursor-pointer'>In  Delivery - 300</li>
                     <li className='cursor-pointer'>Replaced</li>

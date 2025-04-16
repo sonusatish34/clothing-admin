@@ -190,9 +190,18 @@ const Layout = ({ Content, children }) => {
                 </Link>
               </li>
               <li className=" px-1 mt-6">
-                <button className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
+                {/* <button onClick={()=>{localStorage.clear()}} className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
                   Logout
-                </button>
+                </button> */}
+                <p
+                  
+                  className={`bg-red-500 text-white py-2 px-3 rounded-lg p-1  cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Logout</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </p>
               </li>
             </ul>
           </div>
@@ -401,7 +410,7 @@ const Layout = ({ Content, children }) => {
                       </Link>
                     </li>
                     <li className=" px-1 mt-6">
-                      <button className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
+                      <button onClick={()=>{localStorage.clear() ;router.push('/')}} className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
                         Logout
                       </button>
                     </li>
@@ -410,7 +419,7 @@ const Layout = ({ Content, children }) => {
                   <div className="flex-grow" />
 
                   <button className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition">
-                    Logout-
+                    Logout
                   </button>
                 </div>
               </div>

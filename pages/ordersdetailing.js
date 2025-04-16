@@ -1,3 +1,4 @@
+"use client"
 import Layout from '@/components/Layout/Layout';
 import React from 'react';
 import Image from 'next/image';
