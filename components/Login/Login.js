@@ -23,9 +23,7 @@ const Login = (props) => {
     setOtp(newOtp);
 
   };
-  console.log(otp, "otp");
   const aa = otp.join('')
-  console.log(aa, " joinotp");
 
   const handleKeyDown = (e, index) => {
     // Allow Backspace to move focus backward
@@ -44,7 +42,6 @@ const Login = (props) => {
   const apiUrl = 'newdewwewe';
 
   const handleSubmit = async (e) => {
-    console.log("into it");
 
     e.preventDefault();
     if (phoneNumber.length === 10) {
@@ -53,9 +50,27 @@ const Login = (props) => {
       setError('Please enter a valid phone number');
     }
   };
+  const [resendotp, setResendOtp] = useState(0)
+  useEffect(() => {
+    const handleotp = async () => {
+
+      if (phoneNumber.length === 10) {
+        await sendOtp();
+      } else {
+        setError('Please enter a valid phone number');
+      }
+    };
+    if(resendotp)
+    {
+      handleotp()
+    }
+
+  }, [resendotp])
+
   useEffect(() => {
     const usermobile = window.localStorage.getItem('user_phone');
     const usertoken = window.localStorage.getItem('' + usermobile + '_token');
+
     if (usermobile && usertoken) {
       router.push('/dashboard')
     }
@@ -80,7 +95,7 @@ const Login = (props) => {
     try {
       const response = await fetch(url, options);
       const data = await response.json();
-      console.log(data?.data?.app_user_data?.role_id, "data");
+      // console.log(data?.data?.app_user_data?.role_id, "data");
       window.localStorage.setItem('user_role_id', data?.data?.app_user_data?.role_id);
 
       if (response.ok && data.status === 'success') {
@@ -132,9 +147,10 @@ const Login = (props) => {
     <div className='h-screen w-screen min-h-screen' style={{ backgroundImage: "url('/images/bglogin.png')", backgroundSize: 'cover' }}>
       <div className='flex justify-center items-center h-full w-full'>
         <div className='flex flex-col lg:flex-row justify-center items-center'>
-          <div className='bg-black xl:h-[500px] xl:w-[500px] lg:h-[400px] lg:w-[400px] h-[150px] w-[250px] lg:rounded-l-md rounded-t-md'></div>
+          <div className='bg-black xl:h-[500px] xl:w-[500px] lg:h-[400px] lg:w-[400px] h-[150px] w-[250px] lg:rounded-l-md rounded-tl-md'></div>
           {!otpSuccess &&
-            <form onSubmit={handleSubmit} className="flex flex-col lg:gap-y-7 gap-y-4 justify-center items-left  bg-white xl:h-[500px] xl:w-[500px] h-[200px] w-[250px] lg:h-[400px] lg:w-[400px] lg:px-14 lg:p-6 px-2 lg:rounded-r-md rounded-b-md shadow-lg">
+            <form onSubmit={handleSubmit} className="flex flex-col lg:gap-y-7 gap-y-4 justify-center items-left  bg-white xl:h-[500px] xl:w-[500px] h-[200px] w-[2
+            50px] lg:h-[400px] lg:w-[400px] lg:px-14 lg:p-6 px-2 lg:rounded-r-md rounded-br-md shadow-lg">
               <p className=' font-bold xl:text-5xl lg:text-4xl text-xl'>Please Login !</p>
               <input
                 type="text"
@@ -157,7 +173,6 @@ const Login = (props) => {
             <p className='font-bold xl:text-xl lg:text-lg text-sm flex gap-x-2 items-center'><span>Whatsapp OTP</span><span><FaWhatsapp className='text-[#075E54] size-6' /></span></p>
             <p className='lg:text-3xl text-lg font-bold'>{phoneNumber}</p>
             <div>
-              {/* <h2>Enter OTP</h2> */}
               <div className='lg:py-4 py-2'>
                 {otp.map((digit, index) => (
                   <input
@@ -175,7 +190,7 @@ const Login = (props) => {
             </div>
             <div>
               <button onClick={() => { validateOtp() }} className="w-full lg:px-4 lg:py-4 py-1 bg-[#793FDF] text-white rounded-md cursor-pointer text-xl">Login</button>
-              <p className='flex justify-between pt-3 text-xs'><span className='underline'>Change Number</span><span className='underline' >Resend OTP</span></p>
+              <p  className='flex justify-between pt-3 text-xs'><span onClick={() => { setOtpSuccess(false) }} className='underline'>Change Number</span><span className='underline cursor-pointer' onClick={() => { setResendOtp(resendotp + 1) }} >Resend OTP</span></p>
             </div>
           </div>}
         </div>

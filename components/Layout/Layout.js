@@ -190,9 +190,7 @@ const Layout = ({ Content, children }) => {
                 </Link>
               </li>
               <li className=" px-1 mt-6">
-                {/* <button onClick={()=>{localStorage.clear()}} className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
-                  Logout
-                </button> */}
+               
                 <p
                   
                   className={`bg-red-500 text-white py-2 px-3 rounded-lg p-1  cursor-pointer flex items-center justify-between w-full`}
@@ -398,7 +396,7 @@ const Layout = ({ Content, children }) => {
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                        className={` py-2 font-bod px-3 ${router.asPath === "/das2hboard"
                           ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
                           : ""
                           }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}

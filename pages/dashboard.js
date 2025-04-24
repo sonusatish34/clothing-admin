@@ -5,7 +5,6 @@ export default function DashboardPage() {
   return (
     <Layout>
       <div className="">
-        {/* <Dashboard /> */}
         <Dashboard />
       </div>
     </Layout>
