@@ -189,13 +189,11 @@ const Layout = ({ Content, children }) => {
                   </span>
                 </Link>
               </li>
-              <li className=" px-1 mt-6">
-
+              <li onClick={() => { localStorage.clear(); router.push('/') }} className=" px-1 mt-6">
                 <p
-
                   className={`bg-red-500 text-white py-2 px-3 rounded-lg p-1  cursor-pointer flex items-center justify-between w-full`}
                 >
-                  <span onClick={() => { localStorage.clear(); router.push('/') }}>Logout</span>
+                  <span >Logout-</span>
                   <span>
                     <IoIosArrowForward />
                   </span>
@@ -211,7 +209,7 @@ const Layout = ({ Content, children }) => {
                 <FiSearch className="font-light absolute left-4 size-6" />
                 <input
                   type="text"
-                  className="bg-gray-100 rounded-lg xl:w-96 lg:w-64 h-10 pl-12 lg:block hidden"
+                  className="bg-gray-100 outline-none rounded-lg xl:w-96 lg:w-64 h-10 pl-12 lg:block hidden"
                   placeholder="Search..."
                 />
                 <button className="bg-[#793FDF] h-10 px-4 rounded-lg text-white cursor-pointer w-28 lg:block hidden">
@@ -413,9 +411,7 @@ const Layout = ({ Content, children }) => {
                       </button>
                     </li>
                   </ul>
-
                   <div className="flex-grow" />
-
                   <button onClick={() => { localStorage.clear(); router.push('/') }} className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition">
                     Logout
                   </button>

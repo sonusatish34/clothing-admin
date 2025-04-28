@@ -109,7 +109,6 @@ const Login = (props) => {
   };
 
   const validateOtp = async () => {
-
     const url = `https://ecommstagingapis.tboo.com/admin/otp-validate`;
     const userroleid = window.localStorage.getItem('user_role_id');
     const options = {
@@ -128,7 +127,7 @@ const Login = (props) => {
     try {
       const response = await fetch(url, options);
       const data = await response.json();
-      if (response.ok && data.status === 'success') {
+      if (data.status === 'success') {
         setOtpValidated(true);
         window.localStorage.setItem('user_phone', phoneNumber);
         window.localStorage.setItem('' + phoneNumber + '_token', data.jwt_token);

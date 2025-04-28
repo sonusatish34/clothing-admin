@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'HVFont'; /* You can name this whatever you like */
+  font-family: 'gotham'; /* You can name this whatever you like */
   src: url('/fonts/gotham-book-webfont.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
 body {
-  font-family: "HVFont", sans-serif;
+  font-family: "gotham", sans-serif;
 }
 :root {
   --background: #ffffff;
