@@ -60,8 +60,7 @@ const Login = (props) => {
         setError('Please enter a valid phone number');
       }
     };
-    if(resendotp)
-    {
+    if (resendotp) {
       handleotp()
     }
 
@@ -162,7 +161,7 @@ const Login = (props) => {
                   }
                 }}
                 className="rounded-md outline-none bg-[#F5F5F5] opacity-100 text-black placeholder-black
-               lg:text-md text-xl p-3 placeholder:text-xs lg:placeholder:text-sm"
+               lg:text-2xl text-xl p-3 placeholder:text-xs lg:placeholder:text-xs"
                 placeholder="Enter your WhatsApp number"
                 maxLength={10}
               />
@@ -190,7 +189,7 @@ const Login = (props) => {
             </div>
             <div>
               <button onClick={() => { validateOtp() }} className="w-full lg:px-4 lg:py-4 py-1 bg-[#793FDF] text-white rounded-md cursor-pointer text-xl">Login</button>
-              <p  className='flex justify-between pt-3 text-xs'><span onClick={() => { setOtpSuccess(false) }} className='underline'>Change Number</span><span className='underline cursor-pointer' onClick={() => { setResendOtp(resendotp + 1) }} >Resend OTP</span></p>
+              <p className='flex justify-between pt-3 text-xs'><span onClick={() => { setOtpSuccess(false) }} className='underline'>Change Number</span><span className='underline cursor-pointer' onClick={() => { setResendOtp(resendotp + 1) }} >Resend OTP</span></p>
             </div>
           </div>}
         </div>

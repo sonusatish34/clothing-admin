@@ -10,7 +10,7 @@ const ComponentName = (props) => {
     return (
         <Layout>
             <div>
-                <p className='lg:text-xl text-xs flex gap-x-3 items-center'><span><IoArrowBackSharp onClick={()=>{router.back()}} className='size-6 lg:size-10' /></span><span className='text-[#6B757C]'>Confirmed Orders</span><span className='text-[#6B757C]'>{' > '}</span><span className='font-bold '>Order Id : 1456876</span>  </p>
+                <p className='lg:text-xl text-xs flex gap-x-3 items-center'><span className='cursor-pointer'><IoArrowBackSharp onClick={()=>{router.back()}} className='size-6 lg:size-10' /></span><span className='text-[#6B757C]'>Confirmed Orders</span><span className='text-[#6B757C]'>{' > '}</span><span className='font-bold '>Order Id : 1456876</span>  </p>
                 <ul className='pt-4 flex lg:gap-x-4 lg:text-xl text-xs'>
                     <li><span className='text-[#6B757C]'> Order Placed At</span><span> 7:30 PM</span></li>
                     <li className='border-l-2 border-l-[#6B757C]  pl-2'><span className='text-[#6B757C]'> Status</span><span> Booked</span></li>

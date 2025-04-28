@@ -90,7 +90,7 @@ const Orders = (props) => {
                             <p className='text-xs lg:text-sm text-yellow-500'>Ready to Pickup</p>
                             <p className='flex flex-col gap-y-2 items-end'>
                                 <span className='text-pink-500 font-bold text-xl'>5000/-</span>
-                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'>View Items</span>
+                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'><Link href={'/ordersdetailing'}>View Items</Link></span>
                             </p>
                         </div>
                     </div>
@@ -115,7 +115,7 @@ const Orders = (props) => {
                             <p className='text-xs lg:text-sm text-yellow-500'>Ready to Pickup</p>
                             <p className='flex flex-col gap-y-2 items-end'>
                                 <span className='text-pink-500 font-bold text-xl'>5000/-</span>
-                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'>View Items</span>
+                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'><Link href={'/ordersdetailing'}>View Items</Link></span>
                             </p>
                         </div>
                     </div>
@@ -140,7 +140,7 @@ const Orders = (props) => {
                             <p className='text-xs lg:text-sm text-red-500'>Delivery Not Assigned</p>
                             <p className='flex flex-col gap-y-2 items-end'>
                                 <span className='text-pink-500 font-bold text-xl'>5000/-</span>
-                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'>View Items</span>
+                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'><Link href={'/ordersdetailing'}>View Items</Link></span>
                             </p>
                         </div>
                     </div>
@@ -165,7 +165,7 @@ const Orders = (props) => {
                             <p className='text-xs lg:text-sm text-yellow-500'>Ready to Pickup</p>
                             <p className='flex flex-col gap-y-2 items-end'>
                                 <span className='text-pink-500 font-bold text-xl'>5000/-</span>
-                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'>View Items</span>
+                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'><Link href={'/ordersdetailing'}>View Items</Link></span>
                             </p>
                         </div>
                     </div>
@@ -190,7 +190,7 @@ const Orders = (props) => {
                             <p className='text-xs lg:text-sm text-red-500'>Delivery Not Assigned</p>
                             <p className='flex flex-col gap-y-2 items-end'>
                                 <span className='text-pink-500 font-bold text-xl'>5000/-</span>
-                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'>View Items</span>
+                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'><Link href={'/ordersdetailing'}>View Items</Link></span>
                             </p>
                         </div>
                     </div>
@@ -215,7 +215,7 @@ const Orders = (props) => {
                             <p className='text-xs lg:text-sm text-yellow-500'>Ready to Pickup</p>
                             <p className='flex flex-col gap-y-2 items-end'>
                                 <span className='text-pink-500 font-bold text-xl'>5000/-</span>
-                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'>View Items</span>
+                                <span className='p-2 bg-[#793FDF] text-white rounded-lg text-sm'><Link href={'/ordersdetailing'}>View Items</Link></span>
                             </p>
                         </div>
                     </div>

@@ -79,11 +79,11 @@ const Layout = ({ Content, children }) => {
               </li>
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
-                  href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                  href={"/pending-stores"}
+                  className={` py-2 px-3 ${router.asPath === "/pending-stores"
                     ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
                     : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                    }  h-9 rounded-lg p-1 hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>Pending Stores</span>
                   <span>
@@ -190,12 +190,12 @@ const Layout = ({ Content, children }) => {
                 </Link>
               </li>
               <li className=" px-1 mt-6">
-               
+
                 <p
-                  
+
                   className={`bg-red-500 text-white py-2 px-3 rounded-lg p-1  cursor-pointer flex items-center justify-between w-full`}
                 >
-                  <span>Logout</span>
+                  <span onClick={() => { localStorage.clear(); router.push('/') }}>Logout</span>
                   <span>
                     <IoIosArrowForward />
                   </span>
@@ -206,7 +206,7 @@ const Layout = ({ Content, children }) => {
         </nav>
         <main className="flex-1 overflow-auto lg:px-10">
           <div className="lg:block hidden z-50 bg-white pt-10 fixed left-56 top-0">
-            <div className="flex justify-between xl:w-[1256px] lg:w-[764px]  items-center bg- border-2 border-[#F5F5F5] p-2 rounded-xl ">
+            <div className="flex justify-between xl:w-[1236px] lg:w-[764px]  items-center bg- border-2 border-[#F5F5F5] p-2 rounded-xl ">
               <div className="flex items-center gap-2 text-black">
                 <FiSearch className="font-light absolute left-4 size-6" />
                 <input
@@ -408,7 +408,7 @@ const Layout = ({ Content, children }) => {
                       </Link>
                     </li>
                     <li className=" px-1 mt-6">
-                      <button onClick={()=>{localStorage.clear() ;router.push('/')}} className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
+                      <button onClick={() => { localStorage.clear(); router.push('/') }} className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
                         Logout
                       </button>
                     </li>
@@ -416,7 +416,7 @@ const Layout = ({ Content, children }) => {
 
                   <div className="flex-grow" />
 
-                  <button className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition">
+                  <button onClick={() => { localStorage.clear(); router.push('/') }} className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition">
                     Logout
                   </button>
                 </div>
