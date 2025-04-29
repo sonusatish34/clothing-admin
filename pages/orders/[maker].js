@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 
 const ComponentName = (props) => {
     const router = useRouter();
-    console.log(router.query.maker, "router=query");
     return (
         <Layout>
             <div>

@@ -22,7 +22,6 @@ const Orders = (props) => {
         async function getcats() {
             const resp = await fetch("https://api.thecatapi.com/v1/images/search?limit=10", requestOptions)
             const data = await resp.json()
-            console.log(data, "data");
         }
         getcats()
 

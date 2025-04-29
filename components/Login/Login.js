@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FaWhatsapp } from "react-icons/fa";
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-const Login = (props) => {
+const Login = ({ role }) => {
   const router = useRouter();
   const [otpsent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '']);
@@ -39,6 +39,7 @@ const Login = (props) => {
   const [otpSuccess, setOtpSuccess] = useState(false);
   const [otpValidated, setOtpValidated] = useState(false);
   const [otpError, setOtpError] = useState('');
+  const [approvalteam, setApprovalTeam] = useState('');
   const apiUrl = 'newdewwewe';
 
   const handleSubmit = async (e) => {
@@ -69,7 +70,12 @@ const Login = (props) => {
   useEffect(() => {
     const usermobile = window.localStorage.getItem('user_phone');
     const usertoken = window.localStorage.getItem('' + usermobile + '_token');
-
+    if (role == 'approval') {
+      setApprovalTeam('5')
+    }
+    else {
+      setApprovalTeam('0')
+    }
     if (usermobile && usertoken) {
       router.push('/dashboard')
     }
@@ -77,6 +83,7 @@ const Login = (props) => {
       return
     }
   }, [])
+  // const approvallogin = role==='approval' && "role_id" = 5'
 
   const sendOtp = async () => {
     const url = `https://ecommstagingapis.tboo.com/admin/send-otp`;
@@ -88,6 +95,8 @@ const Login = (props) => {
       },
       body: JSON.stringify({
         mobile_number: phoneNumber,
+        role_id: approvalteam
+
       }),
     };
 
@@ -95,7 +104,14 @@ const Login = (props) => {
       const response = await fetch(url, options);
       const data = await response.json();
       // console.log(data?.data?.app_user_data?.role_id, "data");
-      window.localStorage.setItem('user_role_id', data?.data?.app_user_data?.role_id);
+      if (role !== 'approval') {
+        window.localStorage.setItem('user_role_id', data?.data?.app_user_data?.role_id);
+        window.localStorage.setItem('app_user_id', data?.data?.app_user_data?._id);
+      }
+      else {
+        window.localStorage.setItem('user_role_id', data?.data?.app_user_data?.role_id);
+        window.localStorage.setItem('app_user_id', data?.data?.app_user_data?._id);
+      }
 
       if (response.ok && data.status === 'success') {
         setOtpSuccess(true);
@@ -149,7 +165,8 @@ const Login = (props) => {
           {!otpSuccess &&
             <form onSubmit={handleSubmit} className="flex flex-col lg:gap-y-7 gap-y-4 justify-center items-left  bg-white xl:h-[500px] xl:w-[500px] h-[200px] w-[2
             50px] lg:h-[400px] lg:w-[400px] lg:px-14 lg:p-6 px-2 lg:rounded-r-md rounded-br-md shadow-lg">
-              <p className=' font-bold xl:text-5xl lg:text-4xl text-xl'>Please Login !</p>
+              <p className=' font-bold xl:text-2xl lg:text-xl text-lg'> {role == 'approval' && <span className=''> Approval Team</span>}</p>
+              <p className=' font-bold xl:text-5xl lg:text-4xl text-xl'> Please Login !</p>
               <input
                 type="text"
                 value={phoneNumber}
@@ -160,7 +177,7 @@ const Login = (props) => {
                   }
                 }}
                 className="rounded-md outline-none bg-[#F5F5F5] opacity-100 text-black placeholder-black
-               lg:text-2xl text-xl p-3 placeholder:text-xs lg:placeholder:text-xs"
+               lg:text-2xl  text-xl p-3 placeholder:text-xs lg:placeholder:text-xs"
                 placeholder="Enter your WhatsApp number"
                 maxLength={10}
               />
@@ -181,7 +198,7 @@ const Login = (props) => {
                     onChange={(e) => handleChange(e, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     maxLength={1}
-                    class="xl:w-[80px] xl:h-[60px] lg:w-[60px] lg:h-[40px] h-10 w-10 text-center mx-[5px] text-[20px] border border-[#ccc] rounded-[10px] bg-[#F5F5F5]"
+                    className="xl:w-[80px] xl:h-[60px] lg:w-[60px] lg:h-[40px] h-10 w-10 text-center mx-[5px] text-[20px] border border-[#ccc] rounded-[10px] bg-[#F5F5F5]"
                   />
                 ))}
               </div>

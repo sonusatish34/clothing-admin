@@ -193,7 +193,7 @@ const Layout = ({ Content, children }) => {
                 <p
                   className={`bg-red-500 text-white py-2 px-3 rounded-lg p-1  cursor-pointer flex items-center justify-between w-full`}
                 >
-                  <span >Logout-</span>
+                  <span >Logout</span>
                   <span>
                     <IoIosArrowForward />
                   </span>
