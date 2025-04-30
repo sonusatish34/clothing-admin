@@ -104,7 +104,7 @@ const ComponentName = () => {
         {role == 'admin' &&
 
           data.map((item, index) => (
-            <div className=''>
+            <div key={index} className=''>
               <StoreCard store={item} />
             </div>
           ))

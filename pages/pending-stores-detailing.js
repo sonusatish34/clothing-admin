@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchAssignStore } from '@/services/api';
 import { useState } from 'react';
 const ComponentName = (props) => {
+    const [showGst, setShowGst] = useState(false);
     const router = useRouter()
     const { data: assignDoc, isLoading, error } = useQuery({
         queryKey: ['assign-store'],
@@ -18,7 +19,6 @@ const ComponentName = (props) => {
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p>Error loading store data</p>;
 
-    const [showGst, setShowGst] = useState(false);
     return (
         <Layout>
             <div className="">
