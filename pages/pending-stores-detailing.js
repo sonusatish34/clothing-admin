@@ -31,7 +31,7 @@ const ComponentName = (props) => {
                             alt="line"
                             width={500}
                             height={300}
-                            className='rounded-lg w-[500px] h-[400px] ' />
+                            className='rounded-lg w-fit h-fit ' />
                         <div className='absolute top-5 right-5 cursor-pointer' onClick={() => { setShowGst(false) }}><IoArrowBackSharp className='size-6 lg:size-8 text-white' /></div>
                     </div>
                     }
@@ -54,12 +54,6 @@ const ComponentName = (props) => {
                                 <li className=''>Name As Per Gst :  {assignDoc.name_as_per_gst}</li>
                                 <li className=''><button onClick={() => { setShowGst(true); }} className='bg-[#F5F5F5] rounded-md p-2 text-xl flex justify-between w-full items-center pr-10'><span>View GST Image</span> <IoIosArrowForward /></button></li>
                             </ul>
-                            {/* <ul>
-                                <li>GST Details</li>
-                                <li>Number : 6548978978887887</li>
-                                <li>Name As Per Gst : KLM Shopping Mall</li>
-                                <li>View GST Image</li>
-                            </ul> */}
                         </div>
                     </div>
                     <div className='flex gap-x-2'>
@@ -87,7 +81,6 @@ const ComponentName = (props) => {
                             width={500}
                             height={300}
                             className='rounded-lg  object-cover w-1/4 h-[250px]  ' />
-
                     </div>
                     <div className='flex gap-x-2'>
                         <button className='p-3 py-5 rounded-lg border-2 border-gray-100 w-full hover:bg-red-500'>Reject</button>

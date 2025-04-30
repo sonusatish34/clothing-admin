@@ -8,7 +8,7 @@
   const nextConfig = {
   
     reactStrictMode: true,
-  
+
     images: {
       remotePatterns: [
         {
@@ -17,11 +17,11 @@
         },
         {
           protocol: 'https',
-          hostname: 'ldcars.blr1.digitaloceanspaces.com',
+          hostname: 'st3.depositphotos.com',
         },
         {
           protocol: 'https',
-          hostname: 'miro.medium.com',
+          hostname: 'assets.bwbx.io',
         },
         {
           protocol: 'https',

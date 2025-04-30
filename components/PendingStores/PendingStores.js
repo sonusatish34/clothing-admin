@@ -1,17 +1,75 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
-import { fetchAssignStore } from '@/services/api'; 
+import { fetchAssignStore } from '@/services/api';
 
 const ComponentName = () => {
-  const { data: assignDoc, isLoading, error } = useQuery({
-    queryKey: ['assign-store'],
-    queryFn: fetchAssignStore,
-  });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading store data</p>;
+  // const { data: assignDoc, isLoading, error } = useQuery({
+  //   queryKey: ['assign-store'],
+  //   queryFn: fetchAssignStore,
+  // });
+
+  // if (isLoading) return <p>Loading...</p>;
+  // if (error) return <p>Error loading store data</p>;
+  const [data, setData] = React.useState([]);
+  const [status, setStatus] = React.useState('in_progress');
+  const [role, setRole] = React.useState('');
+  useEffect(() => {
+  }, [])
+  // console.log(role,"olee");
+
+  useEffect(() => {
+    localStorage.getItem('user_role_id') == '5' ? setRole('approval') : setRole('admin')
+
+    async function fetchStores() {
+      const response = await fetch(`https://ecommstagingapis.tboo.com/admin/assign-store`, {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          app_user_id: 19,
+          role_id: 5,
+        }),
+      });
+
+      const data = await response.json();
+      setData(data?.data?.results);
+      console.log(data?.data, "9998data");
+
+    }
+    if (localStorage.getItem('user_role_id') == '5') {
+
+      fetchStores()
+    }
+
+    async function fetchStoresByStatus() {
+      const response = await fetch(`https://ecommstagingapis.tboo.com/admin/stores?status=${status}`, {
+
+        headers: {
+          'accept': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
+          'Content-Type': 'application/json',
+        },
+
+      });
+
+      const data = await response.json();
+      setData(data?.data?.results);
+      console.log(data.data?.results, "testing");
+    }
+    if(status)
+    {
+
+      fetchStoresByStatus()
+    }
+
+
+  }, [status])
 
   const StoreCard = ({ store }) => (
     <div className='pt-6'>
@@ -19,7 +77,7 @@ const ComponentName = () => {
         <ul className='flex flex-col gap-y-2 border-2 border-[#F5F5F5] rounded-lg'>
           <li>
             <Image
-              src={store.store_image}
+              src={store.store_image.includes('ldcars')?store.store_image:'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
               alt="line"
               width={500}
               height={300}
@@ -37,17 +95,22 @@ const ComponentName = () => {
   return (
     <div>
       <ul className='hidden lg:flex xl:gap-x-10 lg:gap-x-2 border-2 border-[#F5F5F5] p-3 rounded-t-2xl'>
-        <li className='cursor-pointer'><Link href={'/orders/confirmed'}>Pending Stores</Link></li>
-        <li className='cursor-pointer'><Link href={'/returned'}>Rejected Stores</Link></li>
-        <li className='cursor-pointer'>Approved Stores</li>
+        <li className={` cursor-pointer ${status==='in_progress'?'text-[#793FDF]':''}`}><p onClick={() => { setStatus('in_progress') }} href={'/'}>Pending Stores</p></li>
+        <li className={` cursor-pointer ${status==='rejected'?'text-[#793FDF]':''}`}><p onClick={() => { setStatus('rejected') }} href={'/'}>Rejected Stores</p></li>
+        <li className={` cursor-pointer ${status==='approved'?'text-[#793FDF]':''}`}><p onClick={() => { setStatus('approved') }} href={'/'}>Approved Stores</p></li>
       </ul>
       <div className='grid grid-cols-2 gap-7'>
-        {/* {assignDoc?.map((store, index) => (
-          <StoreCard key={index} store={store} />
-        ))} */}
-        {/* {assignDoc['store_name']} */}
-        {/* {assignDoc['_id']} */}
-        <StoreCard store={assignDoc}/>
+        {role == 'approval' && <StoreCard store={data} />}
+        {role == 'admin' &&
+
+          data.map((item, index) => (
+            <div className=''>
+              <StoreCard store={item} />
+            </div>
+          ))
+        }
+        {console.log(role, 'rlw')
+        }
       </div>
     </div>
   );

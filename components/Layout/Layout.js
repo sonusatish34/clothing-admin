@@ -1,14 +1,16 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { GrClose } from "react-icons/gr";
-
+import Image from "next/image";
 import { FiSearch } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 const Layout = ({ Content, children }) => {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const [hideHamb, setHideHamb] = useState(false);
@@ -18,9 +20,13 @@ const Layout = ({ Content, children }) => {
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [role, setRole] = useState("");
   const sidebarRef = useRef(null);
 
   // Close sidebar on outside click
+  useEffect(()=>{
+    localStorage.getItem('app_user_id') == '5' ? setRole('approval') : setRole('admin')
+  },[])
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -30,6 +36,7 @@ const Layout = ({ Content, children }) => {
         setIsOpen(false);
       }
     }
+    
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
@@ -45,17 +52,27 @@ const Layout = ({ Content, children }) => {
   return (
     <div className="flex flex-col gap-y-0">
       <div className="flex h-full lg:pl-4 px-4 pt-5  pb-5">
+
+        {/* desktop side bar */}
+
         <nav className="h-screen pb-10 text-2xl  lg:flex hidden flex-col gap-2 items-start w-48  rounded-t-xl rounded-b-xl fixed top-10">
           <div className="h-full w-full overflow-hidden">
-            <div className="h-20 bg-black w-full rounded-lg"></div>
-            <ul className="px-2 text-sm  pt-6 flex flex-col gap-1">
+            <div className="h-20 bg-black w-full rounded-lg">
+              <Link href={'/'}>
+                <Image
+                  src={'https://st3.depositphotos.com/9223672/17315/v/1600/depositphotos_173155438-stock-illustration-dress-suit-icons-isolated-white.jpg'}
+                  alt="line"
+                  width={500}
+                  height={300}
+                  className='rounded-t-lg w-full h-full object-cover'
+                />
+              </Link>
+            </div>
+            <ul className="px-2 text-sm pt-6 flex flex-col gap-1">
               <li className=" py-1">
-                <Link
-                  href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/dashboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                <Link href={"/dashboard"} className={` py-2 px-3 ${router.asPath === "/dashboard" ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                  : ""
+                  }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>Dashboard</span>
                   <span>
@@ -77,7 +94,7 @@ const Layout = ({ Content, children }) => {
                   </span>
                 </Link>
               </li>
-              <li className=" py-1 border-t-2 border-t-gray-50">
+             {role=='approval' && <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/pending-stores"}
                   className={` py-2 px-3 ${router.asPath === "/pending-stores"
@@ -90,11 +107,11 @@ const Layout = ({ Content, children }) => {
                     <IoIosArrowForward />
                   </span>
                 </Link>
-              </li>
-              <li className=" py-1 border-t-2 border-t-gray-50">
+              </li>}
+              {role=='admin' && <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
-                  href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                  href={"/total-stores"}
+                  className={` py-2 px-3 ${router.asPath === "/total-stores"
                     ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
                     : ""
                     }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
@@ -104,7 +121,7 @@ const Layout = ({ Content, children }) => {
                     <IoIosArrowForward />
                   </span>
                 </Link>
-              </li>
+              </li>}
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/dashboard"}
@@ -293,7 +310,7 @@ const Layout = ({ Content, children }) => {
                         </span>
                       </Link>
                     </li>
-                    <li className=" py-1 border-t-2 border-t-gray-50">
+                    {<li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
                         className={` py-2 px-3 ${router.asPath === "/das2hboard"
@@ -306,7 +323,7 @@ const Layout = ({ Content, children }) => {
                           <IoIosArrowForward />
                         </span>
                       </Link>
-                    </li>
+                    </li>}
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
