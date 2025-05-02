@@ -52,6 +52,7 @@ const ComponentName = (props) => {
                 headers: {
                     'accept': 'application/json',
                     'Authorization': token,
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     id: assignDoc?.assigned_id,

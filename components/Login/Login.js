@@ -5,7 +5,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 const Login = ({ role }) => {
-  console.log('ues');
+  console.log('88888');
   
   const router = useRouter();
   const [otpsent, setOtpSent] = useState(false);
