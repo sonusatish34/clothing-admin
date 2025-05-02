@@ -135,7 +135,7 @@ const Orders = (props) => {
                                 Medipally
                                 Hyderbad</p>
                         </div>
-                        <div className='flex flex-col justify-between items-center'>
+                        <div className='flex flex-col justify-between'>
                             <p className='text-xs lg:text-sm text-red-500'>Delivery Not Assigned</p>
                             <p className='flex flex-col gap-y-2 items-end'>
                                 <span className='text-pink-500 font-bold text-xl'>5000/-</span>
@@ -185,7 +185,7 @@ const Orders = (props) => {
                                 Medipally
                                 Hyderbad</p>
                         </div>
-                        <div className='flex flex-col justify-between items-center'>
+                        <div className='flex flex-col justify-between'>
                             <p className='text-xs lg:text-sm text-red-500'>Delivery Not Assigned</p>
                             <p className='flex flex-col gap-y-2 items-end'>
                                 <span className='text-pink-500 font-bold text-xl'>5000/-</span>

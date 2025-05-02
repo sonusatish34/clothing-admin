@@ -39,7 +39,7 @@ const ComponentName = () => {
 
       const data = await response.json();
       setData(data?.data?.results);
-      console.log(data?.data, "9998data");
+      console.log(data?.data?.results, "9998data");
 
     }
     if (localStorage.getItem('user_role_id') == '5') {
@@ -47,26 +47,7 @@ const ComponentName = () => {
       fetchStores()
     }
 
-    async function fetchStoresByStatus() {
-      const response = await fetch(`https://ecommstagingapis.tboo.com/admin/stores?status=${status}`, {
 
-        headers: {
-          'accept': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
-          'Content-Type': 'application/json',
-        },
-
-      });
-
-      const data = await response.json();
-      setData(data?.data?.results);
-      console.log(data.data?.results, "testing");
-    }
-    if(status)
-    {
-
-      fetchStoresByStatus()
-    }
 
 
   }, [status])
@@ -77,16 +58,16 @@ const ComponentName = () => {
         <ul className='flex flex-col gap-y-2 border-2 border-[#F5F5F5] rounded-lg'>
           <li>
             <Image
-              src={store.store_image.includes('ldcars')?store.store_image:'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
+              src={store?.store_image?.includes('ldcars') ? store.store_image : 'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
               alt="line"
               width={500}
               height={300}
               className='rounded-t-lg object-cover w-full h-[400px]'
             />
           </li>
-          <li className='pl-4'>{store.area_name}</li>
-          <li className='pl-4'>Store Id: {store._id}</li>
-          <li className='pl-4 pb-4'>Submitted At {store.created_on}</li>
+          <li className='pl-4'>{store?.area_name}</li>
+          <li className='pl-4'>Store Id: {store?._id}</li>
+          <li className='pl-4 pb-4'>Submitted At {store?.created_on}</li>
         </ul>
       </Link>
     </div>
@@ -95,12 +76,13 @@ const ComponentName = () => {
   return (
     <div>
       <ul className='hidden lg:flex xl:gap-x-10 lg:gap-x-2 border-2 border-[#F5F5F5] p-3 rounded-t-2xl'>
-        <li className={` cursor-pointer ${status==='in_progress'?'text-[#793FDF]':''}`}><p onClick={() => { setStatus('in_progress') }} href={'/'}>Pending Stores</p></li>
-        <li className={` cursor-pointer ${status==='rejected'?'text-[#793FDF]':''}`}><p onClick={() => { setStatus('rejected') }} href={'/'}>Rejected Stores</p></li>
-        <li className={` cursor-pointer ${status==='approved'?'text-[#793FDF]':''}`}><p onClick={() => { setStatus('approved') }} href={'/'}>Approved Stores</p></li>
+        <li className={` cursor-pointer ${status === 'in_progress' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('in_progress') }} href={'/'}>Pending Stores</p></li>
+        <li className={` cursor-pointer ${status === 'rejected' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('rejected') }} href={'/'}>Rejected Stores</p></li>
+        <li className={` cursor-pointer ${status === 'approved' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('approved') }} href={'/'}>Approved Stores</p></li>
       </ul>
+      {console.log(data, 'data12d')}
       <div className='grid grid-cols-2 gap-7'>
-        {role == 'approval' && <StoreCard store={data} />}
+        {role == 'approval' && data?._id ? <StoreCard store={data} /> : 'No properties assigned'}
         {role == 'admin' &&
 
           data.map((item, index) => (

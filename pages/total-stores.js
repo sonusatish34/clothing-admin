@@ -1,11 +1,12 @@
 import React from 'react';
 import Layout from '@/components/Layout/Layout';
-import PendingStores from '../components/PendingStores/PendingStores'
+import TotalStores from '../components/TotalStores/TotalStores'
 const ComponentName = (props) => {
   return (
     <Layout>
       <div className="">
-        <PendingStores />
+        {/* <PendingStores /> */}
+        <TotalStores />
       </div>
     </Layout>
   );

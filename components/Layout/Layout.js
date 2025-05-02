@@ -24,9 +24,11 @@ const Layout = ({ Content, children }) => {
   const sidebarRef = useRef(null);
 
   // Close sidebar on outside click
-  useEffect(()=>{
-    localStorage.getItem('app_user_id') == '5' ? setRole('approval') : setRole('admin')
-  },[])
+  useEffect(() => {
+    localStorage.getItem('user_role_id') === '5' ? setRole('approval') : setRole('admin')
+  }, [])
+  console.log(role,"role simpl");
+  
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -36,7 +38,7 @@ const Layout = ({ Content, children }) => {
         setIsOpen(false);
       }
     }
-    
+
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
@@ -94,7 +96,7 @@ const Layout = ({ Content, children }) => {
                   </span>
                 </Link>
               </li>
-             {role=='approval' && <li className=" py-1 border-t-2 border-t-gray-50">
+              {role === 'approval' && <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/pending-stores"}
                   className={` py-2 px-3 ${router.asPath === "/pending-stores"
@@ -108,7 +110,7 @@ const Layout = ({ Content, children }) => {
                   </span>
                 </Link>
               </li>}
-              {role=='admin' && <li className=" py-1 border-t-2 border-t-gray-50">
+              {role == 'admin' && <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/total-stores"}
                   className={` py-2 px-3 ${router.asPath === "/total-stores"

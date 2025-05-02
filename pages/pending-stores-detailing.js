@@ -1,23 +1,65 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from '@/components/Layout/Layout';
 import Image from 'next/image';
 import { IoArrowBackSharp } from "react-icons/io5";
 import { IoIosArrowForward } from "react-icons/io";
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
-import { fetchAssignStore } from '@/services/api';
 import { useState } from 'react';
 const ComponentName = (props) => {
     const [showGst, setShowGst] = useState(false);
     const router = useRouter()
-    const { data: assignDoc, isLoading, error } = useQuery({
-        queryKey: ['assign-store'],
-        queryFn: fetchAssignStore,
-    });
+    // const { data: assignDoc, isLoading, error } = useQuery({
+    //     queryKey: ['assign-store'],
+    //     queryFn: fetchAssignStore,
+    // });
 
-    if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error loading store data</p>;
+    // if (isLoading) return <p>Loading...</p>;
+    // if (error) return <p>Error loading store data</p>;
+    const [assignDoc, setAssignDoc] = useState('');
+    useEffect(() => {
+        const fetchAssignStore = async () => {
+            const response = await fetch(`https://ecommstagingapis.tboo.com/admin/assign-store`, {
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    app_user_id: 19,
+                    role_id: 5,
+                }),
+            });
+
+            const data = await response.json();
+            setAssignDoc(data?.data);
+        };
+        fetchAssignStore()
+
+    }, [])
+    console.log(assignDoc, '00');
+    const [status, setStatus] = useState(1);
+    useEffect(() => {
+        const UpdateStore = async () => {
+            const response = await fetch(`https://ecommstagingapis.tboo.com/admin/update-store-status`, {
+                method: 'PUT',
+                headers: {
+                    'accept': 'application/json',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: assignDoc?.assigned_id,
+                    store_id: assignDoc?.results?._id,
+                    status: status,
+                    reject_reason: ""
+                }),
+            });
+        };
+        if (status == 'approved' || status == 'rejected') {
+            UpdateStore()
+        }
+    }, [status])
 
     return (
         <Layout>
@@ -27,7 +69,7 @@ const ComponentName = (props) => {
                 <div className='flex flex-col gap-y-5 pt-8'>
                     {showGst && <div className='fixed top-0 w-full h-full left-0  bg-black bg-opacity-0 flex justify-center items-center z-50'>
                         <Image
-                            src={assignDoc.store_image}
+                            src={'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
                             alt="line"
                             width={500}
                             height={300}
@@ -37,7 +79,7 @@ const ComponentName = (props) => {
                     }
                     <div className='flex gap-x-6'>
                         <Image
-                            src={assignDoc.store_image}
+                            src={'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
                             alt="line"
                             width={500}
                             height={300}
@@ -45,46 +87,47 @@ const ComponentName = (props) => {
                         <div className='w-full flex flex-col gap-y-3'>
                             <ul className='p-4 border-2 border-gray-100 rounded-lg flex flex-col gap-y-1.5'>
                                 <li className='text-2xl font-semibold'>Store Details</li>
-                                <li className='text-[#6B767B]'>Store Id : {assignDoc._id}</li>
-                                <li className='w-56'>{assignDoc.address}</li>
+                                <li className='text-[#6B767B]'>Store Id : {assignDoc.results?._id}</li>
+                                <li className='w-56'>{assignDoc.results?.address}</li>
                             </ul>
                             <ul className='p-4 border-2 border-gray-100 rounded-lg flex flex-col gap-y-2'>
                                 <li className='text-2xl font-semibold'>GST Details</li>
-                                <li className=''>Number :  {assignDoc.gst_number}</li>
-                                <li className=''>Name As Per Gst :  {assignDoc.name_as_per_gst}</li>
+                                <li className=''>Number :  {assignDoc.results?.gst_number}</li>
+                                <li className=''>Name As Per Gst :  {assignDoc.results?.name_as_per_gst}</li>
                                 <li className=''><button onClick={() => { setShowGst(true); }} className='bg-[#F5F5F5] rounded-md p-2 text-xl flex justify-between w-full items-center pr-10'><span>View GST Image</span> <IoIosArrowForward /></button></li>
                             </ul>
                         </div>
                     </div>
                     <div className='flex gap-x-2'>
                         <Image
-                            src={assignDoc.store_image}
+                            src={'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
                             alt="line"
                             width={500}
                             height={300}
                             className='rounded-lg  object-cover w-1/4 h-[250px] ' />
                         <Image
-                            src={assignDoc.store_top_image_1}
+                            src={'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
                             alt="line"
                             width={500}
                             height={300}
                             className='rounded-lg  object-cover w-1/4 h-[250px]  ' />
                         <Image
-                            src={assignDoc.store_top_image_2}
+                            src={'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
                             alt="line"
                             width={500}
                             height={300}
                             className='rounded-lg  object-cover w-1/4 h-[250px]  ' />
                         <Image
-                            src={assignDoc.store_top_image_3}
+                            src={'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
                             alt="line"
                             width={500}
                             height={300}
                             className='rounded-lg  object-cover w-1/4 h-[250px]  ' />
                     </div>
                     <div className='flex gap-x-2'>
-                        <button className='p-3 py-5 rounded-lg border-2 border-gray-100 w-full hover:bg-red-500'>Reject</button>
-                        <button className='p-3 py-5 rounded-lg border-2 border-gray-100 w-full bg-[#793FDF] text-white'>Approve</button>
+                        <button onClick={() => { setStatus('approved'); console.log() }
+                        } className='p-3 py-5 rounded-lg border-2 border-gray-100 w-full hover:bg-red-500 hover:text-white'>Reject</button>
+                        <button onClick={() => { setStatus("rejected") }} className='p-3 py-5 rounded-lg border-2 border-gray-100 w-full bg-[#793FDF] text-white'>Approve</button>
                     </div>
                 </div>
             </div>

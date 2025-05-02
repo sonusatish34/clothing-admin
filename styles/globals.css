@@ -89,7 +89,6 @@ body {
   
   .navbar-carousel {
     display: none;
-    
   }
 }
 
@@ -102,6 +101,8 @@ body {
   background-size: calc(100%/3) 100%;
   background-repeat: no-repeat;
   animation: dots-zcf63l 1s infinite linear;
+  position: absolute;
+  left: 520px;
 }
 
 @keyframes dots-zcf63l {
