@@ -6,6 +6,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 const ComponentName = (props) => {
+    const [status, setStatus] = useState(1);
     const [showGst, setShowGst] = useState(false);
     const router = useRouter()
     // const { data: assignDoc, isLoading, error } = useQuery({
@@ -18,12 +19,14 @@ const ComponentName = (props) => {
     const [assignDoc, setAssignDoc] = useState('');
     useEffect(() => {
         const fetchAssignStore = async () => {
+            const user_phone = localStorage.getItem("user_phone")
+            const token = localStorage.getItem(user_phone + "_token")
             const response = await fetch(`https://ecommstagingapis.tboo.com/admin/assign-store`, {
                 method: 'POST',
                 headers: {
                     'accept': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
-                    'Content-Type': 'application/json',
+                    'Authorization': "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4",
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     app_user_id: 19,
@@ -35,18 +38,20 @@ const ComponentName = (props) => {
             setAssignDoc(data?.data);
         };
         fetchAssignStore()
+        // console.log(localStorage.getItem("user_phone" + _token),'localStorage.getItem("user_phone" + _token)');
 
-    }, [])
+    }, [status])
     console.log(assignDoc, '00');
-    const [status, setStatus] = useState(1);
+
     useEffect(() => {
         const UpdateStore = async () => {
+            const user_phone = localStorage.getItem("user_phone")
+            const token = localStorage.getItem(user_phone + "_token")
             const response = await fetch(`https://ecommstagingapis.tboo.com/admin/update-store-status`, {
                 method: 'PUT',
                 headers: {
                     'accept': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
-                    'Content-Type': 'application/json',
+                    'Authorization': token,
                 },
                 body: JSON.stringify({
                     id: assignDoc?.assigned_id,
@@ -59,11 +64,15 @@ const ComponentName = (props) => {
         if (status == 'approved' || status == 'rejected') {
             UpdateStore()
         }
+        const user_phone = localStorage.getItem("user_phone")
+        const token = localStorage.getItem(user_phone + "_token")
+        console.log(token, 'token');
+
     }, [status])
 
     return (
         <Layout>
-            <div className="">
+            {assignDoc?.assigned_id ? <div className="">
                 {/* <PendingStores /> */}
                 <p className='lg:text-xl text-xs flex gap-x-3 items-center'><span className='cursor-pointer'><IoArrowBackSharp onClick={() => { router.back() }} className='size-6 lg:size-8' /></span><span className='text-[#6B757C]'>Pending Stores</span><span className='text-[#6B757C]'>{' > '}</span><span className='font-bold '>KLM Shopping Mall, Medipally</span>  </p>
                 <div className='flex flex-col gap-y-5 pt-8'>
@@ -125,12 +134,12 @@ const ComponentName = (props) => {
                             className='rounded-lg  object-cover w-1/4 h-[250px]  ' />
                     </div>
                     <div className='flex gap-x-2'>
-                        <button onClick={() => { setStatus('approved'); console.log() }
-                        } className='p-3 py-5 rounded-lg border-2 border-gray-100 w-full hover:bg-red-500 hover:text-white'>Reject</button>
-                        <button onClick={() => { setStatus("rejected") }} className='p-3 py-5 rounded-lg border-2 border-gray-100 w-full bg-[#793FDF] text-white'>Approve</button>
+                        <button onClick={() => { setStatus('apprrejectedoved'); console.log() }
+                        } className='cursor-pointer p-3 py-5 rounded-lg border-2 border-gray-100 w-full hover:bg-red-500 hover:text-white'>Reject</button>
+                        <button onClick={() => { setStatus("approved") }} className='hover:underline cursor-pointer p-3 py-5 rounded-lg border-2 border-gray-100 w-full bg-[#793FDF] text-white'>Approve</button>
                     </div>
                 </div>
-            </div>
+            </div> : <div><p>No documents to assign</p></div>}
         </Layout>
     );
 };

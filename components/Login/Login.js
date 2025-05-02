@@ -186,7 +186,7 @@ const Login = ({ role }) => {
               />
               {error && <p className=' text-xs lg:text-lg text-red-400  '>{error}</p>}
               <button onClick={() => { setOtpSent(true) }} className="w-full bg-[#793FDF] text-white py-2 rounded-md cursor-pointer">Send Whatsapp OTP</button>
-              <button onClick={()=>{router.push('/dashboard')}}  className="w-full bg-[#793FDF] text-white py-2 rounded-md cursor-pointer">Guest Login</button>
+              {/* <button onClick={()=>{router.push('/dashboard')}}  className="w-full bg-[#793FDF] text-white py-2 rounded-md cursor-pointer">Guest Login</button> */}
             </form>}
           {otpSuccess && <div className="flex flex-col mxs lg:gap-y-3 gap-y-1 justify-center items-left bg-white  xl:h-[500px] xl:w-[500px] h-[200px] w-[250px] lg:h-[400px] lg:w-[400px] lg:px-14 lg:p-6 px-2 rounded-r-md shadow-lg">
             <p className='font-bold xl:text-xl lg:text-lg text-sm flex gap-x-2 items-center'><span>Whatsapp OTP</span><span><FaWhatsapp className='text-[#075E54] size-6' /></span></p>

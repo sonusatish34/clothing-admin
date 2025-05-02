@@ -10,7 +10,7 @@ import { FiSearch } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 const Layout = ({ Content, children }) => {
   const [activeSubMenu, setActiveSubMenu] = useState(null);
   const [hideHamb, setHideHamb] = useState(false);
@@ -18,7 +18,8 @@ const Layout = ({ Content, children }) => {
     setActiveSubMenu(activeSubMenu === label ? null : label);
   };
   const router = useRouter();
-
+  console.log(router, "router");
+  
   const [isOpen, setIsOpen] = useState(false);
   const [role, setRole] = useState("");
   const sidebarRef = useRef(null);
@@ -82,6 +83,8 @@ const Layout = ({ Content, children }) => {
                   </span>
                 </Link>
               </li>
+              {console.log(router,"router.asPath")
+              }
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/orders"}
