@@ -18,63 +18,64 @@ const Layout = ({ Content, children }) => {
     setActiveSubMenu(activeSubMenu === label ? null : label);
   };
   const router = useRouter();
-  console.log(router, "router");
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [role, setRole] = useState("");
   const sidebarRef = useRef(null);
 
   // Close sidebar on outside click
   useEffect(() => {
-    localStorage.getItem('user_role_id') === '5' ? setRole('approval') : setRole('admin')
-  }, [])
-  console.log(role,"role simpl");
-  
+    localStorage.getItem("user_role_id") === "5"
+      ? setRole("approval")
+      : setRole("admin");
+  }, []);
+
   useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target)
-      ) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     }
 
-
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
 
   return (
     <div className="flex flex-col gap-y-0">
       <div className="flex h-full lg:pl-4 px-4 pt-5  pb-5">
-
         {/* desktop side bar */}
 
         <nav className="h-screen pb-10 text-2xl  lg:flex hidden flex-col gap-2 items-start w-48  rounded-t-xl rounded-b-xl fixed top-10">
           <div className="h-full w-full overflow-hidden">
             <div className="h-20 bg-black w-full rounded-lg">
-              <Link href={'/'}>
+              <Link href={"/"}>
                 <Image
-                  src={'https://st3.depositphotos.com/9223672/17315/v/1600/depositphotos_173155438-stock-illustration-dress-suit-icons-isolated-white.jpg'}
+                  src={
+                    "https://st3.depositphotos.com/9223672/17315/v/1600/depositphotos_173155438-stock-illustration-dress-suit-icons-isolated-white.jpg"
+                  }
                   alt="line"
                   width={500}
                   height={300}
-                  className='rounded-t-lg w-full h-full object-cover'
+                  className="rounded-t-lg w-full h-full object-cover"
                 />
               </Link>
             </div>
             <ul className="px-2 text-sm pt-6 flex flex-col gap-1">
               <li className=" py-1">
-                <Link href={"/dashboard"} className={` py-2 px-3 ${router.asPath === "/dashboard" ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                  : ""
+                <Link
+                  href={"/dashboard"}
+                  className={` py-2 px-3 ${
+                    router.asPath === "/dashboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
                   }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>Dashboard</span>
@@ -83,15 +84,15 @@ const Layout = ({ Content, children }) => {
                   </span>
                 </Link>
               </li>
-              {console.log(router,"router.asPath")
-              }
+
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/orders"}
-                  className={` py-2 px-3 ${router.asPath === "/orders"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  className={` py-2 px-3 ${
+                    router.asPath === "/orders"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                  }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>Orders</span>
                   <span>
@@ -99,41 +100,48 @@ const Layout = ({ Content, children }) => {
                   </span>
                 </Link>
               </li>
-              {role === 'approval' && <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/pending-stores"}
-                  className={` py-2 px-3 ${router.asPath === "/pending-stores"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
+              {role === "approval" && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/pending-stores"}
+                    className={` py-2 px-3 ${
+                      router.asPath === "/pending-stores"
+                        ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                        : ""
                     }  h-9 rounded-lg p-1 hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Pending Stores</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>}
-              {role == 'admin' && <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/total-stores"}
-                  className={` py-2 px-3 ${router.asPath === "/total-stores"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
+                  >
+                    <span>Pending Stores</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {role == "admin" && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/total-stores"}
+                    className={` py-2 px-3 ${
+                      router.asPath === "/total-stores"
+                        ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                        : ""
                     }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Total Stores</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>}
+                  >
+                    <span>Total Stores</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  className={` py-2 px-3 ${
+                    router.asPath === "/das2hboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                  }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>Delivery Boys</span>
                   <span>
@@ -144,10 +152,11 @@ const Layout = ({ Content, children }) => {
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  className={` py-2 px-3 ${
+                    router.asPath === "/das2hboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                  }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>Add Store Admin</span>
                   <span>
@@ -158,10 +167,11 @@ const Layout = ({ Content, children }) => {
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  className={` py-2 px-3 ${
+                    router.asPath === "/das2hboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                  }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>System Configs</span>
                   <span>
@@ -172,10 +182,11 @@ const Layout = ({ Content, children }) => {
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  className={` py-2 px-3 ${
+                    router.asPath === "/das2hboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                  }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>Store Bank Details</span>
                   <span>
@@ -186,10 +197,11 @@ const Layout = ({ Content, children }) => {
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  className={` py-2 px-3 ${
+                    router.asPath === "/das2hboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                  }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>Ads Manager</span>
                   <span>
@@ -200,10 +212,11 @@ const Layout = ({ Content, children }) => {
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
                   href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  className={` py-2 px-3 ${
+                    router.asPath === "/das2hboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                  }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
                   <span>Customer Details</span>
                   <span>
@@ -211,11 +224,17 @@ const Layout = ({ Content, children }) => {
                   </span>
                 </Link>
               </li>
-              <li onClick={() => { localStorage.clear(); router.push('/') }} className=" px-1 mt-6">
+              <li
+                onClick={() => {
+                  localStorage.clear();
+                  router.push("/");
+                }}
+                className=" px-1 mt-6"
+              >
                 <p
                   className={`bg-red-500 text-white py-2 px-3 rounded-lg p-1  cursor-pointer flex items-center justify-between w-full`}
                 >
-                  <span >Logout</span>
+                  <span>Logout</span>
                   <span>
                     <IoIosArrowForward />
                   </span>
@@ -253,8 +272,7 @@ const Layout = ({ Content, children }) => {
           <div className="lg:hidden z-50 bg-white w-full flex flex-col gap-y-3">
             <div className="flex justify-between items-center w-full j gap-2 text-black">
               <div className="flex items-center gap-5 text-black">
-                <RxHamburgerMenu onClick={() => setIsOpen(!isOpen)}
-                  size={30} />
+                <RxHamburgerMenu onClick={() => setIsOpen(!isOpen)} size={30} />
                 <div className="text-white">
                   <select className="rounded-lg h-10 bg-[#793FDF] p-2 w-32 outline-none">
                     <option value="option1">All Cities</option>
@@ -280,20 +298,28 @@ const Layout = ({ Content, children }) => {
             <div>
               <div
                 ref={sidebarRef}
-                className={`fixed top-0 left-0 h-full w-3/4 max-w-xs bg-white shadow-lg z-40 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'
-                  }`}
+                className={`fixed top-0 left-0 h-full w-3/4 max-w-xs bg-white shadow-lg z-40 transform transition-transform duration-300 ${
+                  isOpen ? "translate-x-0" : "-translate-x-full"
+                }`}
               >
-                <button onClick={() => { setIsOpen(false) }} className=" text-black absolute top-5 right-5"><GrClose size={20} />
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                  }}
+                  className=" text-black absolute top-5 right-5"
+                >
+                  <GrClose size={20} />
                 </button>
                 <div className="lg:p-6 flex flex-col h-full space-y-6">
                   <ul className="px-2 text-sm  pt-12 flex flex-col gap-1">
                     <li className=" py-1">
                       <Link
                         href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/dashboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        className={` py-2 px-3 ${
+                          router.asPath === "/dashboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                        }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                       >
                         <span>Dashboard</span>
                         <span>
@@ -304,10 +330,11 @@ const Layout = ({ Content, children }) => {
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/orders"}
-                        className={` py-2 px-3 ${router.asPath === "/orders"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        className={` py-2 px-3 ${
+                          router.asPath === "/orders"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                        }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                       >
                         <span>Orders</span>
                         <span>
@@ -315,27 +342,31 @@ const Layout = ({ Content, children }) => {
                         </span>
                       </Link>
                     </li>
-                    {<li className=" py-1 border-t-2 border-t-gray-50">
-                      <Link
-                        href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
+                    {
+                      <li className=" py-1 border-t-2 border-t-gray-50">
+                        <Link
+                          href={"/dashboard"}
+                          className={` py-2 px-3 ${
+                            router.asPath === "/das2hboard"
+                              ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                              : ""
                           }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                      >
-                        <span>Pending Stores</span>
-                        <span>
-                          <IoIosArrowForward />
-                        </span>
-                      </Link>
-                    </li>}
+                        >
+                          <span>Pending Stores</span>
+                          <span>
+                            <IoIosArrowForward />
+                          </span>
+                        </Link>
+                      </li>
+                    }
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        className={` py-2 px-3 ${
+                          router.asPath === "/das2hboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                        }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                       >
                         <span>Total Stores</span>
                         <span>
@@ -346,10 +377,11 @@ const Layout = ({ Content, children }) => {
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        className={` py-2 px-3 ${
+                          router.asPath === "/das2hboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                        }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                       >
                         <span>Delivery Boys</span>
                         <span>
@@ -360,10 +392,11 @@ const Layout = ({ Content, children }) => {
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        className={` py-2 px-3 ${
+                          router.asPath === "/das2hboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                        }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                       >
                         <span>Add Store Admin</span>
                         <span>
@@ -374,10 +407,11 @@ const Layout = ({ Content, children }) => {
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        className={` py-2 px-3 ${
+                          router.asPath === "/das2hboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                        }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                       >
                         <span>System Configs</span>
                         <span>
@@ -388,10 +422,11 @@ const Layout = ({ Content, children }) => {
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        className={` py-2 px-3 ${
+                          router.asPath === "/das2hboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                        }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                       >
                         <span>Store Bank Details</span>
                         <span>
@@ -402,10 +437,11 @@ const Layout = ({ Content, children }) => {
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        className={` py-2 px-3 ${
+                          router.asPath === "/das2hboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                        }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                       >
                         <span>Ads Manager</span>
                         <span>
@@ -416,10 +452,11 @@ const Layout = ({ Content, children }) => {
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}
-                        className={` py-2 font-bod px-3 ${router.asPath === "/das2hboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        className={` py-2 font-bod px-3 ${
+                          router.asPath === "/das2hboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                        }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                       >
                         <span>Customer Details</span>
                         <span>
@@ -428,13 +465,25 @@ const Layout = ({ Content, children }) => {
                       </Link>
                     </li>
                     <li className=" px-1 mt-6">
-                      <button onClick={() => { localStorage.clear(); router.push('/') }} className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full">
+                      <button
+                        onClick={() => {
+                          localStorage.clear();
+                          router.push("/");
+                        }}
+                        className="text-left text-white  pl-3 py-2 rounded-lg bg-[#DA3647] w-full"
+                      >
                         Logout
                       </button>
                     </li>
                   </ul>
                   <div className="flex-grow" />
-                  <button onClick={() => { localStorage.clear(); router.push('/') }} className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition">
+                  <button
+                    onClick={() => {
+                      localStorage.clear();
+                      router.push("/");
+                    }}
+                    className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition"
+                  >
                     Logout
                   </button>
                 </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
 import Link from 'next/link';
@@ -14,18 +14,7 @@ const Orders = (props) => {
     const scrollRight = () => {
         containerRef.current.scrollBy({ left: 150, behavior: 'smooth' });
     };
-    useEffect(() => {
-        const requestOptions = {
-            method: "GET",
-            redirect: "follow"
-        };
-        async function getcats() {
-            const resp = await fetch("https://api.thecatapi.com/v1/images/search?limit=10", requestOptions)
-            const data = await resp.json()
-        }
-        getcats()
-
-    }, [])
+    
     return (
         <div className='flex flex-col gap-y-6'>
             <div className=''>
