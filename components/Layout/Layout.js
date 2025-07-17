@@ -50,8 +50,9 @@ const Layout = ({ Content, children }) => {
 
   return (
     <div className="flex flex-col gap-y-0">
-      <div className="flex h-full lg:pl-4 px-4 pt-5  pb-5">
+      <div className="flex h-full lg:pl-4 px-4 pt-8 pb-5">
         {/* desktop side bar */}
+        <p className="fixed top-1 w-fit  lg:left-16 right-4 capitalize border text-sm lg:text-lg p-1 py-[1px] rounded-md">{role}</p>
 
         <nav className="h-screen pb-10 text-2xl  lg:flex hidden flex-col gap-2 items-start w-48  rounded-t-xl rounded-b-xl fixed top-10">
           <div className="h-full w-full overflow-hidden">
@@ -103,9 +104,9 @@ const Layout = ({ Content, children }) => {
               {role === "approval" && (
                 <li className=" py-1 border-t-2 border-t-gray-50">
                   <Link
-                    href={"/pending-stores"}
+                    href={"/pending-stores-detailing"}
                     className={` py-2 px-3 ${
-                      router.asPath === "/pending-stores"
+                      (router.asPath.includes('pending-stores'))
                         ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
                         : ""
                     }  h-9 rounded-lg p-1 hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
@@ -151,14 +152,14 @@ const Layout = ({ Content, children }) => {
               </li>
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
-                  href={"/dashboard"}
+                  href={"/store-admin"}
                   className={` py-2 px-3 ${
-                    router.asPath === "/das2hboard"
+                    router.asPath === "/store-admin"
                       ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
                       : ""
                   }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
                 >
-                  <span>Add Store Admin</span>
+                  <span>Store Admin</span>
                   <span>
                     <IoIosArrowForward />
                   </span>
@@ -269,7 +270,7 @@ const Layout = ({ Content, children }) => {
               </div>
             </div>
           </div>
-          <div className="lg:hidden z-50 bg-white w-full flex flex-col gap-y-3">
+          <div className="lg:hidden z-30 bg-white w-full flex flex-col gap-y-3">
             <div className="flex justify-between items-center w-full j gap-2 text-black">
               <div className="flex items-center gap-5 text-black">
                 <RxHamburgerMenu onClick={() => setIsOpen(!isOpen)} size={30} />
@@ -345,7 +346,7 @@ const Layout = ({ Content, children }) => {
                     {
                       <li className=" py-1 border-t-2 border-t-gray-50">
                         <Link
-                          href={"/dashboard"}
+                          href={"/pending-stores-detailing"}
                           className={` py-2 px-3 ${
                             router.asPath === "/das2hboard"
                               ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"

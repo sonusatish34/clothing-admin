@@ -6,13 +6,7 @@ import { fetchAssignStore } from '@/services/api';
 
 const ComponentName = () => {
 
-  // const { data: assignDoc, isLoading, error } = useQuery({
-  //   queryKey: ['assign-store'],
-  //   queryFn: fetchAssignStore,
-  // });
 
-  // if (isLoading) return <p>Loading...</p>;
-  // if (error) return <p>Error loading store data</p>;
   const [data, setData] = React.useState([]);
   const [status, setStatus] = React.useState('in_progress');
   const [role, setRole] = React.useState('');
@@ -32,7 +26,7 @@ const ComponentName = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          app_user_id: 19,
+          app_user_id: 27,
           role_id: 5,
         }),
       });
@@ -40,8 +34,8 @@ const ComponentName = () => {
       const data = await response.json();
       setData(data?.data?.results);
       console.log(data?.data?.results, "9998data");
-
     }
+    
     if (localStorage.getItem('user_role_id') == '5') {
 
       fetchStores()

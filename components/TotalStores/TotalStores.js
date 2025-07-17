@@ -37,7 +37,7 @@ const TotalStores = () => {
             const data = await response.json();
             setLoading(false)
             setData(data?.data?.results);
-            console.log(data.data?.results, "testing");
+            // console.log(data.data?.results, "testing");
         }
         if (status) {
             fetchStoresByStatus()
@@ -73,10 +73,10 @@ const TotalStores = () => {
                 <li className={` cursor-pointer ${status === 'rejected' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('rejected') }} href={'/'}>Rejected Stores</p></li>
                 <li className={` cursor-pointer ${status === 'approved' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('approved') }} href={'/'}>Approved Stores</p></li>
             </ul>
-            {console.log(data, 'data12d')}
+            {/* {console.log(data, 'data12d')} */}
             <div className='grid grid-cols-2 gap-7'>
                 {role == 'admin' &&
-                    data?.length>=1 ? data?.map((item, index) => (
+                    data?.length >= 1 ? data?.map((item, index) => (
                         <div key={index} className=''>
                             <StoreCard store={item} />
                         </div>
