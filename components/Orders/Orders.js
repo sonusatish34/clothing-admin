@@ -2,14 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Loader from '../../components/Loader'
+import { useKeenSlider } from "keen-slider/react"
+import "keen-slider/keen-slider.min.css"
+// import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid"
 const Orders = () => {
+
+
+
   const router = useRouter();
   const [orderStatus, setOrderStatus] = useState('all')
-  const containerRef = useRef(null);
   const [orders, setOrders] = useState([]);
+  const navItems = ["Home", "About", "Services", "Portfolio", "Blog", "Contact"]
 
-  const scrollLeft = () => containerRef.current.scrollBy({ left: -150, behavior: 'smooth' });
-  const scrollRight = () => containerRef.current.scrollBy({ left: 150, behavior: 'smooth' });
 
   useEffect(() => {
     const phone = localStorage.getItem('user_phone'); // or use context/state if available
@@ -19,10 +23,10 @@ const Orders = () => {
       console.error('Phone or token missing in localStorage');
       return;
     }
-    console.log(orderStatus, 'inside useeffect');
+    // console.log(orderStatus, 'inside useeffect');
 
 
-    fetch(`https://ecommstagingapis.tboo.com/admin/orders?status=${orderStatus}`, {
+    fetch(`https://ecommstagingapi.tboo.com/admin/orders?status=${orderStatus}`, {
       method: 'GET',
       headers: {
         'Authorization': ` ${token}`,
@@ -37,33 +41,54 @@ const Orders = () => {
       })
       .catch(err => console.error('Error fetching orders:', err));
   }, [orderStatus]);
-  console.log(orders, '----');
 
+  const [sliderRef, slider] = useKeenSlider({
+    loop: false,
+    slides: {
+      perView: 4.5, // default (mobile)
+      spacing: 5,
+    },
+    breakpoints: {
+      "(min-width: 768px)": {
+        slides: {
+          perView: 9,
+          spacing: 5,
+        },
+      },
+    },
+  })
 
   return (
     <div className='flex flex-col gap-y-6'>
       {/* Top Tabs */}
       <div className=''>
-        <ul className='hidden lg:flex xl:gap-x-10 lg:gap-x-2 border-2 border-[#F5F5F5] p-3 rounded-t-2xl'>
-          <li className={`${orderStatus=='all'?'text-[#793FDF] font-bold':''}`} onClick={() => { setOrderStatus('all') }}>All</li>
-          <li className={`${orderStatus=='booked'?'text-[#793FDF] font-bold':''}`} onClick={() => { setOrderStatus('booked') }}>Booked</li>
-          <li className={`${orderStatus=='in_cart'?'text-[#793FDF] font-bold':''}`} onClick={() => { setOrderStatus('in_cart') }}>In Cart</li>
+        {/* <ul className='lg:flex hidden xl:gap-x-10 scroll-mx-1.5 gap-x-2 border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden'>
+          <li className={`${orderStatus == 'all' ? 'text-[#793FDF] font-bold' : ''} cursor-pointer`} onClick={() => { setOrderStatus('all') }}>All</li>
+          <li className={`${orderStatus == 'booked' ? 'text-[#793FDF] font-bold' : ''} cursor-pointer`} onClick={() => { setOrderStatus('booked') }}>Booked</li>
+          <li className={`${orderStatus == 'in_cart' ? 'text-[#793FDF] font-bold' : ''} cursor-pointer`} onClick={() => { setOrderStatus('in_cart') }}>In Cart</li>
           <li>Returned</li>
-          <li>Replaced</li>
           <li>Completed</li>
           <li>Customer Cancelled</li>
           <li>Cancelled</li>
 
-        </ul>
+        </ul> */}
         {/* <Loader/> */}
-        <div className="navbar-carousel text-xs">
-          <button className="nav-btn" onClick={scrollLeft}>‹</button>
-          <div className="nav-items flex gap-x-1" ref={containerRef}>
-            {['Confirmed', 'In Delivery', 'Returned', 'Completed', 'Cancelled'].map((item, idx) => (
-              <div className="nav-item" key={idx}>{item}</div>
-            ))}
+        <div className="relative w-full">
+          {/* Carousel */}
+          <div className=" text-xs lg:text-base">
+            <ul ref={sliderRef} className='keen-slider bg-red- border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden'>
+              <li className={`${orderStatus == 'all' ? 'text-[#793FDF] font-bold' : ''} cursor-pointer keen-slider__slide`} onClick={() => { setOrderStatus('all') }}>Confirmed</li>
+              <li className={`${orderStatus == 'booked' ? 'text-[#793FDF] font-bold' : ''} cursor-pointer keen-slider__slide`} onClick={() => { setOrderStatus('booked') }}>Booked</li>
+              <li className={`${orderStatus == 'in_cart' ? 'text-[#793FDF] font-bold' : ''} cursor-pointer keen-slider__slide`} onClick={() => { setOrderStatus('in_cart') }}>In Cart</li>
+              <li className='keen-slider__slide'>Returned</li>
+              <li className='keen-slider__slide'>Completed</li>
+              <li className='keen-slider__slide '>Customer Cancelled</li>
+              <li className='keen-slider__slide'>Cancelled</li>
+            </ul>
           </div>
-          <button className="nav-btn" onClick={scrollRight}>›</button>
+
+          {/* Arrows */}
+
         </div>
       </div>
 
@@ -86,7 +111,7 @@ const Orders = () => {
           <div key={order._id} className='border-2 border-[#f2f2f2] rounded-lg p-3 px-3'>
             <div className='flex justify-between'>
               <div className='flex flex-col gap-y-1'>
-                <p className='font-bold text-2xl'>Order Id : {order._id}</p>
+                <p className='font-bold text-xl'>Order Id : {order._id}</p>
                 {order.items_json?.length > 0 && (
                   <p className='text-xs lg:text-lg text-[#6B767B] font-bold capitalize'>
                     {order.items_json[0]?.store_name}
@@ -98,7 +123,7 @@ const Orders = () => {
                   {order.delivery_location || 'N/A'}
                 </p>
               </div>
-              <div className='flex flex-col justify-between lg:items-end items-center'>
+              <div className='flex flex-col justify-between items-end'>
                 <p className={`text-sm ${order.status === 'in_cart' ? 'text-red-500' : 'text-yellow-500'}`}>
                   {order.status === 'in_cart' ? 'Delivery Not Assigned' : order.status}
                 </p>

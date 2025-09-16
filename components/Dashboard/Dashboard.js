@@ -182,27 +182,29 @@ const Dashboard = (props) => {
               <option value="yearly">Yearly</option>
             </select>
           </div>
-          <ResponsiveContainer width={600} height={400}>
-            <LineChart data={getFilteredData()}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="orders"
-                stroke="#8884d8"
-                strokeWidth={2}
-              />
-              <Line
-                type="monotone"
-                dataKey="returns"
-                stroke="#f06292"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="w-full lg:w-[500px] lg:h-[400px]  h-[250px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={getFilteredData()}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="orders"
+                  stroke="#8884d8"
+                  strokeWidth={2}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="returns"
+                  stroke="#f06292"
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
       {showCal && (

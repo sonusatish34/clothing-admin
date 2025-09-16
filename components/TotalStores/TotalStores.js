@@ -25,7 +25,7 @@ const TotalStores = () => {
         localStorage.getItem('user_role_id') == '5' ? setRole('approval') : setRole('admin')
 
         async function fetchStoresByStatus() {
-            const response = await fetch(`https://ecommstagingapis.tboo.com/admin/stores?status=${status}`, {
+            const response = await fetch(`https://ecommstagingapi.tboo.com/admin/stores?status=${status}`, {
 
                 headers: {
                     'accept': 'application/json',
@@ -82,8 +82,7 @@ const TotalStores = () => {
                         </div>
                     )) : <p className='mt-4 ml-2'>No {status} stores</p>
                 }
-                {console.log(role, 'rlw')
-                }
+                {/* {console.log(role, 'rlw')} */}
             </div>
             {/* {<p className='dots flex justify-center'></p>} */}
             {/* <p className='mt-4 ml-2'>No {status} stores</p> */}

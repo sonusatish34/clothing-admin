@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Login = ({ role }) => {
   const router = useRouter();
@@ -91,12 +92,21 @@ const Login = ({ role }) => {
   };
 
   const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && otp[index] === "") {
-      if (index > 0) {
-        document.getElementById(`otp-input-${index - 1}`).focus();
-      }
+  if (e.key === "Backspace" && otp[index] === "") {
+    if (index > 0) {
+      otpInputRefs.current[index - 1]?.focus();
     }
-  };
+  }
+
+  if (e.key === "Enter") {
+    if (otp.join("").length === 4) {
+      validateOtp();
+    } else {
+      setOtpError("Please enter a valid 4-digit OTP.");
+    }
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -108,7 +118,7 @@ const Login = ({ role }) => {
   };
 
   const sendOtp = async () => {
-    const url = `https://ecommstagingapis.tboo.com/admin/send-otp`;
+    const url = `https://ecommstagingapi.tboo.com/admin/send-otp`;
 
     try {
       const response = await fetch(url, {
@@ -143,7 +153,7 @@ const Login = ({ role }) => {
   };
 
   const validateOtp = async () => {
-    const url = `https://ecommstagingapis.tboo.com/admin/otp-validate`;
+    const url = `https://ecommstagingapi.tboo.com/admin/otp-validate`;
     const userroleid = window.localStorage.getItem("user_role_id");
 
     try {
@@ -175,6 +185,19 @@ const Login = ({ role }) => {
       setOtpError("An error occurred while validating OTP.");
     }
   };
+  const mobilenofocus = useRef(null);
+  const otpInputRefs = useRef([]);
+
+  useEffect(() => {
+    if (mobilenofocus.current) {
+      mobilenofocus.current.focus();
+    }
+  }, [])
+  useEffect(() => {
+    if (otpSuccess && otpInputRefs.current[0]) {
+      otpInputRefs.current[0].focus();
+    }
+  }, [otpSuccess]);
 
   return (
     <div
@@ -186,13 +209,14 @@ const Login = ({ role }) => {
     >
       <div className="flex justify-center items-center h-full w-full">
         <div className="flex flex-col lg:flex-row justify-center items-center">
-          <div className="bg-black xl:h-[500px] xl:w-[500px] lg:h-[400px] lg:w-[400px] h-[150px] w-[259px] lg:rounded-l-md rounded-tl-md"></div>
+          <div className="bg-black xl:h-[500px] xl:w-[500px] lg:h-[400px] lg:w-[400px] h-[150px] w-full lg:rounded-l-md rounded-tl-md rounded-tr-md lg:rounded-tr-none "></div>
 
           {!otpSuccess ? (
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col lg:gap-y-7 gap-y-4 justify-center items-left bg-white xl:h-[500px] xl:w-[550px] h-[200px] w-[250px] lg:h-[400px] lg:w-[500px] lg:px-14 lg:p-6 px-2 lg:rounded-r-md rounded-br-md  shadow-lg"
+              className="flex flex-col lg:gap-y-7 gap-y-4 justify-center items-left bg-white xl:h-[500px] xl:w-[550px] h-[250px] w-full lg:h-[400px] lg:w-[500px] lg:px-14 lg:p-6 px-2 lg:rounded-r-md rounded-br-md rounded-bl-md lg:rounded-bl-none  shadow-lg"
             >
+              <Link className="text-white w-fit" href={'/approval-login'}>Approval Link</Link>
               <p className="font-bold xl:text-2xl lg:text-xl text-lg">
                 {role === "approval" && "Approval Team"}
               </p>
@@ -200,6 +224,7 @@ const Login = ({ role }) => {
                 Please Login!
               </p>
               <input
+                ref={mobilenofocus}
                 type="text"
                 value={phoneNumber}
                 onChange={(e) => {
@@ -234,6 +259,7 @@ const Login = ({ role }) => {
                 {otp.map((digit, index) => (
                   <input
                     key={index}
+                    ref={(el) => (otpInputRefs.current[index] = el)}
                     id={`otp-input-${index}`}
                     type="text"
                     value={digit}

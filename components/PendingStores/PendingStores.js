@@ -18,7 +18,7 @@ const ComponentName = () => {
     localStorage.getItem('user_role_id') == '5' ? setRole('approval') : setRole('admin')
 
     async function fetchStores() {
-      const response = await fetch(`https://ecommstagingapis.tboo.com/admin/assign-store`, {
+      const response = await fetch(`https://ecommstagingapi.tboo.com/admin/assign-store`, {
         method: 'POST',
         headers: {
           'accept': 'application/json',
@@ -26,16 +26,15 @@ const ComponentName = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          app_user_id: 27,
-          role_id: 5,
+          app_user_id: localStorage.getItem('app_user_id'),
+          role_id: localStorage.getItem('user_role_id'),
         }),
       });
 
       const data = await response.json();
       setData(data?.data?.results);
-      console.log(data?.data?.results, "9998data");
     }
-    
+
     if (localStorage.getItem('user_role_id') == '5') {
 
       fetchStores()
@@ -74,7 +73,7 @@ const ComponentName = () => {
         <li className={` cursor-pointer ${status === 'rejected' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('rejected') }} href={'/'}>Rejected Stores</p></li>
         <li className={` cursor-pointer ${status === 'approved' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('approved') }} href={'/'}>Approved Stores</p></li>
       </ul>
-      {console.log(data, 'data12d')}
+      {/* {console.log(data, 'data12d')} */}
       <div className='grid grid-cols-2 gap-7'>
         {role == 'approval' && data?._id ? <StoreCard store={data} /> : 'No properties assigned'}
         {role == 'admin' &&
@@ -85,8 +84,8 @@ const ComponentName = () => {
             </div>
           ))
         }
-        {console.log(role, 'rlw')
-        }
+        {/* {console.log(role, 'rlw')
+        } */}
       </div>
     </div>
   );

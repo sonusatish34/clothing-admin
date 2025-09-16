@@ -239,3 +239,9 @@ box-shadow: rgba(255,255,255, 0.75) 1.5em 0 0 0, rgba(255,255,255, 0.75) 1.1em 1
     transform: rotate(360deg);
   }
 }
+.keen-slider__slide
+{
+  width: 200px !important;
+  max-width: 200px !important;
+  /* background-color: red !important; */
+}

@@ -2,7 +2,7 @@ import React from "react";
 import Lottie from "lottie-react";
 import animationData from "../public/shopping-cart.json"; // replace with your actual path
 
-const PageLoader = () => {
+const Loader = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
       <div className="w-40 h-40">
@@ -12,4 +12,4 @@ const PageLoader = () => {
   );
 };
 
-export default PageLoader;
+export default Loader;
