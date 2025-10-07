@@ -41,6 +41,7 @@ const ComponentName = () => {
 
       const result = await res.json();
       const imageUrl = result?.data?.image_link;
+      
       const myHeaders = new Headers();
       myHeaders.append("accept", "application/json");
       myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
@@ -49,7 +50,7 @@ const ComponentName = () => {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify({
-          store_id: assignDoc?.results?._id,
+          store_id: assignDoc?.data?.results?._id,
           key,
           url: imageUrl
         })
@@ -62,6 +63,7 @@ const ComponentName = () => {
       setUploadingKey(null);
     }
   };
+       console.log(assignDoc,"assignDoc");
 
   const fetchAssignStore = async () => {
     const response = await fetch("https://ecommstagingapi.tboo.com/admin/assign-store", {

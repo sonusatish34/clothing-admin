@@ -60,7 +60,7 @@ const TotalStores = () => {
                     </li>
                     <li className='pl-4'>{store?.area_name}</li>
                     <li className='pl-4'>Store Id: {store?._id}</li>
-                    <li className='pl-4 pb-4'>Submitted At {store?.created_on}</li>
+                    <li className='pl-4 pb-4'>Submitted At {store?.created_on?.slice(0,10)}</li>
                 </ul>
             </div>
         </div>
