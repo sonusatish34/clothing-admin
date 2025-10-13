@@ -5,10 +5,8 @@ import Loader from '../../components/Loader'
 import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 import { formatDateTime } from '@/utils/convertDate';
-// import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid"
+
 const Orders = () => {
-
-
 
   const router = useRouter();
   const [orderStatus, setOrderStatus] = useState('all')
@@ -16,14 +14,33 @@ const Orders = () => {
   const [count, setCount] = useState([]);
 
   useEffect(() => {
-    const phone = localStorage.getItem('user_phone'); // or use context/state if available
+    async function kk(params) {
+      const myHeaders = new Headers();
+      myHeaders.append("accept", "application/json");
+      myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiOTE4MjQ1MDc3MCJ9.RjEl6Sl5oNBj-_lW7-gKHqS5PcBU6TVYHwaPFPdmsTg");
+
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow"
+      };
+
+      fetch("https://ecommstagingapi.tboo.com/admin/orders-count", requestOptions)
+        .then((response) => response.json())
+        .then((result) => setCount(result?.data?.count_results?.reverse()))
+        .catch((error) => console.error(error));
+    }
+    kk()
+  }, [])
+
+  useEffect(() => {
+    const phone = localStorage.getItem('user_phone');
     const token = localStorage.getItem(`${phone}_token`);
 
     if (!phone || !token) {
       console.error('Phone or token missing in localStorage');
       return;
     }
-    // console.log(orderStatus, 'inside useeffect');
     fetch(`https://ecommstagingapi.tboo.com/admin/orders?status=${orderStatus}`, {
       method: 'GET',
       headers: {
@@ -35,7 +52,6 @@ const Orders = () => {
       .then(data => {
         if (data?.status === 'success') {
           setOrders(data.data.results?.reverse() || []);
-          setCount(data.data.count_results?.reverse() || []);
         }
       })
       .catch(err => console.error('Error fetching orders:', err));
@@ -44,7 +60,7 @@ const Orders = () => {
   const [sliderRef, slider] = useKeenSlider({
     loop: false,
     slides: {
-      perView: 4.5, // default (mobile)
+      perView: 4.5,
       spacing: 5,
     },
     breakpoints: {
@@ -65,22 +81,22 @@ const Orders = () => {
         {/* <Loader/> */}
         <div className="relative w-full">
           {/* Carousel */}
-          <div className=" text-xs xl:text-sm lg:text-xs">
-            
-              <ul  className='gap-x-10 flex  bg-red- border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden'>
-            {count?.map((item,index)=>(
-                <li onClick={()=>{setOrderStatus(item?.status)}} className='capitalize lg:text-base' key={index}>{item?.status?.replaceAll('_',' ')} ({item?.count})</li>
+          <div className="text-xs xl:text-sm lg:text-xs">
+            <ul className='gap-x-10 flex  bg-red- border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden'>
+              {count?.map((item, index) => (
+                <li onClick={() => { setOrderStatus(item?.status) }}
+                  className={`capitalize lg:text-base cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
+                  key={index}>{item?.status?.replaceAll('_', ' ')}
+                  ({item?.count})
+                </li>
               ))}
-          
             </ul>
-             
-              
-            
           </div>
         </div>
       </div>
 
       {/* Filters */}
+
       <div className='flex lg:gap-x-6 gap-x-1 text-xs items-center'>
         <select className='px-2 py-1 rounded-md border-2 border-[#F5F5F5] outline-none'>
           <option value="all">All Stores</option>
@@ -103,32 +119,31 @@ const Orders = () => {
                 {order.items_json?.length > 0 && (
                   <p className='text-xs lg:text-sm xl:text-lg text-[#6B767B] font-bold capitalize'>
                     {
-  (() => {
-    const uniqueStoreNames = [
-      ...new Set(order.items_json?.map(item => item?.store_name).filter(Boolean))
-    ];
+                      (() => {
+                        const uniqueStoreNames = [
+                          ...new Set(order.items_json?.map(item => item?.store_name).filter(Boolean))
+                        ];
 
-    return uniqueStoreNames.length > 0
-      ? uniqueStoreNames.map((storeName, i) => (
-          <span key={i}>
-            {storeName}{i < uniqueStoreNames.length - 1 && ', '}
-          </span>
-        ))
-      : 'N/A';
-  })()
-}
-
+                        return uniqueStoreNames.length > 0
+                          ? uniqueStoreNames.map((storeName, i) => (
+                            <span key={i}>
+                              {storeName}{i < uniqueStoreNames.length - 1 && ', '}
+                            </span>
+                          ))
+                          : 'N/A';
+                      })()
+                    }
                   </p>
                 )}
                 <p className='font-medium'>Custome Number : {order.app_user_id}</p>
-                <p className='w-40 lg:w-52 xl:w-80 flex flex-col lg:text-sm text-xs'>
+                <p className='w-40 lg:w-52 xl:w-72 flex flex-col lg:text-sm text-xs'>
                   <span>Delivery Location :</span>
                   {order.delivery_location || 'N/A'}
                 </p>
               </div>
               <div className='flex flex-col lg:gap-y-6 items-end'>
-                <p className={`text-sm ${order.status === 'in_cart' ? 'text-red-500' : 'text-yellow-500'}`}>
-                  {order.status === 'in_cart' ? 'Delivery Not Assigned' : order.status}
+                <p className={`capitalize font-semibold text-sm ${order.status == 'in_cart' && 'text-blue-700' || order.status == 'canceled' && 'text-red-700' || order.status == 'booked' && 'text-green-700'}`}>
+                  {order?.status?.replaceAll('_', ' ')}
                 </p>
                 <p className='text-pink-500 font-bold text-xl'>
                   {order.amount_paid ? `${order.amount_paid}/-` : '0/-'}

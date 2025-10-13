@@ -309,7 +309,7 @@ export default function ProfilePage() {
         </div>
       }
       {
-        !profileData?.data?.assigned_id && tab == 'pending' &&
+        !profileData?.data?.assigned_id && tab == 'assign_profile' &&
         <p className="">
           {profileData?.message}
         </p>
@@ -337,10 +337,10 @@ export default function ProfilePage() {
           </div>
         ))}</div>
       }
+
       {
         tab === "pending" &&
         <div className='flex flex-wrap gap-5 pt-4'>{PendingData?.data?.results?.map((item, index) => (
-          // <span>{item?.aadhar_api_returned_name}</span>
           <div key={index} className='flex gap-x-3 bg-[#F5F5F5] rounded-l-xl rounded-bl-xl'>
             <Image src={item?.profile_photo_url} width={500} height={500} className='h-[250px] w-[200px] object-cover rounded-xl' />
             <ul className='flex flex-col gap-y-2 p-3'>

@@ -9,7 +9,7 @@ import { HiOutlineArrowSmLeft } from "react-icons/hi";
 const ComponentName = (props) => {
     const [orderDetails, setOrderDetails] = useState([])
     const [deliveryDetails, setDeliveryDetails] = useState([])
-    const router = useRouter(); 
+    const router = useRouter();
 
     useEffect(() => {
         async function DevServer() {
@@ -48,12 +48,11 @@ const ComponentName = (props) => {
         }
         delivery_details()
     }, [router.query.maker])
-    console.log(deliveryDetails, 'deliveryDetails');
 
     return (
         <Layout>
             <div>
-                <p className='lg:text-xl text-xs flex gap-x-3 items-center'><span className='cursor-pointer'><HiOutlineArrowSmLeft onClick={() => { router.back() }} className='size-6 lg:size-12' /></span><span className='text-[#6B757C]'>Confirmed Orders</span><span className='text-[#6B757C]'>{' > '}</span><span className='font-bold '>Order Id {orderDetails?._id}</span>  </p>
+                <p className='lg:text-xl text-xs flex gap-x-3 items-center'><span className='cursor-pointer'><HiOutlineArrowSmLeft onClick={() => { router.back() }} className='size-6 lg:size-12' /></span><span className='text-[#6B757C] capitalize'>{orderDetails?.status} Orders</span><span className='text-[#6B757C]'>{' > '}</span><span className='font-bold '>Order Id : {orderDetails?._id}</span>  </p>
                 <ul className='pt-4 flex lg:gap-x-4 xl:text-xl lg:text-lg text-xs'>
                     <li><span className='text-[#6B757C]'> Order Placed At</span><span> {formatDateTime(orderDetails?.created_on)}</span></li>
                     <li className='border-l-2 border-l-[#6B757C]  pl-2'><span className='text-[#6B757C] capitalize'> Status</span><span> {orderDetails?.status}</span></li>
@@ -99,7 +98,7 @@ const ComponentName = (props) => {
                     <div className='mt-5 flex flex-col gap-y-4 lg:text-[16px] text-sm'>
                         <ul className=' p-3 flex flex-col gap-y-1 rounded-lg border-2 border-[#F5F5F5]'>
                             <li className='font-bold'>Customer Details</li>
-                            <li>Name : {orderDetails?.user_name|| 'NA'}</li>
+                            <li>Name : {orderDetails?.user_name || 'NA'}</li>
                             <li>Number : {orderDetails?.user_phone}</li>
                             <li>Delivery Location : </li>
                             <li className='w-3/4'>
@@ -107,10 +106,12 @@ const ComponentName = (props) => {
                         </ul>
                         <div className='flex flex-col gap-y-2 rounded-lg border-2 border-[#F5F5F5] p-3'>
                             <p className='font-bold text-lg px-3'>Store details</p>
+                            {console.log(orderDetails,'000000')
+                            }
                             {orderDetails?.store_details && orderDetails?.store_details?.map((item, index) => (
                                 <ul key={index} className='flex flex-col gap-y-1 p-3 rounded-lg border-2 border-[#F5F5F5]'>
                                     <li >Name : <span className='font-bold capitalize'>{item?.store_name}</span></li>
-                                    <li>Number : {item?.store_id}</li>
+                                    <li>Store No : {item?.store_id}</li>
                                     <li>Store Location :</li>
                                     <li className='w-1/2'>{item?.address}</li>
                                 </ul>

@@ -255,7 +255,7 @@ export default function AddStoreAdmin() {
                                 <div className="flex flex-col items-end justify-between text-left">
                                     <p
                                         onClick={() => handleDeleteAdmin(item._id, item.name)}
-                                        className="lg:text-xl font-bold h-12 w-12 bg-[#DA36471A] rounded-full flex items-center justify-center cursor-pointer"
+                                        className="lg:text-xl font-bold h-12 w-12 bg-[#DA36471A] rounded-full flex items-center justify-center cursor-pointer lg:hover:scale-105"
                                     >
                                         <RiDeleteBin5Fill size={30} color="#DA3647" />
                                     </p>

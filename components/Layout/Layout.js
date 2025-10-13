@@ -467,15 +467,6 @@ const Layout = ({ Content, children }) => {
                     </li>
                   </ul>
                   <div className="flex-grow" />
-                  {/* <button
-                    onClick={() => {
-                      localStorage.clear();
-                      router.push("/");
-                    }}
-                    className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition"
-                  >
-                    Logout
-                  </button> */}
                 </div>
               </div>
             </div>
