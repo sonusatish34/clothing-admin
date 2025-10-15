@@ -1,5 +1,6 @@
 import Layout from '@/components/Layout/Layout';
 import React, { useEffect, useState } from 'react';
+import { FaEdit } from "react-icons/fa";
 
 const SystemConfig = () => {
     const [settings, setSettings] = useState(null);
@@ -9,6 +10,7 @@ const SystemConfig = () => {
     });
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+    const [editDetails, setEditDetails] = useState(true);
 
     // Fetch current config on load
     useEffect(() => {
@@ -89,6 +91,7 @@ const SystemConfig = () => {
             setMessage('An error occurred while updating.');
         } finally {
             setLoading(false);
+            setEditDetails(true)
         }
     };
 
@@ -109,10 +112,14 @@ const SystemConfig = () => {
                 aria-labelledby="form-heading"
                 onSubmit={handleFormSubmit}
             >
-                <fieldset className="border border-gray-200 p-4 rounded-lg col-span-2">
-                    <legend id="form-heading" className="text-lg font-medium mb-2">
+
+                <fieldset className="relative border border-gray-200 p-4 rounded-lg col-span-2">
+                    <p className='absolute right-3'>
+                        <FaEdit onClick={() => { setEditDetails(false) }} className='hover:scale-105 cursor-pointer' size={30} />
+                    </p>
+                    {/* <legend id="form-heading" className="text-lg font-medium mb-2">
                         Delivery Settings
-                    </legend>
+                    </legend> */}
 
                     <div className="flex flex-col gap-2 mb-4">
                         <label htmlFor="deliveryBaseValue" className="font-medium">
@@ -121,13 +128,17 @@ const SystemConfig = () => {
                         <input
                             id="deliveryBaseValue"
                             name="delivery_base_value"
-                            className="w-fit border px-2 py-1 rounded"
+                            className={`w-fit outline-none px-2 py-1 ${!editDetails ? 'border' : ''} rounded`}
+
                             type="number"
                             step="0.01"
                             value={formData.delivery_base_value}
                             onChange={(e) => handleFormChange("delivery_base_value", e.target.value)}
                             aria-label="Delivery base value"
+                            readOnly={editDetails}
+
                         />
+
                     </div>
 
                     <div className="flex flex-col gap-2 mb-4">
@@ -137,12 +148,14 @@ const SystemConfig = () => {
                         <input
                             id="kmDeliveryValue"
                             name="km_delivery_value"
-                            className="w-fit border px-2 py-1 rounded"
+                            className={`w-fit outline-none px-2 py-1 ${!editDetails ? 'border' : ''} rounded`}
                             type="number"
                             step="0.01"
                             value={formData.km_delivery_value}
                             onChange={(e) => handleFormChange("km_delivery_value", e.target.value)}
                             aria-label="Kilometer delivery value"
+                            readOnly={editDetails}
+
                         />
                     </div>
 

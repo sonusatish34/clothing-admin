@@ -144,7 +144,7 @@ const Login = ({ role }) => {
         setOtpSuccess(true);
         setError("");
       } else {
-        setError("Failed to send OTP.");
+        setError(data?.message);
       }
     } catch (err) {
       console.error("Error sending OTP:", err);

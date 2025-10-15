@@ -248,7 +248,6 @@ const ComponentName = () => {
               ))}
             </div>
 
-            {/* Approve/Reject Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 mt-6">
               <button
                 onClick={() => setShowReject(true)}

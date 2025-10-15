@@ -5,6 +5,8 @@ import Loader from '../../components/Loader'
 import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 import { formatDateTime } from '@/utils/convertDate';
+import Image from 'next/image';
+import { CiSquarePlus } from "react-icons/ci";
 
 const Orders = () => {
 
@@ -73,21 +75,18 @@ const Orders = () => {
     },
   })
 
-
   return (
     <div className='flex flex-col gap-y-6'>
       {/* Top Tabs */}
       <div className=''>
         {/* <Loader/> */}
         <div className="relative w-full">
-          {/* Carousel */}
           <div className="text-xs xl:text-sm lg:text-xs">
             <ul className='gap-x-10 flex  bg-red- border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden'>
               {count?.map((item, index) => (
                 <li onClick={() => { setOrderStatus(item?.status) }}
-                  className={`capitalize lg:text-base cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={index}>{item?.status?.replaceAll('_', ' ')}
-                  ({item?.count})
+                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
+                  key={index}>{item?.status?.replaceAll('_', ' ') } ({item?.count})
                 </li>
               ))}
             </ul>
@@ -97,7 +96,7 @@ const Orders = () => {
 
       {/* Filters */}
 
-      <div className='flex lg:gap-x-6 gap-x-1 text-xs items-center'>
+      {/* <div className='flex lg:gap-x-6 gap-x-1 text-xs items-center'>
         <select className='px-2 py-1 rounded-md border-2 border-[#F5F5F5] outline-none'>
           <option value="all">All Stores</option>
         </select>
@@ -107,13 +106,12 @@ const Orders = () => {
         <select className='px-2 py-1 rounded-md border-2 border-[#F5F5F5] outline-none'>
           <option value="all">Delivery Boy Status</option>
         </select>
-      </div>
-
+      </div> */}
       {/* Orders */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
         {orders?.map(order => (
           <div key={order._id} className='border-2 border-[#f2f2f2] rounded-lg p-3 px-3'>
-            <div className='flex justify-between'>
+            <div className='flex justify-evenly'>
               <div className='flex flex-col gap-y-1'>
                 <p className='font-bold text-xl'>Order Id : {order._id}</p>
                 {order.items_json?.length > 0 && (
@@ -140,6 +138,16 @@ const Orders = () => {
                   <span>Delivery Location :</span>
                   {order.delivery_location || 'N/A'}
                 </p>
+              </div>
+              {/* <div><Image src={order?.items_json[0]?.item_image} className='h-32 w-32' height={100} width={200}/></div> */}
+              <div>
+                <div className='lg:flex hidden flex-col  items-center gap-y-3'>
+                  {order?.items_json?.slice(0, 2).map((item,index) => (
+                    <Image key={index} src={item?.item_image} className='h-12 w-12' height={100} width={200} />
+                  ))
+                  }
+                  {(order?.items_json.length > 2 && <span><CiSquarePlus size={30} /></span>)}
+                </div>
               </div>
               <div className='flex flex-col lg:gap-y-6 items-end'>
                 <p className={`capitalize font-semibold text-sm ${order.status == 'in_cart' && 'text-blue-700' || order.status == 'canceled' && 'text-red-700' || order.status == 'booked' && 'text-green-700'}`}>
