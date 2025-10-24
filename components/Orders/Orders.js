@@ -86,7 +86,7 @@ const Orders = () => {
               {count?.map((item, index) => (
                 <li onClick={() => { setOrderStatus(item?.status) }}
                   className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={index}>{item?.status?.replaceAll('_', ' ') } ({item?.count})
+                  key={index}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
                 </li>
               ))}
             </ul>
@@ -142,8 +142,8 @@ const Orders = () => {
               {/* <div><Image src={order?.items_json[0]?.item_image} className='h-32 w-32' height={100} width={200}/></div> */}
               <div>
                 <div className='lg:flex hidden flex-col  items-center gap-y-3'>
-                  {order?.items_json?.slice(0, 2).map((item,index) => (
-                    <Image key={index} src={item?.item_image} className='h-12 w-12' height={100} width={200} />
+                  {order?.items_json?.slice(0, 2).map((item, index) => (
+                    <Image key={index} src={item?.item_image} className='h-12 w-12 rounded-md' height={100} width={200} />
                   ))
                   }
                   {(order?.items_json.length > 2 && <span><CiSquarePlus size={30} /></span>)}
@@ -154,9 +154,13 @@ const Orders = () => {
                   {order?.status?.replaceAll('_', ' ')}
                 </p>
                 <p className='text-pink-500 font-bold text-xl'>
-                  {order.amount_paid ? `${order.amount_paid}/-` : '0/-'}
+                  {order.product_price ? `${order.product_price}/-` : '0/-'}
+                  {console.log(order.product_price,"order.product_price")
+                  }
                 </p>
-                <p className='p-2 bg-[#793FDF] text-white rounded-lg'><Link href={`/orders/${order._id}`}>View Items</Link></p>
+                <p className='p-2 bg-[#793FDF] text-white rounded-lg'>
+                  <Link href={`/orders/${order._id}`}>View Items</Link>
+                </p>
                 <p className='text-xs'>{formatDateTime(order.created_on)}</p>
               </div>
             </div>

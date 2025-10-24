@@ -6,6 +6,19 @@ import Link from "next/link";
 
 const Login = ({ role }) => {
   const router = useRouter();
+  console.log(router.asPath, 'kk');
+
+  useEffect(() => {
+    const userRoleId = localStorage.getItem('user_role_id'); // Correct way to retrieve data from localStorage
+    if (router.asPath === '/approval-login' && userRoleId === '5') {
+      return;
+    } else if (router.asPath === '/' && userRoleId === '3') {
+      return;
+    } else {
+      localStorage.clear();
+    }
+  }, [router.asPath]);
+
 
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -37,8 +50,7 @@ const Login = ({ role }) => {
       }
     }
 
-    clearLocalStorageIfNewDay(); // Clear old data if needed first
-
+    clearLocalStorageIfNewDay();
     const usermobile = window.localStorage.getItem("user_phone");
     const usertoken = usermobile
       ? window.localStorage.getItem(`${usermobile}_token`)
@@ -92,20 +104,20 @@ const Login = ({ role }) => {
   };
 
   const handleKeyDown = (e, index) => {
-  if (e.key === "Backspace" && otp[index] === "") {
-    if (index > 0) {
-      otpInputRefs.current[index - 1]?.focus();
+    if (e.key === "Backspace" && otp[index] === "") {
+      if (index > 0) {
+        otpInputRefs.current[index - 1]?.focus();
+      }
     }
-  }
 
-  if (e.key === "Enter") {
-    if (otp.join("").length === 4) {
-      validateOtp();
-    } else {
-      setOtpError("Please enter a valid 4-digit OTP.");
+    if (e.key === "Enter") {
+      if (otp.join("").length === 4) {
+        validateOtp();
+      } else {
+        setOtpError("Please enter a valid 4-digit OTP.");
+      }
     }
-  }
-};
+  };
 
 
   const handleSubmit = async (e) => {
@@ -167,6 +179,7 @@ const Login = ({ role }) => {
           otp: otp.join(""),
           mobile_number: phoneNumber,
           role_id: userroleid,
+          redirect: "follow"
         }),
       });
 

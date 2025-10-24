@@ -12,7 +12,6 @@ const SystemConfig = () => {
     const [message, setMessage] = useState('');
     const [editDetails, setEditDetails] = useState(true);
 
-    // Fetch current config on load
     useEffect(() => {
         async function fetchData() {
             const myHeaders = new Headers();
@@ -39,7 +38,6 @@ const SystemConfig = () => {
         fetchData();
     }, []);
 
-    // Set form data after fetch
     useEffect(() => {
         if (settings?.data) {
             setFormData({
@@ -65,7 +63,7 @@ const SystemConfig = () => {
         myHeaders.append("Content-Type", "application/json");
 
         const raw = JSON.stringify({
-            app_user_id: 1, // Change if needed
+            app_user_id: 1,
             delivery_base_value: parseFloat(formData.delivery_base_value),
             km_delivery_value: parseFloat(formData.km_delivery_value)
         });
@@ -117,9 +115,6 @@ const SystemConfig = () => {
                     <p className='absolute right-3'>
                         <FaEdit onClick={() => { setEditDetails(false) }} className='hover:scale-105 cursor-pointer' size={30} />
                     </p>
-                    {/* <legend id="form-heading" className="text-lg font-medium mb-2">
-                        Delivery Settings
-                    </legend> */}
 
                     <div className="flex flex-col gap-2 mb-4">
                         <label htmlFor="deliveryBaseValue" className="font-medium">
@@ -138,7 +133,6 @@ const SystemConfig = () => {
                             readOnly={editDetails}
 
                         />
-
                     </div>
 
                     <div className="flex flex-col gap-2 mb-4">

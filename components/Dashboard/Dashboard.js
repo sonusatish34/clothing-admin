@@ -182,7 +182,7 @@ const Dashboard = (props) => {
               <option value="yearly">Yearly</option>
             </select>
           </div>
-          <div className="w-full lg:w-[500px] lg:h-[400px]  h-[250px]">
+          <div className="w-full lg:w-[700px] lg:h-[400px]  h-[250px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={getFilteredData()}>
                 <CartesianGrid strokeDasharray="3 3" />

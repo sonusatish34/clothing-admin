@@ -58,7 +58,8 @@ const TotalStores = () => {
                             className='rounded-t-lg object-cover w-full h-[400px]'
                         />
                     </li>
-                    <li className='pl-4'>{store?.area_name}</li>
+                    <li className='pl-4 uppercase'> {store?.name_as_per_gst}</li>
+                    <li className='pl-4'>Location : {store?.area_name}</li>
                     <li className='pl-4'>Store Id: {store?._id}</li>
                     <li className='pl-4 pb-4'>Submitted At {store?.created_on?.slice(0,10)}</li>
                 </ul>
