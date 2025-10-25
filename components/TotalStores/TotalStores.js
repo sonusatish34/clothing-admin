@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAssignStore } from '@/services/api';
+import { FaRegCopy } from "react-icons/fa";
 
 const TotalStores = () => {
 
@@ -59,9 +60,24 @@ const TotalStores = () => {
                         />
                     </li>
                     <li className='pl-4 uppercase'> {store?.name_as_per_gst}</li>
+                    <li className='pl-4 flex items-center gap-2'>
+                        Contact: {store?.owner_number}
+                        <button
+                            onClick={() => {
+                                if (store?.owner_number) {
+                                    navigator.clipboard.writeText(store.owner_number);
+                                    // alert('Number copied!');
+                                }
+                            }}
+                            className='cursor-pointer ml-2 px-2 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded'
+                        >
+                            <FaRegCopy size={20}/>
+                        </button>
+                    </li>
+
                     <li className='pl-4'>Location : {store?.area_name}</li>
                     <li className='pl-4'>Store Id: {store?._id}</li>
-                    <li className='pl-4 pb-4'>Submitted At {store?.created_on?.slice(0,10)}</li>
+                    <li className='pl-4 pb-4'>Submitted At {store?.created_on?.slice(0, 10)}</li>
                 </ul>
             </div>
         </div>
@@ -74,7 +90,6 @@ const TotalStores = () => {
                 <li className={` cursor-pointer ${status === 'rejected' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('rejected') }} href={'/'}>Rejected Stores</p></li>
                 <li className={` cursor-pointer ${status === 'approved' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('approved') }} href={'/'}>Approved Stores</p></li>
             </ul>
-            {/* {console.log(data, 'data12d')} */}
             <div className='grid grid-cols-2 gap-7'>
                 {role == 'admin' &&
                     data?.length >= 1 ? data?.map((item, index) => (
@@ -83,10 +98,7 @@ const TotalStores = () => {
                         </div>
                     )) : <p className='mt-4 ml-2'>No {status} stores</p>
                 }
-                {/* {console.log(role, 'rlw')} */}
             </div>
-            {/* {<p className='dots flex justify-center'></p>} */}
-            {/* <p className='mt-4 ml-2'>No {status} stores</p> */}
         </div>
     );
 };

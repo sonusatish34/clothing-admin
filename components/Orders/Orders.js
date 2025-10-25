@@ -14,6 +14,7 @@ const Orders = () => {
   const [orderStatus, setOrderStatus] = useState('all')
   const [orders, setOrders] = useState([]);
   const [count, setCount] = useState([]);
+  const [intervalId, setIntervalId] = useState(null);
 
   useEffect(() => {
     async function kk(params) {
@@ -36,28 +37,43 @@ const Orders = () => {
   }, [])
 
   useEffect(() => {
-    const phone = localStorage.getItem('user_phone');
-    const token = localStorage.getItem(`${phone}_token`);
+    const fetchOrders = () => {
+      const phone = localStorage.getItem('user_phone');
+      const token = localStorage.getItem(`${phone}_token`);
 
-    if (!phone || !token) {
-      console.error('Phone or token missing in localStorage');
-      return;
-    }
-    fetch(`https://ecommstagingapi.tboo.com/admin/orders?status=${orderStatus}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': ` ${token}`,
-        'Accept': 'application/json'
+      if (!phone || !token) {
+        console.error('Phone or token missing in localStorage');
+        return;
       }
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data?.status === 'success') {
-          setOrders(data.data.results?.reverse() || []);
+
+      fetch(`https://ecommstagingapi.tboo.com/admin/orders?status=${orderStatus}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': ` ${token}`,
+          'Accept': 'application/json',
         }
       })
-      .catch(err => console.error('Error fetching orders:', err));
-  }, [orderStatus]);
+        .then(res => res.json())
+        .then(data => {
+          if (data?.status === 'success') {
+            setOrders(data.data.results?.reverse() || []);
+          }
+        })
+        .catch(err => console.error('Error fetching orders:', err));
+    };
+
+    // Fetch orders initially
+    fetchOrders();
+
+    // Set an interval to fetch orders every 20 seconds
+    const id = setInterval(fetchOrders, 10000);
+    setIntervalId(id);
+
+    // Clean up the interval when the component is unmounted or when `orderStatus` changes
+    return () => {
+      clearInterval(id);
+    };
+  }, [orderStatus]); // The effect runs every time `orderStatus` changes
 
   const [sliderRef, slider] = useKeenSlider({
     loop: false,
@@ -155,7 +171,7 @@ const Orders = () => {
                 </p>
                 <p className='text-pink-500 font-bold text-xl'>
                   {order.product_price ? `${order.product_price}/-` : '0/-'}
-                  {console.log(order.product_price,"order.product_price")
+                  {console.log(order.product_price, "order.product_price")
                   }
                 </p>
                 <p className='p-2 bg-[#793FDF] text-white rounded-lg'>
