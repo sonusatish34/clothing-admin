@@ -12,11 +12,14 @@
 //     </QueryClientProvider>
 //   );
 // }
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 import "@/styles/globals.css";
 import Head from "next/head";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Loading from '../components/Loader'
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
@@ -39,8 +42,11 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
+    <QueryClientProvider client={queryClient}>
       {loading && <Loading />}
       <Component {...pageProps} />
+    </QueryClientProvider>
+      
     </>
       
   );

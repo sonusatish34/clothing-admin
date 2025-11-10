@@ -32,32 +32,33 @@ const ComponentName = () => {
             }
         }
 
-        async function fetchDeliveryDetails() {
-            const myHeaders = new Headers();
-            myHeaders.append("accept", "application/json");
-            myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
 
-            const requestOptions = {
-                method: "GET",
-                headers: myHeaders,
-                redirect: "follow"
-            };
-
-            try {
-                const response = await fetch(`https://ecommstagingapi.tboo.com/admin/delivery-partner-details?order_id=${router.query.maker}`, requestOptions);
-                const result = await response.json();
-                setDeliveryDetails(result?.data || []);
-            } catch (error) {
-                console.error(error);
-            }
-        }
 
         if (router.query.maker) {
             fetchOrderDetails();
-            fetchDeliveryDetails();
+            // fetchDeliveryDetails();
         }
     }, [router.query.maker]);
+    async function fetchDeliveryDetails() {
+        const myHeaders = new Headers();
+        myHeaders.append("accept", "application/json");
+        myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
 
+        const requestOptions = {
+            method: "GET",
+            headers: myHeaders,
+            redirect: "follow"
+        };
+
+        try {
+            const response = await fetch(`https://ecommstagingapi.tboo.com/admin/delivery-partner-details?order_id=${router.query.maker}&store_id=12`, requestOptions);
+            const result = await response.json();
+            return result?.data
+            // setDeliveryDetails(result?.data || []);
+        } catch (error) {
+            console.error(error);
+        }
+    }
     // Group items by store_id
     const groupedItemsByStore = orderDetails?.store_details?.reduce((acc, store) => {
         const items = orderDetails.items_json?.filter(item => item.store_id === store.store_id) || [];
@@ -67,8 +68,10 @@ const ComponentName = () => {
         return acc;
     }, []);
 
-    console.log(groupedItemsByStore, '333');
+    // console.log(groupedItemsByStore, '333');
 
+    console.log(fetchDeliveryDetails().then(result=>console.log(result)),'djslkdls');
+    
     return (
         <Layout>
             <div>
@@ -136,7 +139,8 @@ const ComponentName = () => {
                                     </ul>
 
                                     {/* Delivery Boy Info */}
-                                    {deliveryDetails.length ? <ul className='p-3 flex flex-col gap-y-1 rounded-lg border-2 border-[#F5F5F5] w-full bg-white0'>
+
+                                    {deliveryDetails.length ? <ul className='p-3 flex flex-col gap-y-1 rounded-lg border-2 border-[#F5F5F5] w-full bg-white'>
                                         <li className='font-bold'>Delivery Boy Details</li>
                                         {deliveryDetails?.map((boy, i) => (
                                             <li key={i} className='flex gap-x-3 items-start'>

@@ -91,6 +91,12 @@ const Orders = () => {
     },
   })
 
+
+  const statuses = ["all", "in_cart", "booked", "order_assigned", "delivered", "returned", "canceled"];
+
+ 
+
+
   return (
     <div className='flex flex-col gap-y-6'>
       {/* Top Tabs */}
@@ -98,35 +104,116 @@ const Orders = () => {
         {/* <Loader/> */}
         <div className="relative w-full">
           <div className="text-xs xl:text-sm lg:text-xs">
-            <ul className='gap-x-10 flex  bg-red- border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden'>
-              {count?.map((item, index) => (
+            {/* <ul className='gap-x-10 flex  bg-red- border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden'>
+              
+
+              {count.filter((item => item.status === "all"))?.length ? count.filter((item => item.status === "all")).map((item) => (
                 <li onClick={() => { setOrderStatus(item?.status) }}
                   className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={index}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
+                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
                 </li>
-              ))}
+              )) :
+                <li onClick={() => { setOrderStatus('all') }}
+                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
+                  key={`1 index`}>all dummy (0)
+                </li>
+              }
+               {count.filter((item => item.status === "in_cart"))?.length ? count.filter((item => item.status === "in_cart")).map((item) => (
+                <li onClick={() => { setOrderStatus(item?.status) }}
+                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
+                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
+                </li>
+              )) :
+                <li onClick={() => { setOrderStatus('in_cart') }}
+                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
+                  key={`1 index`}>in cart (0)
+                </li>
+              }
+              {count.filter((item => item.status === "booked"))?.length ? count.filter((item => item.status === "booked")).map((item) => (
+                <li onClick={() => { setOrderStatus(item?.status) }}
+                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
+                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
+                </li>
+              )) :
+                <li onClick={() => { setOrderStatus('booked') }}
+                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
+                  key={`1 index`}>booked (0)
+                </li>
+              }
+              {count.filter((item => item.status === "order_assigned"))?.length ? count.filter((item => item.status === "order_assigned")).map((item) => (
+                <li onClick={() => { setOrderStatus(item?.status) }}
+                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
+                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
+                </li>
+              )) :
+                <li onClick={() => { setOrderStatus('order_assigned') }}
+                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
+                  key={`1 index`}>order assigned (0)
+                </li>
+              }
+              {count.filter((item => item.status === "delivered"))?.length ? count.filter((item => item.status === "delivered")).map((item) => (
+                <li onClick={() => { setOrderStatus(item?.status) }}
+                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
+                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
+                </li>
+              )) :
+                <li onClick={() => { setOrderStatus('delivered') }}
+                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
+                  key={`1 index`}>delivered (0)
+                </li>
+              }
+              {count.filter((item => item.status === "returned"))?.length ? count.filter((item => item.status === "returned")).map((item) => (
+                <li onClick={() => { setOrderStatus(item?.status) }}
+                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
+                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
+                </li>
+              )) :
+                <li onClick={() => { setOrderStatus('returned') }}
+                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
+                  key={`1 index`}>returned (0)
+                </li>
+              }
+              {count.filter((item => item.status === "canceled"))?.length ? count.filter((item => item.status === "canceled")).map((item) => (
+                <li onClick={() => { setOrderStatus(item?.status) }}
+                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
+                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
+                </li>
+              )) :
+                <li onClick={() => { setOrderStatus('canceled') }}
+                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
+                  key={`1 index`}>canceled (0)
+                </li>
+              }
+             
+
+            </ul> */}
+
+            <ul className="gap-x-10 flex bg-red- border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden">
+              {statuses.map((status) => {
+                const filtered = count.filter((item) => item.status === status);
+                const item = filtered[0];
+                return (
+                  <li
+                    key={status}
+                    onClick={() => setOrderStatus(status)}
+                    className={`hover:underline capitalize lg:text-sm cursor-pointer ${orderStatus === status ? 'text-[#793FDF] font-bold' : ''}`}
+                  >
+                    {status.replaceAll('_', ' ')} ({item ? item.count : 0})
+                  </li>
+                );
+              })}
             </ul>
+
+
           </div>
         </div>
       </div>
 
       {/* Filters */}
 
-      {/* <div className='flex lg:gap-x-6 gap-x-1 text-xs items-center'>
-        <select className='px-2 py-1 rounded-md border-2 border-[#F5F5F5] outline-none'>
-          <option value="all">All Stores</option>
-        </select>
-        <select className='px-2 py-1 rounded-md border-2 border-[#F5F5F5] outline-none'>
-          <option value="all">Order Status</option>
-        </select>
-        <select className='px-2 py-1 rounded-md border-2 border-[#F5F5F5] outline-none'>
-          <option value="all">Delivery Boy Status</option>
-        </select>
-      </div> */}
-      {/* Orders */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
         {orders?.map(order => (
-          <div key={order._id} className='border-2 border-[#f2f2f2] rounded-lg p-3 px-3'>
+          <div key={order._id} className='border-2 border-[#f2f2f2] rounded-lg p-3 px-3 lg:hover:scale-95 delay- transition-all ease-in-out'>
             <div className='flex justify-evenly'>
               <div className='flex flex-col gap-y-1'>
                 <p className='font-bold text-xl'>Order Id : {order._id}</p>
@@ -149,7 +236,7 @@ const Orders = () => {
                     }
                   </p>
                 )}
-                <p className='font-medium'>Custome Number : {order.app_user_id}</p>
+                <p className='font-medium'>Custome Number : {order?.user_phone}</p>
                 <p className='w-40 lg:w-52 xl:w-72 flex flex-col lg:text-sm text-xs'>
                   <span>Delivery Location :</span>
                   {order.delivery_location || 'N/A'}
@@ -160,8 +247,7 @@ const Orders = () => {
                 <div className='lg:flex hidden flex-col  items-center gap-y-3'>
                   {order?.items_json?.slice(0, 2).map((item, index) => (
                     <Image key={index} src={item?.item_image} className='h-12 w-12 rounded-md' height={100} width={200} />
-                  ))
-                  }
+                  ))}
                   {(order?.items_json.length > 2 && <span><CiSquarePlus size={30} /></span>)}
                 </div>
               </div>
@@ -171,12 +257,8 @@ const Orders = () => {
                 </p>
                 <p className='text-pink-500 font-bold text-xl'>
                   {order.product_price ? `${order.product_price}/-` : '0/-'}
-                  {console.log(order.product_price, "order.product_price")
-                  }
                 </p>
-                <p className='p-2 bg-[#793FDF] text-white rounded-lg'>
-                  <Link href={`/orders/${order._id}`}>View Items</Link>
-                </p>
+                <Link className='p-2 bg-[#793FDF] text-white rounded-lg' href={`/orders/${order._id}`}>View Items</Link>
                 <p className='text-xs'>{formatDateTime(order.created_on)}</p>
               </div>
             </div>

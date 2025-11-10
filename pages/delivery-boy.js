@@ -209,7 +209,7 @@ export default function ProfilePage() {
           onClick={() => setTab("approved")}
           className={`lg:text-xl text-sm font-medium ${tab === "approved" ? 'text-green-500 border-b-2 border-green-500' : 'text-gray-600'}`}
         >
-          Approved
+          Approve
         </button>
         <button
           onClick={() => setTab("pending")}
@@ -286,7 +286,6 @@ export default function ProfilePage() {
                   <Image width={1000} height={1000} src={profileData?.data?.results?.licence_image_url} alt="Licence Front" className="w-full h-48 object-cover rounded-lg mb-4" />
                 </li>
                 <li>Name : <span className='font-bold'>{profileData?.data?.results?.dl_api_returned_name}</span></li>
-                <li>Name : <span className='font-bold'>{profileData?.data?.results?.dl_api_returnede}</span></li>
                 <li>Licence Number : <span className='font-bold'>{profileData?.data?.results?.licence_number}</span> </li>
                 <li>Location : {profileData?.data?.results?.aadhar_response_address}</li>
               </ul>
@@ -301,7 +300,7 @@ export default function ProfilePage() {
                   onClick={() => handleApproveReject('license_status', 'approved')}
                   className="bg-green-500 text-white py-2 px-4 rounded-lg"
                 >
-                  Approved
+                  Approve
                 </button>
               </div>
             </div>

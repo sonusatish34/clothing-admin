@@ -9,8 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.83.0",
-    "axios": "^1.10.0",
+    "@tanstack/react-query": "^5.90.5",
+    "axios": "^1.13.1",
+    "express": "^5.1.0",
     "keen-slider": "^6.8.6",
     "lottie-react": "^2.4.1",
     "next": "15.2.4",
@@ -23,14 +24,18 @@
     "recharts": "^2.15.2",
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
+    "require": "^2.4.20",
     "sweetalert2": "^11.22.2",
     "tsc": "^2.0.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
+    "jest": "^30.2.0",
     "tailwindcss": "^4"
   }
 }

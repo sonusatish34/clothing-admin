@@ -1,75 +1,260 @@
+// // App.jsx
+// import React from "react";
+// import { useQuery } from "@tanstack/react-query";
 
-// // const newarr = new Array(1,34,65,656554)
-// // console.log(newarr)
-// // newarr.pop()
-// // console.log(newarr)
+// // 1️⃣ Function to fetch data from API
+// const fetchUsers = async () => {
+//   const response = await fetch("https://jsonplaceholder.typicode.com/users");
+//   if (!response.ok) throw new Error("Network response was not ok");
+//   return response.json(); // return parsed JSON data
+// };
 
-// // let a = [11,43,256,43,434];
-// // a.splice(1)
-// // console.log(a.splice(1,2));
-// // console.log(a);
-// // Creating an Array and Initializing with Values
-// let a = ["HTML", "CSS", "JS", "React"];
-// let b = ["Node.js", "Expess.js"];
+// // 2️⃣ Component
+// export default function App() {
+//   // 3️⃣ useQuery hook
+//   const { data, isLoading, isError, error } = useQuery({
+//     queryKey: ["users"],      // unique key to cache this data
+//     queryFn: fetchUsers,      // function that fetches data
+//   });
 
-// // Concatenate both arrays
-// let concateArray = [...b, ...a].reverse()
+//   // 4️⃣ Handle states
+//   if (isLoading) return <p>Loading...</p>;
+//   if (isError) return <p>Error: {error.message}</p>;
 
-// console.log("Concatenated Array: ", concateArray.toString());
-// // Example 1
-// const a1 = [5]
-// // console.log(a1)
-
-// // Example 2
-// // const a2 = new Array(61)
-// // console.log(a2.length)
-// // console.log(a1);
-// const printal = ['1', '32', '32121', '134', '8872']
-// // console.log(printal[0]);
-// const newar = []
-// for (let i = 0; i <= printal.length; i++) {
-//   if (i % 2 == 0)
-//     // console.log(printal[i]);
-//     newar.push(printal[i])
-// }
-// // console.log(newar, 'newae');
-// function search(arr, x) {
-//   const n = arr.length;
-//   for (let i = 0; i < n; i++)
-//     if (arr[i] == x)
-//       return i;
-//   return -1;
+//   // 5️⃣ Render fetched data
+//   return (
+//     <div>
+//       <h2>Users List</h2>
+//       <ul>
+//         {data?.map((user) => (
+//           <li key={user.id}>{user.name}</li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
 // }
 
-// let arr = [2, 4, 10, 4];
-// let x = 4;
+// import React from 'react';
+// const ComponentName = (props) => {
 
-// let result = search(arr, x);
-// (result == -1)
-//   ? console.log("Element is not present in array")
-//   : console.log("Element is present at index " + result);
+// Reverse a number in javascript
+// const str = 'longdrivecars'
+// let strrev=str.split('').reverse().join('');
+// console.log(strrev,'rev');
 
-// // largest elemnet
-// // const uniqueArr = [...new Set(arr)].sort((a, b) => b - a);
-
-// function secondlatgest(arr) {
-//   const uniqueArr = [...new Set(arr)].sort((a, b) => b - a);
-//   // let a = Math.max(...arr)
-//   // uniqueArr.unshift();
-//   return uniqueArr[1]
+// function Palindrom(str)
+// {
+//   const rev = str.split('').reverse().join('')
+//   if(rev == str)
+//     return 'yes'
+//   else
+//     return 'no'
 // }
-// // console.log(secondlatgest([32, 32, 32, 32, 5, 5, 4, 4]));
-// const arr2= [1,3,5,6,9]
-// console.log(arr2.shift(22,8989));
-// console.log(arr2);
-import React from 'react';
+// console.log(Palindrom('abba'));
 
-const ComponentName = (props) => {
+//remove duplicate from a string
+// const stri = 'satish'
+// let res= ''
+// let setres = [...new Set(stri)].join('')
+// console.log(setres,'00000000');
+
+// for (let char of stri)
+// {
+//   if(!res.includes(char))
+//   {
+//     res = res + char;
+//   }
+// }
+// for (let i = 0; i < stri.length - 1; i++) {
+//   if(!res.includes(stri[i]))
+//   {
+//     res+= stri[i]
+//   }
+// }
+// console.log(res,'rsitl');
+
+//find first non repeating character 
+// frequency map
+//   const str = 'abcdc'
+//   const freq={}
+//   function fnonrchar(strx)
+//   {
+//     for(let char of strx)
+//     {
+//       freq[char] = ( freq[char] | 0) + 1
+//     }
+//     for (let char of strx)
+//     {
+//       if(freq[char] ===1)
+//       {
+//         return char
+//       }
+//     }
+//     return null
+//   }
+//   console.log(fnonrchar('aambbcc'));
+//   console.log(freq);
+
+
+//   return (
+//     <div>0.
+//       <p>mkmkmk</p>
+//     </div>
+//   );
+// };
+
+// export default ComponentName;
+// import React, { useState } from "react";
+
+// function WithoutUseMemo() {
+//   const [count, setCount] = useState(0);
+//   const [filter, setFilter] = useState("");
+
+//   const numbers = Array.from({ length: 10000 }, (_, i) => i + 1);
+
+//   // ❌ This filtering happens on EVERY render
+//   const filtered = numbers.filter((num) => {
+//     console.log('into fultweubg');
+
+//     for (let i = 0; i < 100000; i++) {} // simulate heavy task
+//     return num % 2 === 0 && num.toString().includes(filter);
+//   });
+
+//   return (
+//     <div>
+//       <h2>Without useMemo</h2>
+//       <p>Count: {count}</p>
+//       <button onClick={() => setCount(count + 1)}>Increment</button>
+//       <br />
+//       <input
+//         type="text"
+//         placeholder="Filter even numbers..."
+//         value={filter}
+//         onChange={(e) => setFilter(e.target.value)}
+//       />
+//       <p>Showing {filtered.length} numbers</p>
+//     </div>
+//   );
+// }
+
+// export default WithoutUseMemo;
+// import { useRef, useEffect, useReducer } from "react";
+// function reducer(state, action) {
+//     switch (action.type) {
+//       case 'increment':
+//         return { count: state.count + 1 };
+//       case 'decrement':
+//         return { count: state.count - 1 };
+//       default:
+//         return state;
+//     }
+//   }
+// function Timer() {
+//   const [state, reducer] = useReducer(reducer, { count: 0 })
+  
+//   const countRef = useRef(0);
+  
+//   const handleClick = () => {
+//     countRef.current += 1;
+//     console.log("Clicked", countRef.current);
+//   };
+
+//   return <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+// ;
+// }
+
+// export default function InputFocus() {
+//   const inputRef = useRef(null);
+
+//   useEffect(() => {
+//     inputRef.current.focus(); // Access the DOM node
+//   }, []);
+
+//   // ✅ Correct return syntax
+//   return (
+//     <div>
+//       <input ref={inputRef} placeholder="Focuses on mount" />
+//       <Timer />
+//     </div>
+//   );
+// }
+
+// import { useReducer } from "react";
+// import { useQuery } from "@tanstack/react-query";
+// function reducer(state, action) {
+//   switch (action.type) {
+//     case "increment":
+//       return { count: state.count + 1 };
+//     case "decrement":
+//       return { count: state.count - 1 };
+//     case "reset":
+//       return { count: 0 };
+//     default:
+//       return state;
+//   }
+// }
+
+// export default function Counter() {
+//   const {data,isError,isLoading} = useQuery({
+//     queryKey:['users'],
+//     queryFn: ()=>fetch('/api/users').then(res=>res.json()),
+//   })
+//   const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+//   return (
+//     <div>
+//       <h2>Count: {state.count}</h2>
+//       <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+//       <button onClick={() => dispatch({ type: "increment" })}>+</button>
+//       <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
+//     </div>
+//   );
+// }
+
+"use client"
+import Image from "next/image";
+import { useState, useEffect } from "react";
+
+export default function Home() {
+
+
+
+  const [addItem, setAdditem] = useState('werth')
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/hello")
+      .then(res => console.log(res))
+      .then(data => setData(data));
+  }, []);
+  const handleCLick = async()=>
+  {
+    let data = {
+      name:'satish',
+      age:'25'
+    }
+    let a = await fetch('/api/add',{
+      method:'post',headers:{
+        'Content-type':'application/json',
+        body:JSON.stringify(data)
+      }
+    }
+  )
+  let res= await a.json()
+  console.log(res,'kkkk')
+
+  }
   return (
     <div>
-      
+      {/* <input readOnly className="border" type="text" value={addItem} />
+      <button className="border rounded-md bg-green-700 px-2">Add</button>
+      <p>Tasks</p>
+      <ul>
+        <li>{data?.message}</li>
+      </ul> */}
+      <h1>NEtx js api demo </h1>
+        <button onClick={handleCLick}>button click</button>
     </div>
   );
-};
+}
 
-export default ComponentName;
