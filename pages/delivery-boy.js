@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2'; // SweetAlert2 for popups
 import Image from 'next/image';
 import Loading from '../components/Loader'
+import { GoDotFill } from "react-icons/go";
+
 export default function ProfilePage() {
   const [profileData, setProfileData] = useState(null);
   const [PendingData, setPendingData] = useState(null);
@@ -68,8 +70,7 @@ export default function ProfilePage() {
         setIsLoading(false);
       }
     };
-    if(tab =='pending' || tab == 'approved')
-    {
+    if (tab == 'pending' || tab == 'approved') {
       fetchPendingProfile();
     }
   }, [tab]);
@@ -332,6 +333,9 @@ export default function ProfilePage() {
                 <span>{item?.licence_number || 'NA'}</span>
                 <span className='font-light text-[#6B767B] text-xs'>Licence Number</span>
               </li>
+              <li className=''>
+                {item?.app_users?.is_user_online==="yes"?<span className='text-green-500 flex items-center list-disc'><GoDotFill/> online</span>:<span className='text-red-500 flex items-center list-disc'><GoDotFill/> offline</span>}
+              </li>
             </ul>
           </div>
         ))}</div>
@@ -349,11 +353,14 @@ export default function ProfilePage() {
               </li>
               <li className='flex flex-col'>
                 <span>{item?.app_users?.user_phone}</span>
-x                <span className='font-light text-[#6B767B] text-xs'>Customer Number</span>
+                <span className='font-light text-[#6B767B] text-xs'>Customer Number</span>
               </li>
               <li className='flex flex-col'>
                 <span>{item?.licence_number || 'NA'}</span>
                 <span className='font-light text-[#6B767B] text-xs'>Licence Number</span>
+              </li>
+              <li className=''>
+                {item?.app_users?.is_user_online==="yes"?<span className='text-green-500 flex items-center list-disc'><GoDotFill/> online</span>:<span className='text-red-500 flex items-center list-disc'><GoDotFill/> offline</span>}
               </li>
             </ul>
           </div>
