@@ -76,7 +76,7 @@ const Dashboard = (props) => {
   };
   const Card = ({ count, text }) => {
     return (
-      <div className=" rounded-xl shadow p-4 py-7 hover:scale-105 cursor-pointer transition duration-300 ease-in-out">
+      <div className=" rounded-xl bg-white/80 shadow p-4 py-7 hover:scale-105 cursor-pointer transition duration-300 ease-in-out">
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-3xl font-extrabold">{count}</h2>
@@ -208,7 +208,7 @@ const Dashboard = (props) => {
         </div>
       </div>
       {showCal && (
-        <div className="absolute top-48 right-0 z-50 ">
+        <div className="absolute top-48 right-0 z-10 ">
           <Calendar
             className={"bg-red-200"}
             onChange={onChange}

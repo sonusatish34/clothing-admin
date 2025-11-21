@@ -24,7 +24,7 @@ const ComponentName = () => {
             };
 
             try {
-                const response = await fetch(`https://ecommstagingapi.tboo.com/admin/order-details?order_id=${router.query.maker}`, requestOptions);
+                const response = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/order-details?order_id=${router.query.maker}`, requestOptions);
                 const result = await response.json();
                 setOrderDetails(result?.data?.results[0]);
             } catch (error) {
@@ -51,7 +51,7 @@ const ComponentName = () => {
         };
 
         try {
-            const response = await fetch(`https://ecommstagingapi.tboo.com/admin/delivery-partner-details?order_id=${router.query.maker}&store_id=12`, requestOptions);
+            const response = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/delivery-partner-details?order_id=${router.query.maker}&store_id=12`, requestOptions);
             const result = await response.json();
             return result?.data
             // setDeliveryDetails(result?.data || []);
@@ -70,8 +70,8 @@ const ComponentName = () => {
 
     // console.log(groupedItemsByStore, '333');
 
-    console.log(fetchDeliveryDetails().then(result=>console.log(result)),'djslkdls');
-    
+    console.log(fetchDeliveryDetails().then(result => console.log(result)), 'djslkdls');
+
     return (
         <Layout>
             <div>

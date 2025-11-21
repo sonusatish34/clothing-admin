@@ -30,7 +30,7 @@ const ComponentName = () => {
     formdata.append("file", file);
 
     try {
-      const res = await fetch("https://ecommstagingapi.tboo.com/s3/image-file", {
+      const res = await fetch("https://ecommstagingapi.longdrivecarz.in/s3/image-file", {
         method: "POST",
         headers: {
           accept: "application/json",
@@ -41,12 +41,12 @@ const ComponentName = () => {
 
       const result = await res.json();
       const imageUrl = result?.data?.image_link;
-      
+
       const myHeaders = new Headers();
       myHeaders.append("accept", "application/json");
       myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
       myHeaders.append("Content-Type", "application/json");
-      await fetch("https://ecommstagingapi.tboo.com/admin/replace-image", {
+      await fetch("https://ecommstagingapi.longdrivecarz.in/admin/replace-image", {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify({
@@ -63,10 +63,10 @@ const ComponentName = () => {
       setUploadingKey(null);
     }
   };
-       console.log(assignDoc,"assignDoc");
+  console.log(assignDoc, "assignDoc");
 
   const fetchAssignStore = async () => {
-    const response = await fetch("https://ecommstagingapi.tboo.com/admin/assign-store", {
+    const response = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/assign-store", {
       method: "POST",
       headers: {
         "Accept": "application/json",
@@ -80,7 +80,7 @@ const ComponentName = () => {
     setResp(data)
     setAssignDoc(data);
   };
-  
+
 
   const updateStoreStatus = async (newStatus) => {
     try {
@@ -88,7 +88,7 @@ const ComponentName = () => {
       myHeaders.append("accept", "application/json");
       myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
       myHeaders.append("Content-Type", "application/json");
-      await fetch("https://ecommstagingapi.tboo.com/admin/update-store-status", {
+      await fetch("https://ecommstagingapi.longdrivecarz.in/admin/update-store-status", {
         method: "PUT",
         headers: myHeaders,
         body: JSON.stringify({
@@ -135,9 +135,9 @@ const ComponentName = () => {
 
   return (
     <Layout>
-     {assignDoc?.data?.assigned_id && <div>
+      {assignDoc?.data?.assigned_id && <div>
         {showGstImage && (
-          <div className="fixed inset-0 z-50 bg-white bg-opacity-50 flex items-center justify-center">
+          <div className="fixed inset-0 z-10 bg-white bg-opacity-50 flex items-center justify-center">
             <button
               onClick={() => setShowGstImage(false)}
               className="absolute top-5 right-5 text-black text-2xl font-bold cursor-pointer lg:hover:scale-105"
@@ -277,7 +277,7 @@ const ComponentName = () => {
 
             {/* Reject Modal */}
             {showReject && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-700/80">
+              <div className="fixed inset-0 z-10 flex items-center justify-center bg-gray-700/80">
                 <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
                   <h2 className="text-lg font-semibold mb-4">Reject Reason</h2>
                   <textarea
@@ -322,14 +322,14 @@ const ComponentName = () => {
             )}
           </div>
         }
-        
+
       </div>}
       {
-          !assignDoc?.data?.assigned_id && 
-          <p className="">
-            {assignDoc?.message}
-          </p>
-        }
+        !assignDoc?.data?.assigned_id &&
+        <p className="">
+          {assignDoc?.message}
+        </p>
+      }
     </Layout>
   );
 };

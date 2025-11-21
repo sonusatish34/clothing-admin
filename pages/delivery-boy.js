@@ -34,7 +34,7 @@ export default function ProfilePage() {
           redirect: "follow"
         };
 
-        const response = await fetch("https://ecommstagingapi.tboo.com/admin/assign-profile", requestOptions);
+        const response = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/assign-profile", requestOptions);
         const result = await response.json();
         setProfileData(result);
       } catch (err) {
@@ -61,7 +61,7 @@ export default function ProfilePage() {
           redirect: "follow"
         };
 
-        const response = await fetch(`https://ecommstagingapi.tboo.com/admin/${tab}-profiles`, requestOptions);
+        const response = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/${tab}-profiles`, requestOptions);
         const result = await response.json();
         setPendingData(result);
       } catch (err) {
@@ -116,7 +116,7 @@ export default function ProfilePage() {
         };
 
         const response = await fetch(
-          "https://ecommstagingapi.tboo.com/admin/update-profile-details",
+          "https://ecommstagingapi.longdrivecarz.in/admin/update-profile-details",
           requestOptions
         );
         const result = await response.json();
@@ -169,7 +169,7 @@ export default function ProfilePage() {
         };
 
         const response = await fetch(
-          "https://ecommstagingapi.tboo.com/admin/update-profile-details",
+          "https://ecommstagingapi.longdrivecarz.in/admin/update-profile-details",
           requestOptions
         );
         const result = await response.json();
@@ -334,7 +334,7 @@ export default function ProfilePage() {
                 <span className='font-light text-[#6B767B] text-xs'>Licence Number</span>
               </li>
               <li className=''>
-                {item?.app_users?.is_user_online==="yes"?<span className='text-green-500 flex items-center list-disc'><GoDotFill/> online</span>:<span className='text-red-500 flex items-center list-disc'><GoDotFill/> offline</span>}
+                {item?.app_users?.is_user_online === "yes" ? <span className='text-green-500 flex items-center list-disc'><GoDotFill /> online</span> : <span className='text-red-500 flex items-center list-disc'><GoDotFill /> offline</span>}
               </li>
             </ul>
           </div>
@@ -360,7 +360,7 @@ export default function ProfilePage() {
                 <span className='font-light text-[#6B767B] text-xs'>Licence Number</span>
               </li>
               <li className=''>
-                {item?.app_users?.is_user_online==="yes"?<span className='text-green-500 flex items-center list-disc'><GoDotFill/> online</span>:<span className='text-red-500 flex items-center list-disc'><GoDotFill/> offline</span>}
+                {item?.app_users?.is_user_online === "yes" ? <span className='text-green-500 flex items-center list-disc'><GoDotFill /> online</span> : <span className='text-red-500 flex items-center list-disc'><GoDotFill /> offline</span>}
               </li>
             </ul>
           </div>

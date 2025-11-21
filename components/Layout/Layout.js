@@ -61,12 +61,20 @@ const Layout = ({ Content, children }) => {
   }, [isOpen]);
 
   return (
-    <div className="flex flex-col gap-y-0">
-      <div className="flex h-full lg:pl-4 px-4 pt-8 pb-5">
+   
+    <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/images/9782010.jpg')", backgroundSize: '30%', backgroundRepeat: 'repeat' }}
+      ></div>
+
+      {/* <div className="absolute inset-0 bg-black/10"></div> */}
+
+      <div className="flex h-full lg:pl-4 px-4 pt-8 pb-5 relative text-black bg-white/90">
         {/* desktop side bar */}
         <p className="fixed top-1 w-fit  lg:left-16 right-4 capitalize border text-sm lg:text-lg p-1 py-[1px] rounded-md">{role}</p>
 
-        <nav className="h-screen pb-10 text-2xl  lg:flex hidden flex-col gap-2 items-start w-48  rounded-t-xl rounded-b-xl fixed top-10">
+        <nav className="h-screen pb-10 text-2xl  lg:flex hidden flex-col gap-2 items-start w-48  rounded-t-xl rounded-b-xl fixed top-10 ">
           <div className="h-full w-full overflow-hidden pt-2">
             <div className="h-20 bg-black w-full rounded-lg">
               <Link href={"/"}>
@@ -79,7 +87,7 @@ const Layout = ({ Content, children }) => {
                 />
               </Link>
             </div>
-            <ul className="px-2 text-sm pt-6 flex flex-col gap-1">
+            <ul className="px-2 text-sm pt-6 flex flex-col gap-1 z-50">
               <li className=" py-1">
                 <Link
                   href={"/dashboard"}
@@ -270,7 +278,7 @@ const Layout = ({ Content, children }) => {
               </div>
             </div>
           </div>
-          <div className="lg:hidden z-30 bg-white w-full flex flex-col gap-y-3">
+          <div className="lg:hidden z-10 bg-white w-full flex flex-col gap-y-3">
             <div className="flex justify-between items-center w-full j gap-2 text-black">
               <div className="flex items-center gap-5 text-black">
                 <RxHamburgerMenu onClick={() => setIsOpen(!isOpen)} size={30} />
@@ -299,7 +307,7 @@ const Layout = ({ Content, children }) => {
             <div>
               <div
                 ref={sidebarRef}
-                className={`fixed top-0 left-0 h-full w-3/4 max-w-xs bg-white shadow-lg z-40 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
+                className={`fixed top-0 left-0 h-full w-3/4 max-w-xs bg-white shadow-lg z-10 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"
                   }`}
               >
                 <button
@@ -471,7 +479,7 @@ const Layout = ({ Content, children }) => {
               </div>
             </div>
           </div>
-          <div className="lg:mt-28 lg:ml-[170px]">{Content || children}</div>
+          <div className=" lg:mt-28 lg:ml-[170px]">{Content || children}</div>
         </main>
       </div>
     </div>

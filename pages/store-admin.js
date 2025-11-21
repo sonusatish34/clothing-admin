@@ -29,7 +29,7 @@ export default function AddStoreAdmin() {
         };
 
         try {
-            const res = await fetch("https://ecommstagingapi.tboo.com/admin/approved-stores", requestOptions);
+            const res = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/approved-stores", requestOptions);
             const result = await res.json();
             setApprovedStores(result?.data?.results);
         } catch (error) {
@@ -49,7 +49,7 @@ export default function AddStoreAdmin() {
         };
 
         try {
-            const res = await fetch("https://ecommstagingapi.tboo.com/admin/get-store-admins", requestOptions);
+            const res = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/get-store-admins", requestOptions);
             const result = await res.json();
             setAdminList(result?.data);
         } catch (error) {
@@ -106,7 +106,7 @@ export default function AddStoreAdmin() {
                     redirect: "follow"
                 };
 
-                const res = await fetch("https://ecommstagingapi.tboo.com/admin/add-store-admin", requestOptions);
+                const res = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/add-store-admin", requestOptions);
                 const result = await res.json();
 
                 if (res.ok) {
@@ -148,7 +148,7 @@ export default function AddStoreAdmin() {
                     redirect: "follow"
                 };
 
-                const res = await fetch(`https://ecommstagingapi.tboo.com/admin/delete-store-admin?app_user_id=${id}`, requestOptions);
+                const res = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/delete-store-admin?app_user_id=${id}`, requestOptions);
                 if (res.ok) {
                     Swal.fire('Deleted!', 'Store admin removed successfully.', 'success');
                     getStores();

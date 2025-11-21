@@ -9,7 +9,7 @@ import Image from "next/image";
 import Loader from "@/components/Loader";
 
 const BankDetailsForm = () => {
-    
+
     const [bankData, setBankData] = useState(null);
     const [editableData, setEditableData] = useState({});
     const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ const BankDetailsForm = () => {
         formdata.append("file", file);
 
         try {
-            const res = await fetch("https://ecommstagingapi.tboo.com/s3/image-file", {
+            const res = await fetch("https://ecommstagingapi.longdrivecarz.in/s3/image-file", {
                 method: "POST",
                 headers: {
                     accept: "application/json",
@@ -63,7 +63,7 @@ const BankDetailsForm = () => {
             };
 
             try {
-                const response = await fetch("https://ecommstagingapi.tboo.com/admin/assign-bank-details", requestOptions);
+                const response = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/assign-bank-details", requestOptions);
                 const result = await response.json();
                 const data = result?.data;
                 setBankData(data);
@@ -108,7 +108,7 @@ const BankDetailsForm = () => {
 
         try {
             setLoading(true);
-            const response = await fetch("https://ecommstagingapi.tboo.com/admin/update-bank-data", requestOptions);
+            const response = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/update-bank-data", requestOptions);
             const result = await response.json();
             setCount(count + 1)
             alert("Bank details saved!");
@@ -153,7 +153,7 @@ const BankDetailsForm = () => {
                     redirect: "follow"
                 };
 
-                const res = await fetch(`https://ecommstagingapi.tboo.com/admin/update-bank-details`, requestOptions);
+                const res = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/update-bank-details`, requestOptions);
                 if (res.ok) {
                     Swal.fire('Deleted!', 'Bank updated successfully.', 'success');
                 } else {

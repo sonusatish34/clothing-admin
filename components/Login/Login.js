@@ -14,7 +14,8 @@ const Login = ({ role }) => {
       return;
     } else if (router.asPath === '/' && userRoleId === '3') {
       return;
-    } else {
+    }
+    else {
       localStorage.clear();
     }
   }, [router.asPath]);
@@ -130,7 +131,7 @@ const Login = ({ role }) => {
   };
 
   const sendOtp = async () => {
-    const url = `https://ecommstagingapi.tboo.com/admin/send-otp`;
+    const url = `https://ecommstagingapi.longdrivecarz.in/admin/send-otp`;
 
     try {
       const response = await fetch(url, {
@@ -165,7 +166,7 @@ const Login = ({ role }) => {
   };
 
   const validateOtp = async () => {
-    const url = `https://ecommstagingapi.tboo.com/admin/otp-validate`;
+    const url = `https://ecommstagingapi.longdrivecarz.in/admin/otp-validate`;
     const userroleid = window.localStorage.getItem("user_role_id");
 
     try {

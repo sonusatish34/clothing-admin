@@ -5,9 +5,9 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchAssignStore } from '@/services/api';
 import { FaRegCopy } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 const TotalStores = () => {
-    
+
     // const { data: assignDoc, isLoading, error } = useQuery({
     //   queryKey: ['assign-store'],
     //   queryFn: fetchAssignStore,
@@ -28,7 +28,7 @@ const TotalStores = () => {
         localStorage.getItem('user_role_id') == '5' ? setRole('approval') : setRole('admin')
 
         async function fetchStoresByStatus() {
-            const response = await fetch(`https://ecommstagingapi.tboo.com/admin/stores?status=${status}`, {
+            const response = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/stores?status=${status}`, {
 
                 headers: {
                     'accept': 'application/json',
@@ -46,7 +46,7 @@ const TotalStores = () => {
             fetchStoresByStatus()
         }
 
-    }, [status,count])
+    }, [status, count])
     const deleteStore = async (storeid) => {
         const confirmDelete = await Swal.fire({
             title: `Delete  store ${storeid}?`,
@@ -71,10 +71,10 @@ const TotalStores = () => {
                     redirect: "follow"
                 };
 
-                const res = await fetch(`https://ecommstagingapi.tboo.com/admin/delete-store?store_id=8`, requestOptions);
+                const res = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/delete-store?store_id=8`, requestOptions);
                 if (res.ok) {
                     Swal.fire('Deleted!', 'Bank updated successfully.', 'success');
-                    setCount(prev=>prev+1)
+                    setCount(prev => prev + 1)
                 } else {
                     Swal.fire('Error', 'Failed to update bank details.', 'error');
                 }
