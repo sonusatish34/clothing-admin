@@ -28,7 +28,7 @@ const Orders = () => {
         redirect: "follow"
       };
 
-      fetch("https://ecommstagingapi.longdrivecarz.in/admin/orders-count", requestOptions)
+      fetch("https://api.zuget.com/admin/orders-count", requestOptions)
         .then((response) => response.json())
         .then((result) => setCount(result?.data?.count_results?.reverse()))
         .catch((error) => console.error(error));
@@ -46,7 +46,7 @@ const Orders = () => {
         return;
       }
 
-      fetch(`https://ecommstagingapi.longdrivecarz.in/admin/orders?status=${orderStatus}`, {
+      fetch(`https://api.zuget.com/admin/orders?status=${orderStatus}`, {
         method: 'GET',
         headers: {
           'Authorization': ` ${token}`,

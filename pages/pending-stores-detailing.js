@@ -30,7 +30,7 @@ const ComponentName = () => {
     formdata.append("file", file);
 
     try {
-      const res = await fetch("https://ecommstagingapi.longdrivecarz.in/s3/image-file", {
+      const res = await fetch("https://api.zuget.com/s3/image-file", {
         method: "POST",
         headers: {
           accept: "application/json",
@@ -46,7 +46,7 @@ const ComponentName = () => {
       myHeaders.append("accept", "application/json");
       myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
       myHeaders.append("Content-Type", "application/json");
-      await fetch("https://ecommstagingapi.longdrivecarz.in/admin/replace-image", {
+      await fetch("https://api.zuget.com/admin/replace-image", {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify({
@@ -66,7 +66,7 @@ const ComponentName = () => {
   console.log(assignDoc, "assignDoc");
 
   const fetchAssignStore = async () => {
-    const response = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/assign-store", {
+    const response = await fetch("https://api.zuget.com/admin/assign-store", {
       method: "POST",
       headers: {
         "Accept": "application/json",
@@ -88,7 +88,7 @@ const ComponentName = () => {
       myHeaders.append("accept", "application/json");
       myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
       myHeaders.append("Content-Type", "application/json");
-      await fetch("https://ecommstagingapi.longdrivecarz.in/admin/update-store-status", {
+      await fetch("https://api.zuget.com/admin/update-store-status", {
         method: "PUT",
         headers: myHeaders,
         body: JSON.stringify({

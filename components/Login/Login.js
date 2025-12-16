@@ -131,7 +131,7 @@ const Login = ({ role }) => {
   };
 
   const sendOtp = async () => {
-    const url = `https://ecommstagingapi.longdrivecarz.in/admin/send-otp`;
+    const url = `https://api.zuget.com/admin/send-otp`;
 
     try {
       const response = await fetch(url, {
@@ -166,7 +166,7 @@ const Login = ({ role }) => {
   };
 
   const validateOtp = async () => {
-    const url = `https://ecommstagingapi.longdrivecarz.in/admin/otp-validate`;
+    const url = `https://api.zuget.com/admin/otp-validate`;
     const userroleid = window.localStorage.getItem("user_role_id");
 
     try {

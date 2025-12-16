@@ -28,7 +28,7 @@ const SystemConfig = () => {
             };
 
             try {
-                const response = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/other-points-system", requestOptions);
+                const response = await fetch("https://api.zuget.com/admin/other-points-system", requestOptions);
                 const result = await response.json();
                 setSettings(result);
             } catch (error) {
@@ -76,7 +76,7 @@ const SystemConfig = () => {
         };
 
         try {
-            const response = await fetch("https://ecommstagingapi.longdrivecarz.in/admin/other-points-system", requestOptions);
+            const response = await fetch("https://api.zuget.com/admin/other-points-system", requestOptions);
             const result = await response.json();
 
             if (response.ok) {

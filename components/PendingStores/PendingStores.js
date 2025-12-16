@@ -18,7 +18,7 @@ const ComponentName = () => {
     localStorage.getItem('user_role_id') == '5' ? setRole('approval') : setRole('admin')
 
     async function fetchStores() {
-      const response = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/assign-store`, {
+      const response = await fetch(`https://api.zuget.com/admin/assign-store`, {
         method: 'POST',
         headers: {
           'accept': 'application/json',

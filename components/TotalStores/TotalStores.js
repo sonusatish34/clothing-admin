@@ -28,7 +28,7 @@ const TotalStores = () => {
         localStorage.getItem('user_role_id') == '5' ? setRole('approval') : setRole('admin')
 
         async function fetchStoresByStatus() {
-            const response = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/stores?status=${status}`, {
+            const response = await fetch(`https://api.zuget.com/admin/stores?status=${status}`, {
 
                 headers: {
                     'accept': 'application/json',
@@ -71,7 +71,7 @@ const TotalStores = () => {
                     redirect: "follow"
                 };
 
-                const res = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/delete-store?store_id=8`, requestOptions);
+                const res = await fetch(`https://api.zuget.com/admin/delete-store?store_id=8`, requestOptions);
                 if (res.ok) {
                     Swal.fire('Deleted!', 'Bank updated successfully.', 'success');
                     setCount(prev => prev + 1)

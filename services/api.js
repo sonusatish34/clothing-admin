@@ -1,5 +1,5 @@
 export const fetchAssignStore = async () => {
-  const response = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/assign-store`, {
+  const response = await fetch(`https://api.zuget.com/admin/assign-store`, {
     method: 'POST',
     headers: {
       'accept': 'application/json',
@@ -17,7 +17,7 @@ export const fetchAssignStore = async () => {
 };
 
 export const UpdateAssignStore = async () => {
-  const response = await fetch(`https://ecommstagingapi.longdrivecarz.in/admin/update-store-status`, {
+  const response = await fetch(`https://api.zuget.com/admin/update-store-status`, {
     method: 'PUT',
     headers: {
       'accept': 'application/json',
