@@ -1,187 +1,216 @@
 "use client";
-import Layout from '@/components/Layout/Layout';
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { formatDateTime } from '@/utils/convertDate';
+
+import Layout from "@/components/Layout/Layout";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { formatDateTime } from "@/utils/convertDate";
 import { MdKeyboardBackspace } from "react-icons/md";
 
 const ComponentName = () => {
-    const [orderDetails, setOrderDetails] = useState(null);
-    const [deliveryDetails, setDeliveryDetails] = useState([]);
-    const router = useRouter();
+  const router = useRouter();
 
-    useEffect(() => {
-        async function fetchOrderDetails() {
-            const myHeaders = new Headers();
-            myHeaders.append("accept", "application/json");
-            myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
+  const [orderDetails, setOrderDetails] = useState(null);
+  const [deliveryDetails, setDeliveryDetails] = useState([]);
 
-            const requestOptions = {
-                method: "GET",
-                headers: myHeaders,
-                redirect: "follow"
-            };
+  // ================= FETCH ORDER DETAILS =================
+  useEffect(() => {
+    if (!router.query.maker) return;
 
-            try {
-                const response = await fetch(`https://api.zuget.com/admin/order-details?order_id=${router.query.maker}`, requestOptions);
-                const result = await response.json();
-                setOrderDetails(result?.data?.results[0]);
-            } catch (error) {
-                console.error(error);
-            }
-        }
+    async function fetchOrderDetails() {
+      try {
+        const res = await fetch(
+          `https://api.zuget.com/admin/order-details?order_id=${router.query.maker}`,
+          {
+            headers: {
+              accept: "application/json",
+              Authorization: localStorage.getItem(
+                `${localStorage.getItem("user_phone")}_token`
+              ),
+            },
+          }
+        );
 
-
-
-        if (router.query.maker) {
-            fetchOrderDetails();
-            // fetchDeliveryDetails();
-        }
-    }, [router.query.maker]);
-    async function fetchDeliveryDetails() {
-        const myHeaders = new Headers();
-        myHeaders.append("accept", "application/json");
-        myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
-
-        const requestOptions = {
-            method: "GET",
-            headers: myHeaders,
-            redirect: "follow"
-        };
-
-        try {
-            const response = await fetch(`https://api.zuget.com/admin/delivery-partner-details?order_id=${router.query.maker}&store_id=12`, requestOptions);
-            const result = await response.json();
-            return result?.data
-            // setDeliveryDetails(result?.data || []);
-        } catch (error) {
-            console.error(error);
-        }
+        const result = await res.json();
+        setOrderDetails(result?.data?.results[0] || null);
+      } catch (err) {
+        console.error("Order API Error:", err);
+      }
     }
-    // Group items by store_id
-    const groupedItemsByStore = orderDetails?.store_details?.reduce((acc, store) => {
-        const items = orderDetails.items_json?.filter(item => item.store_id === store.store_id) || [];
-        if (items.length) {
-            acc.push({ store, items });
-        }
-        return acc;
-    }, []);
 
-    // console.log(groupedItemsByStore, '333');
+    fetchOrderDetails();
+  }, [router.query.maker]);
 
-    console.log(fetchDeliveryDetails().then(result => console.log(result)), 'djslkdls');
+  // ================= FETCH DELIVERY DETAILS (DYNAMIC STORE ID) =================
+  useEffect(() => {
+    if (!orderDetails?.store_details?.length) return;
 
-    return (
-        <Layout>
-            <div>
-                {/* Header */}
-                <p className='lg:text-xl text-xs flex gap-x-3 items-center'>
-                    <span className='cursor-pointer'>
-                        <MdKeyboardBackspace onClick={() => router.back()} className='size-6 lg:size-12' />
+    async function fetchDeliveryDetails() {
+      try {
+        const storeId = orderDetails.store_details[0].store_id;
+
+        const res = await fetch(
+          `https://api.zuget.com/admin/delivery-partner-details?order_id=${router.query.maker}&store_id=${storeId}`,
+          {
+            headers: {
+              accept: "application/json",
+              Authorization: localStorage.getItem(
+                `${localStorage.getItem("user_phone")}_token`
+              ),
+            },
+          }
+        );
+
+        const result = await res.json();
+        setDeliveryDetails(result?.data || []);
+      } catch (err) {
+        console.error("Delivery API Error:", err);
+      }
+    }
+
+    fetchDeliveryDetails();
+  }, [orderDetails, router.query.maker]);
+
+  // ================= GROUP ITEMS BY STORE =================
+  const groupedItemsByStore = orderDetails?.store_details?.reduce(
+    (acc, store) => {
+      const items =
+        orderDetails.items_json?.filter(
+          (item) => item.store_id === store.store_id
+        ) || [];
+
+      if (items.length) acc.push({ store, items });
+      return acc;
+    },
+    []
+  );
+
+  return (
+    <Layout>
+      <div>
+        {/* Header */}
+        <p className="lg:text-xl text-xs flex gap-x-3 items-center">
+          <MdKeyboardBackspace
+            onClick={() => router.back()}
+            className="cursor-pointer size-6 lg:size-12"
+          />
+          <span className="text-[#6B757C] capitalize">
+            {orderDetails?.status?.replaceAll("_", " ")} Orders
+          </span>
+          <span className="text-[#6B757C]">{">"}</span>
+          <span className="font-bold">Order Id : {orderDetails?._id}</span>
+        </p>
+
+        {/* Order Info */}
+        <ul className="pt-4 flex gap-x-4 text-xs lg:text-lg">
+          <li>
+            <span className="text-[#6B757C]">Order Placed On</span>{" "}
+            {formatDateTime(orderDetails?.created_on)}
+          </li>
+          <li className="border-l-2 pl-2 capitalize">
+            <span className="text-[#6B757C]">Status</span>{" "}
+            {orderDetails?.status?.replaceAll("_", " ")}
+          </li>
+          <li className="border-l-2 pl-2">
+            <span className="text-[#6B757C]">Payment</span>{" "}
+            {orderDetails?.payment_method}
+          </li>
+        </ul>
+
+        {/* STORE WISE ORDERS */}
+        <div className="flex flex-col gap-y-6 mt-5">
+          {groupedItemsByStore?.map(({ store, items }, index) => (
+            <div key={index} className=" bg-[#ECF3FE99] rounded-lg p-4">
+              <h3 className="text-xl font-bold text-[#7A69E7]">
+                From {store.store_name}
+              </h3>
+
+              <div className="flex gap-x-10 mt-2">
+                <span className="w-1/2 text-sm">
+                  <b>Location:</b> {store.address}
+                </span>
+                <span className="text-sm">
+                  <b>Store ID:</b> {store.store_id}
+                </span>
+              </div>
+
+              <div className="flex gap-x-10 mt-4">
+                {/* ITEMS */}
+                <div className="w-1/2 bg-white p-3">
+                  <p className="flex justify-between font-bold">
+                    <span>Order List: {items.length}</span>
+                    <span className="text-[#FF4FA3]">
+                      {orderDetails?.product_price}/-
                     </span>
-                    <span className='text-[#6B757C] capitalize'>{orderDetails?.status.replaceAll('_', ' ')} Orders</span>
-                    <span className='text-[#6B757C]'>{' > '}</span>
-                    <span className='font-bold'>Order Id : {orderDetails?._id}</span>
-                </p>
+                  </p>
 
-                {/* Order Info */}
-                <ul className='pt-4 flex lg:gap-x-4 xl:text-xl lg:text-lg text-xs'>
-                    <li><span className='text-[#6B757C]'> Order Placed On</span><span> {formatDateTime(orderDetails?.created_on)}</span></li>
-                    <li className='border-l-2 border-l-[#6B757C] capitalize pl-2'><span className='text-[#6B757C]'>Status</span><span> {orderDetails?.status.replaceAll('_', ' ')}</span></li>
-                    <li className='border-l-2 border-l-[#6B757C] pl-2'><span className='text-[#6B757C]'>Payment</span><span> {orderDetails?.payment_method}</span></li>
-                </ul>
-
-                {/* Store-wise Grouped Orders */}
-                <div className='flex flex-col gap-y-6 mt-5'>
-                    {groupedItemsByStore?.map(({ store, items }, index) => (
-                        <div key={index} className='border-2 border-[#F5F5F5] bg-[#ECF3FE99] rounded-lg p-4'>
-                            {/* Store Header */}
-                            <h3 className='text-xl font-bold text-[#7A69E7]'>From {store.store_name}</h3>
-                            <p className='flex lg:gap-x-10'>
-                                <span className='text-sm lg:text-base text-[#6B767B] w-1/2'><strong>Location :</strong> {store.address}</span>
-                                <span className='text-sm lg:text-base text-[#6B767B]'><strong>Store Number :</strong>  {store.store_id}</span>
-                            </p>
-                            {/* Order Items */}
-                            <div className='flex lg:gap-x-20'>
-                                <div className='mt-4 bg-white w-1/2 p-2'>
-                                    <p className='flex justify-between font-bold'>
-                                        <span>Order List : {items.length}</span>
-                                        <span className='text-[#FF4FA3]'>{orderDetails.product_price}/-</span>
-                                    </p>
-
-                                    {items.map((item, idx) => (
-                                        <div key={idx} className='flex justify-between border-t-4 border-[#F5F5F5] py-3'>
-                                            <div className='flex gap-x-3'>
-                                                <Image src={item?.item_image} alt="item" width={500} height={300} className='rounded-lg lg:w-32 lg:h-36 w-16 h-full' />
-                                                <ul className='flex flex-col gap-y-1 text-[#6B767B] lg:text-sm text-xs'>
-                                                    <li className='text-black'>{item?.item_name}</li>
-                                                    <li>Item Id : {item?._id}</li>
-                                                    <li>Qty : {item?.quantity}</li>
-                                                    <li>Size : {item?.size}</li>
-                                                    <li>Gender : {item?.gender}</li>
-                                                    <li>Color : {item?.color}</li>
-                                                </ul>
-                                            </div>
-                                            <p className='font-semibold text-[#FF4FA3]'>{item?.price}/-</p>
-                                        </div>
-                                    ))}
-                                </div>
-                                {/* Details Section */}
-                                <div className='flex flex-col mt-4 gap-y-3 w-1/2'>
-                                    {/* Customer Info */}
-                                    <ul className='p-3 flex flex-col gap-y-1 rounded-lg border-2 border-[#F5F5F5] w-full bg-white'>
-                                        <li className='font-bold'>Customer Details</li>
-                                        <li>Name : {orderDetails?.user_name || 'NA'}</li>
-                                        <li>Number : {orderDetails?.user_phone}</li>
-                                        <li>Delivery Location :</li>
-                                        <li>{orderDetails?.delivery_location || 'NA'}</li>
-                                    </ul>
-
-                                    {/* Delivery Boy Info */}
-
-                                    {deliveryDetails.length ? <ul className='p-3 flex flex-col gap-y-1 rounded-lg border-2 border-[#F5F5F5] w-full bg-white'>
-                                        <li className='font-bold'>Delivery Boy Details</li>
-                                        {deliveryDetails?.map((boy, i) => (
-                                            <li key={i} className='flex gap-x-3 items-start'>
-                                                <Image src={boy?.pickup_image_url} alt="dp" width={500} height={300} className='rounded-lg w-20 h-20' />
-                                                <div className='flex flex-col text-sm text-[#6B767B]'>
-                                                    <span className='text-black'>{boy?.delivery_partner_name}</span>
-                                                    <span>{boy?.delivery_partner_number}</span>
-                                                    <span>Assigned 7:30 AM</span>
-                                                    <span>Earnings: {boy?.amount_gained}</span>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul> : ''}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                    {/* Price Breakdown */}
-                    <div className='rounded-lg border-2 border-[#F5F5F5] p-3 w-full lg:w-fit'>
-                        <p className='font-semibold text-lg'>Price Details</p>
-                        <div className='flex flex-wrap gap-x-3 text-sm pt-2'>
-                            <div className='flex flex-col gap-y-1'>
-                                <span>{orderDetails?.product_price}</span>
-                                <span className='text-[#6B767B]'>Customer Price</span>
-                            </div>
-                            <p>-</p>
-                            <div className='flex flex-col gap-y-1'>
-                                <span>{orderDetails?.delivery_price}</span>
-                                <span className='text-[#6B767B]'>Delivery Fee</span>
-                            </div>
-                            <p>=</p>
-                            <div className='flex flex-col gap-y-1'>
-                                <span>{(orderDetails?.product_price - orderDetails?.delivery_price)}</span>
-                                <span className='text-[#6B767B]'>Remaining Amount</span>
-                            </div>
-                        </div>
+                  {items.map((item, i) => (
+                    <div key={i} className="flex justify-between border-t py-3">
+                      <div className="flex gap-x-3">
+                        <Image
+                          src={item.item_image}
+                          alt="item"
+                          width={120}
+                          height={120}
+                          className="rounded"
+                        />
+                        <ul className="text-sm">
+                          <li className="font-bold">{item.item_name}</li>
+                          <li>Qty: {item.quantity}</li>
+                          <li>Size: {item.size}</li>
+                          <li>Color: {item.color}</li>
+                        </ul>
+                      </div>
+                      <p className="font-semibold text-[#FF4FA3]">
+                        {item.price}/-
+                      </p>
                     </div>
+                  ))}
                 </div>
+
+                {/* CUSTOMER + DELIVERY */}
+                <div className="w-1/2 flex flex-col gap-y-3">
+                  {/* CUSTOMER */}
+                  <ul className="bg-white p-3 rounded-md">
+                    <li className="font-bold">Customer Details</li>
+                    <li>Name: {orderDetails?.user_name}</li>
+                    <li>Phone: {orderDetails?.user_phone}</li>
+                    <li>Address: {orderDetails?.delivery_location}</li>
+                  </ul>
+
+                  {/* DELIVERY */}
+                  {deliveryDetails.length > 0 && (
+                    <ul className="bg-white p-3 rounded">
+                      <li className="font-bold">Delivery Partner</li>
+                      {deliveryDetails.map((boy, i) => (
+                        <li key={i} className="flex gap-x-3 mt-2">
+                          <Image
+                            src={boy.pickup_image_url}
+                            alt="dp"
+                            width={60}
+                            height={60}
+                            className="rounded"
+                          />
+                          <div>
+                            <p className="font-semibold">
+                              {boy.delivery_partner_name}
+                            </p>
+                            <p>{boy.delivery_partner_number}</p>
+                            <p>Earnings: {boy.amount_gained}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
             </div>
-        </Layout>
-    );
+          ))}
+        </div>
+        
+      </div>
+    </Layout>
+  );
 };
 
 export default ComponentName;
