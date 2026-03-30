@@ -61,7 +61,7 @@ const Layout = ({ Content, children }) => {
   }, [isOpen]);
 
   return (
-   
+
     <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -88,10 +88,11 @@ const Layout = ({ Content, children }) => {
               </Link>
             </div>
             <ul className="px-2 text-sm pt-6 flex flex-col gap-1 z-50">
+
               <li className=" py-1">
                 <Link
                   href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/dashboard"
+                  className={`py-2 px-3 ${router.asPath === "/dashboard"
                     ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
                     : ""
                     }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
@@ -102,6 +103,21 @@ const Layout = ({ Content, children }) => {
                   </span>
                 </Link>
               </li>
+
+              {/* <li className=" py-1">
+                <Link
+                  href={"/total-items"}
+                  className={` py-2 px-3 ${router.asPath === "/total-items"
+                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                    : ""
+                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                >
+                  <span>Total Items</span>
+                  <span>
+                    <IoIosArrowForward />
+                  </span>
+                </Link>
+              </li> */}
 
               <li className=" py-1 border-t-2 border-t-gray-50">
                 <Link
@@ -133,7 +149,7 @@ const Layout = ({ Content, children }) => {
                   </Link>
                 </li>
               )}
-              {role == "admin" && (
+              {role == "approval" && (
                 <li className=" py-1 border-t-2 border-t-gray-50">
                   <Link
                     href={"/total-stores"}

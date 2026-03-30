@@ -28,12 +28,15 @@ const TotalStores = () => {
         localStorage.getItem('user_role_id') == '5' ? setRole('approval') : setRole('admin')
 
         async function fetchStoresByStatus() {
+            const usermobile = window.localStorage.getItem("user_phone");
+            const usertoken = usermobile
+                ? window.localStorage.getItem(`${usermobile}_token`)
+                : null;
             const response = await fetch(`https://api.zuget.com/admin/stores?status=${status}`, {
 
                 headers: {
                     'accept': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
-                    'Content-Type': 'application/json',
+                    'Authorization': usertoken,
                 },
             });
 
@@ -98,7 +101,8 @@ const TotalStores = () => {
                             className='rounded-t-lg object-cover w-full h-[400px]'
                         />
                     </li>
-                    <li className='pl-4 uppercase'> {store?.name_as_per_gst}</li>
+                    <li className='pl-4 uppercase'>GST Name: {store?.name_as_per_gst}</li>
+                    <li className='pl-4 uppercase'> {store?.store_name}</li>
                     <li className='pl-4 flex items-center gap-2'>
                         Contact: {store?.owner_number}
                         <button
@@ -117,7 +121,8 @@ const TotalStores = () => {
                     <li className='pl-4'>Location : {store?.area_name}</li>
                     <li className='pl-4'>Store Id: {store?._id}</li>
                     <li className='pl-4 pb-4'>Submitted At {store?.created_on?.slice(0, 10)}</li>
-                    <li className='absolute bottom-2 right-10 '><button onClick={() => { deleteStore(8) }}><MdDeleteForever className='cursor-pointer lg:hover:scale-105' color='red' size={40} /></button></li>
+                    {/* <li className={`absolute bottom-2 right-10 ${store.status=='approved'?'hidden':''}`}><button onClick={() => { deleteStore(8) }}><MdDeleteForever className='cursor-pointer lg:hover:scale-105' color='red' size={40} /></button></li> */}
+                    <li className='absolute bottom-28 right-10 '><Link target='_blank' href={`/total-items/${store?._id}`} className='cursor-pointer p-2 rounded-md bg-blue-400'>View Items</Link></li>
                 </ul>
             </div>
         </div>
@@ -131,7 +136,7 @@ const TotalStores = () => {
                 <li className={` cursor-pointer ${status === 'approved' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('approved') }} href={'/'}>Approved Stores</p></li>
             </ul>
             <div className='grid grid-cols-2 gap-7'>
-                {role == 'admin' &&
+                {
                     data?.length >= 1 ? data?.map((item, index) => (
                         <div key={index} className=''>
                             <StoreCard store={item} />

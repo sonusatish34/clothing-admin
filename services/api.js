@@ -3,8 +3,7 @@ export const fetchAssignStore = async () => {
     method: 'POST',
     headers: {
       'accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
-      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem(`${localStorage.getItem('user_phone')}_token`),
     },
     body: JSON.stringify({
       app_user_id: 19,
@@ -21,8 +20,7 @@ export const UpdateAssignStore = async () => {
     method: 'PUT',
     headers: {
       'accept': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4',
-      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem(`${localStorage.getItem('user_phone')}_token`),
     },
     body: JSON.stringify({
       id: 1,
