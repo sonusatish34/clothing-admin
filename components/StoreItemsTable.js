@@ -26,7 +26,7 @@ export default function StoreItemsTable({ storeId }) {
         setLoading(true);
 
         // Fetch Items
-        // fetch(`http://dev.zuget.com/admin/store-items?store_id=${storeId}`, { headers: getAuthHeaders() })
+        // fetch(`https://dev.zuget.com/admin/store-items?store_id=${storeId}`, { headers: getAuthHeaders() })
         //     .then((res) => res.json())
         //     .then((data) => setItems(data.data || []))
         //     .catch(console.error)
@@ -41,14 +41,14 @@ export default function StoreItemsTable({ storeId }) {
             redirect: "follow"
         };
 
-        fetch(`http://dev.zuget.com/admin/store-items?store_id=${storeId}`, requestOptions)
+        fetch(`https://dev.zuget.com/admin/store-items?store_id=${storeId}`, requestOptions)
             .then((response) => response.json())
             .then((result) => setItems(result.data || []))
             .catch((error) => console.error(error))
             .finally(() => setLoading(false));
 
         // Fetch Approved Stores for Dropdown
-        fetch(`http://dev.zuget.com/admin/approved-store-names`, requestOptions)
+        fetch(`https://dev.zuget.com/admin/approved-store-names`, requestOptions)
             .then((res) => res.json())
             .then((data) => setAvailableStores(data.data || []))
             .catch(console.error);
@@ -92,7 +92,7 @@ export default function StoreItemsTable({ storeId }) {
         };
 
         try {
-            const res = await fetch("http://dev.zuget.com/admin/forward-items", {
+            const res = await fetch("https://dev.zuget.com/admin/forward-items", {
                 method: "POST",
                 headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
