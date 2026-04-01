@@ -48,6 +48,10 @@ export default function StoreItemsTable({ storeId }) {
     const [selectedTargetStore, setSelectedTargetStore] = useState("");
     const [forwardingItem, setForwardingItem] = useState(null);
     const [forwardLoading, setForwardLoading] = useState(false);
+
+
+    const [transferingItem, setTransferingItem] = useState(null);
+    const [transferLoading, setTransfeLoading] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
 
     // --- New Edit & Print State ---
@@ -370,6 +374,15 @@ export default function StoreItemsTable({ storeId }) {
         setForwardingItem({ ...item, size_data: initializedSizes });
     };
 
+    const openTransferModal = (item) => {
+        const initializedSizes = item.size_data.map(s => ({
+            ...s,
+            original_qty: s.quantity,
+            forward_qty: 0
+        }));
+        setTransferingItem({ ...item, size_data: initializedSizes });
+    };
+
     const updateForwardQty = (index, delta) => {
         const newData = [...forwardingItem.size_data];
         const item = newData[index];
@@ -378,6 +391,16 @@ export default function StoreItemsTable({ storeId }) {
             item.forward_qty = nextVal;
             item.quantity = item.original_qty - nextVal;
             setForwardingItem({ ...forwardingItem, size_data: newData });
+        }
+    };
+    const updateTransferQty = (index, delta) => {
+        const newData = [...forwardingItem.size_data];
+        const item = newData[index];
+        const nextVal = item.forward_qty + delta;
+        if (nextVal >= 0 && nextVal <= item.original_qty) {
+            item.forward_qty = nextVal;
+            item.quantity = item.original_qty - nextVal;
+            setTransferingItem({ ...forwardingItem, size_data: newData });
         }
     };
 
@@ -404,6 +427,50 @@ export default function StoreItemsTable({ storeId }) {
             }
         } catch (err) { alert("Error forwarding items"); }
         finally { setForwardLoading(false); }
+    };
+    const handleUpdateItemStore = async () => {
+        // 1. Validation: Ensure we have the necessary IDs
+        if (!selectedTargetStore) return alert("Please select a target store");
+        if (!transferingItem?._id) return alert("No item selected for update");
+
+        setTransfeLoading(true);
+
+        try {
+            // 2. Construct URL with Query Parameters
+            // Using URLSearchParams helps handle encoding (like spaces or special chars)
+            const queryParams = new URLSearchParams({
+                item_id: transferingItem._id,
+                store_id: selectedTargetStore
+            }).toString();
+
+            const url = `${API_BASE}/admin/update-item-store?${queryParams}`;
+
+            // 3. Execute the PUT Request
+            const res = await fetch(url, {
+                method: "PUT",
+                headers: {
+                    ...getAuthHeaders(),
+                    "accept": "application/json"
+                }
+                // Note: No 'body' needed as data is in the URL string
+            });
+
+            const data = await res.json();
+
+            // 4. Handle Response
+            if (data.status === "success" || res.ok) {
+                alert("Item store updated successfully");
+                setTransfeLoading(null);
+                fetchItems(); // Refresh the list
+            } else {
+                alert(data.message || "Failed to update item store");
+            }
+        } catch (err) {
+            console.error("Update Error:", err);
+            alert("Error connecting to the server");
+        } finally {
+            setTransfeLoading(false);
+        }
     };
     const scrollPosRef = typeof window !== 'undefined' ?
         { current: window.scrollY } : { current: 0 };
@@ -457,8 +524,8 @@ export default function StoreItemsTable({ storeId }) {
             <div className="flex justify-between items-center mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">Inventory Management</h1>
-                    <h2 className="text-sm text-gray-500 uppercase">
-                        Store: {availableStores.find(s => s.store_id == storeId)?.store_name || storeId}
+                    <h2 className="text-xl text-gray-700 uppercase">
+                        Store: {availableStores.find(s => s.store_id == storeId)?.store_name || storeId} ({storeId})
                     </h2>
                 </div>
                 <Link target="_blank" href='/barcode-search'>
@@ -657,6 +724,12 @@ export default function StoreItemsTable({ storeId }) {
                                                             <FaEdit size={40} />
                                                         </button>
                                                         <button
+                                                            onClick={() => openTransferModal(item)}
+                                                            className="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-500 transition cursor-pointer"
+                                                        >
+                                                            Transfer
+                                                        </button>
+                                                        <button
                                                             onClick={() => openForwardModal(item)}
                                                             className="bg-gray-900 text-white px-3 py-1 rounded text-xs hover:bg-black transition cursor-pointer"
                                                         >
@@ -776,6 +849,37 @@ export default function StoreItemsTable({ storeId }) {
                                 className="px-6 py-2 bg-green-600 text-white rounded font-bold disabled:opacity-50"
                             >
                                 {forwardLoading ? "Sending..." : "Confirm Forward"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {transferingItem && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-xl max-w-2xl w-full p-6 shadow-2xl">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-lg font-bold">Transferring: {transferingItem.item_name}</h2>
+                            <select
+                                className="border p-2 rounded bg-white text-sm"
+                                value={selectedTargetStore}
+                                onChange={(e) => setSelectedTargetStore(e.target.value)}
+                            >
+                                <option value="">Select Store...</option>
+                                {availableStores.map(s => (
+                                    <option className="capitalize" key={s.store_id} value={s.store_id}>{s.store_name} - {s.store_id}</option>
+                                ))}
+                            </select>
+                        </div>
+
+
+                        <div className="flex gap-3 justify-end">
+                            <button onClick={() => setTransferingItem(null)} className="px-4 py-2">Cancel</button>
+                            <button
+                                onClick={handleUpdateItemStore}
+                                disabled={transferLoading}
+                                className="px-6 py-2 bg-green-600 text-white rounded font-bold disabled:opacity-50"
+                            >
+                                {transferLoading ? "Sending..." : "Confirm Transfer"}
                             </button>
                         </div>
                     </div>
