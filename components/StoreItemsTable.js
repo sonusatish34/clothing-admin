@@ -19,7 +19,7 @@ export default function StoreItemsTable({ storeId }) {
     // --- Search & Filter State ---
     const [searchQuery, setSearchQuery] = useState(""); // For item_id and barcode
     const [nameFilter, setNameFilter] = useState("");   // For item_name dropdown
-    const [isVerified, setIsVerified] = useState(null);   // For item_name dropdown
+    const [isVerified, setIsVerified] = useState("");   // For item_name dropdown
 
     const filteredItems = items.filter((item) => {
         // 1. Ensure we are checking strings and handle potential nulls
