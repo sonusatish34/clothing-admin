@@ -32,9 +32,15 @@ export default function StoreItemsTable({ storeId }) {
         const matchesName = nameFilter === "" || item.item_name === nameFilter;
 
         // --- Verified Filter Logic ---
-        const matchesVerified =
-            isVerified === "" ||
-            item.is_verified === (isVerified === "true");
+        // const matchesVerified =
+        //     isVerified === "" ||
+        //     item.is_verified === (isVerified === "true");
+        const matchesVerified = isVerified === "" || (
+            isVerified === "true"
+                ? item.is_verified === true
+                : (item.is_verified === false || item.is_verified === undefined)
+        );
+
 
         return matchesSearch && matchesName && matchesVerified;
     });
