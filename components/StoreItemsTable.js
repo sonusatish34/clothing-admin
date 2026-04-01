@@ -676,29 +676,54 @@ export default function StoreItemsTable({ storeId }) {
                                         </td>
                                         <td className="p-4">
                                             {isEditing ? (
-                                                <div className="grid grid-cols-5 gap-1">
+                                                /* Increased grid columns to 3 to accommodate both fields comfortably */
+                                                <div className="grid grid-cols-3 gap-2">
                                                     {editFormData.size_data.map((s, i) => (
-                                                        <div key={i} className="flex flex-col border p-1 rounded bg-white">
-                                                            <span className="text-[12px] font-black text-gray-400">{s.size}</span>
-                                                            <input
-                                                                type="number"
-                                                                className="w-full text-[10px] outline-none"
-                                                                placeholder="Qty"
-                                                                value={s.quantity || ""}
-                                                                onChange={(e) => {
-                                                                    const next = [...editFormData.size_data];
-                                                                    next[i].quantity = Number(e.target.value);
-                                                                    setEditFormData({ ...editFormData, size_data: next });
-                                                                }}
-                                                            />
+                                                        <div key={i} className="flex flex-col border p-2 rounded bg-white shadow-sm">
+                                                            <div className="flex justify-between items-center mb-1 border-b pb-1">
+                                                                <span className="text-[12px] font-black text-blue-600">{s.size}</span>
+                                                            </div>
+
+                                                            {/* Quantity Field */}
+                                                            <div className="mb-2">
+                                                                <label className="text-[9px] uppercase font-bold text-gray-400 block">Qty</label>
+                                                                <input
+                                                                    type="number"
+                                                                    className="w-full text-sm outline-none border-b focus:border-blue-500"
+                                                                    placeholder="Qty"
+                                                                    value={s.quantity || ""}
+                                                                    onChange={(e) => {
+                                                                        const next = [...editFormData.size_data];
+                                                                        next[i].quantity = Number(e.target.value);
+                                                                        setEditFormData({ ...editFormData, size_data: next });
+                                                                    }}
+                                                                />
+                                                            </div>
+
+                                                            {/* Price Field */}
+                                                            <div>
+                                                                <label className="text-[9px] uppercase font-bold text-gray-400 block">Price (₹)</label>
+                                                                <input
+                                                                    type="number"
+                                                                    className="w-full text-sm outline-none border-b focus:border-green-500 font-medium"
+                                                                    placeholder="Price"
+                                                                    value={s.price || ""}
+                                                                    onChange={(e) => {
+                                                                        const next = [...editFormData.size_data];
+                                                                        next[i].price = Number(e.target.value);
+                                                                        setEditFormData({ ...editFormData, size_data: next });
+                                                                    }}
+                                                                />
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>
                                             ) : (
+                                                /* Existing View Mode */
                                                 <div className="flex flex-wrap gap-1">
                                                     {item.size_data?.filter(s => s.quantity > 0).map((s, i) => (
                                                         <span key={i} className="px-2 py-0.5 bg-gray-100 border text-[10px] font-bold rounded">
-                                                            {s.size}: {s.quantity}
+                                                            {s.size}: {s.quantity} (@ ₹{s.price})
                                                         </span>
                                                     ))}
                                                 </div>
