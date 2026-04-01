@@ -16,7 +16,29 @@ const NUMERIC_SIZES = Array.from({ length: 11 }, (_, i) => (28 + i * 2).toString
 export default function StoreItemsTable({ storeId }) {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
+    // --- Search & Filter State ---
+    const [searchQuery, setSearchQuery] = useState(""); // For item_id and barcode
+    const [nameFilter, setNameFilter] = useState("");   // For item_name dropdown
 
+    const filteredItems = items.filter((item) => {
+        // 1. Ensure we are checking strings and handle potential nulls
+        const idString = String(item?._id || "").toLowerCase();
+        const barcodeString = String(item?.barcode || "").toLowerCase();
+        const query = searchQuery.toLowerCase().trim();
+
+        // 2. Check if query matches ID or Barcode
+        const matchesSearch = idString.includes(query) || barcodeString.includes(query);
+
+        // 3. Check if name matches dropdown
+        const matchesName = nameFilter === "" || item.item_name === nameFilter;
+
+        return matchesSearch && matchesName;
+    });
+
+    // Get unique names for the dropdown
+    console.log(items, 'items-----------');
+
+    const uniqueNames = [...new Set(items.map(item => item.item_name))].sort();
     // --- Existing Forward State ---
     const [availableStores, setAvailableStores] = useState([]);
     const [selectedTargetStore, setSelectedTargetStore] = useState("");
@@ -41,29 +63,29 @@ export default function StoreItemsTable({ storeId }) {
         };
     };
 
-   const fetchItems = () => {
-    if (!storeId) return;
-    
-    // CAPTURE: Save where the user is currently looking
-    scrollPosRef.current = window.scrollY;
-    
-    setLoading(true);
-    fetch(`${API_BASE}/admin/store-items?store_id=${storeId}`, { headers: getAuthHeaders() })
-        .then((res) => res.json())
-        .then((result) => {
-            setItems(result.data || []);
-            // RESTORE: Use a timeout to ensure React has finished 
-            // painting the table rows before scrolling
-            setTimeout(() => {
-                window.scrollTo({
-                    top: scrollPosRef.current,
-                    behavior: 'instant' // 'instant' prevents flickering
-                });
-            }, 100); 
-        })
-        .catch(console.error)
-        .finally(() => setLoading(false));
-};
+    const fetchItems = () => {
+        if (!storeId) return;
+
+        // CAPTURE: Save where the user is currently looking
+        scrollPosRef.current = window.scrollY;
+
+        setLoading(true);
+        fetch(`${API_BASE}/admin/store-items?store_id=${storeId}`, { headers: getAuthHeaders() })
+            .then((res) => res.json())
+            .then((result) => {
+                setItems(result.data || []);
+                // RESTORE: Use a timeout to ensure React has finished 
+                // painting the table rows before scrolling
+                setTimeout(() => {
+                    window.scrollTo({
+                        top: scrollPosRef.current,
+                        behavior: 'instant' // 'instant' prevents flickering
+                    });
+                }, 100);
+            })
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    };
 
     useEffect(() => {
         fetchItems();
@@ -170,48 +192,165 @@ export default function StoreItemsTable({ storeId }) {
         if (toPrint.length === 0) return alert("Select at least one size");
 
         const win = window.open("", "_blank");
-        const storeName = localStorage.getItem("store_name") || "Zuget Fashion";
+        if (!win) {
+            alert("Popup blocked! Please allow popups to print labels.");
+            return;
+        }
 
-        let html = `<html><head><title>Print Labels</title>
-        <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-        <style>
-            @page { size: 101.6mm 50.8mm; margin: 0; }
-            body { margin: 0; padding: 0; font-family: sans-serif; text-transform: uppercase; }
-            .label-container { width: 101.6mm; height: 50.8mm; display: flex; align-items: center; justify-content: center; page-break-after: always; overflow: hidden; }
-            .portrait-wrapper { transform: rotate(-90deg); width: 48mm; height: 88mm; display: flex; flex-direction: column; justify-content: space-between; padding: 2mm 4mm; box-sizing: border-box; }
-            .store_name { background: #000; color: #fff; padding: 2px 6px; font-size: 12px; font-weight: bold; display: inline-block; }
-            .barcode-svg { width: 100%; height: 70px; display: block; }
-            .price { font-size: 20px; font-weight: 900; }
-        </style></head><body>`;
+        const storeName = localStorage.getItem("store_name") || "THE EDIT LUXURY CLUB";
+
+        let html = `
+<html>
+<head>
+  <title>Print Labels</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <style>
+    @page { size: 101.6mm 50.8mm; margin: 0; }
+    body { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #fff; text-transform: uppercase; }
+    
+    .label-container {
+      width: 101.6mm;
+      height: 50.8mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      page-break-after: always;
+      overflow: hidden;
+    }
+
+    .portrait-wrapper {
+      transform: rotate(-90deg);
+      width: 48mm;
+      height: 88mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2mm 4mm;
+      box-sizing: border-box;
+    }
+
+    .store_name {
+      background: #000 !important;
+      color: #fff !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      padding: 2px 6px;
+      font-size: 14px;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 2mm;
+      margin-bottom: 2px;
+    }
+
+    .barcode-section { 
+      background: #fff; 
+      width: 100%; 
+      padding: 0;
+      margin: 0;
+    }
+
+    .barcode-svg {
+      width: 100%; 
+      height: 100px; 
+      display: block;
+      margin: 0 auto;
+      shape-rendering: crispEdges;
+    }
+
+    .barcode-number { font-size: 12px; font-weight: 800; margin-bottom: 4px; }
+    
+    .brand {
+      padding-top: 10px;
+      font-size: 18px;
+      font-weight: 900;
+      margin: 2px 0;
+    }
+    
+    .specs {
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.8;
+      flex-grow: 1;
+      padding-top: 12px;
+    }
+    
+    .specs p {
+      margin: 1px 0;
+      white-space: normal;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1.5px solid #000;
+      padding-top: 2px;
+      margin-top: 2px;
+      margin-bottom: 4mm;
+    }
+
+    .mrp-label { font-size: 8px; font-weight: 700; line-height: 1; }
+    .price { font-size: 20px; font-weight: 900; }
+  </style>
+</head>
+<body>
+`;
 
         toPrint.forEach((s) => {
             for (let i = 0; i < s.printQty; i++) {
-                html += `<div class="label-container"><div class="portrait-wrapper">
-                    <div>
-                        <div class="store_name">${storeName}</div>
-                        <svg class="barcode-svg" data-value="${printingItem._id}-${s.size}"></svg>
-                        <div style="font-size:10px; font-weight:800;">${printingItem.barcode}-${s.size}</div>
-                        <div style="font-size:16px; font-weight:900;">${printingItem.brand || ""}</div>
-                        <div style="font-size:10px; margin-top:4px;">
-                            ITEM: ${printingItem.item_name}<br/>
-                            SIZE: ${s.size}<br/>
-                            COLOR: ${printingItem.color || "N/A"}
-                        </div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px solid #000;">
-                        <div style="font-size:7px">MRP (Incl. taxes)</div>
-                        <div class="price">₹${s.price}</div>
-                    </div>
-                </div></div>`;
+                // Generate a unique ID for each barcode element to prevent rendering conflicts
+                const uniqueId = `bc_${s.size}_${i}_${Math.floor(Math.random() * 1000)}`;
+
+                html += `
+<div class="label-container">
+  <div class="portrait-wrapper">
+    <div style="display: flex; flex-direction: column;">
+      <div class="store_name">${storeName}</div>
+      <div class="barcode-section">
+        <svg class="barcode-svg" id="${uniqueId}" data-value="${printingItem.barcode}-${s.size}"></svg>
+        <div class="barcode-number">${printingItem.barcode}-${printingItem._id}-${s.size}</div>
+      </div>
+      <div class="brand">${printingItem.brand || ""}</div>
+      <div class="specs">
+        <p>ITEM: ${printingItem.item_name || printingItem.item || ""}</p>
+        <p>SIZE: ${s.size}</p>
+        <p>COLOR: ${printingItem.color || "N/A"}</p>
+        <p>FIT: ${printingItem.fit || "N/A"}</p>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="mrp-label">MAX RETAIL PRICE<br/>(Incl. of all taxes)</div>
+      <div class="price">₹${s.price}</div>
+    </div>
+  </div>
+</div>`;
             }
         });
 
-        html += `<script>window.onload = () => {
-            document.querySelectorAll('.barcode-svg').forEach(el => {
-                JsBarcode(el, el.getAttribute('data-value'), { format: "CODE128", width: 2, height: 70, displayValue: false });
-            });
-            setTimeout(() => { window.print(); window.close(); }, 700);
-        };</script></body></html>`;
+        html += `
+<script>
+  window.onload = () => {
+    document.querySelectorAll('.barcode-svg').forEach(el => {
+      JsBarcode("#" + el.id, el.getAttribute('data-value'), {
+        format: "CODE128",
+        width: 2,
+        height: 100,
+        displayValue: false,
+        margin: 0,
+        background: "#ffffff",
+        lineColor: "#000000",
+        flat: true
+      });
+    });
+
+    setTimeout(() => {
+      window.print();
+      window.close();
+    }, 700);
+  };
+</script>
+</body>
+</html>`;
 
         win.document.write(html);
         win.document.close();
@@ -262,51 +401,51 @@ export default function StoreItemsTable({ storeId }) {
         } catch (err) { alert("Error forwarding items"); }
         finally { setForwardLoading(false); }
     };
-    const scrollPosRef = typeof window !== 'undefined' ? 
-    { current: window.scrollY } : { current: 0 };
+    const scrollPosRef = typeof window !== 'undefined' ?
+        { current: window.scrollY } : { current: 0 };
     const [loadingId, setLoadingId] = useState(null);
 
     const handleVerifiedCondition = async (itemId, currentStatus) => {
-    setLoadingId(itemId);
-    const newStatus = !currentStatus;
-    
-    // 1. Capture current scroll position
-    const currentScroll = window.scrollY;
+        setLoadingId(itemId);
+        const newStatus = !currentStatus;
 
-    const myHeaders = new Headers();
-    myHeaders.append("accept", "application/json");
-    // Use your token logic here
-    myHeaders.append("Authorization", getAuthHeaders().Authorization);
+        // 1. Capture current scroll position
+        const currentScroll = window.scrollY;
 
-    try {
-        const response = await fetch(
-            `${API_BASE}/admin/update-item-verified?item_id=${itemId}&is_verified=${newStatus}`,
-            { method: "PUT", headers: myHeaders }
-        );
+        const myHeaders = new Headers();
+        myHeaders.append("accept", "application/json");
+        // Use your token logic here
+        myHeaders.append("Authorization", getAuthHeaders().Authorization);
 
-        const result = await response.json();
-
-        if (result.status === "success" || response.ok) {
-            // 2. SUCCESS: Update the local state instead of reloading
-            setItems(prevItems => 
-                prevItems.map(item => 
-                    item._id === itemId ? { ...item, is_verified: newStatus } : item
-                )
+        try {
+            const response = await fetch(
+                `${API_BASE}/admin/update-item-verified?item_id=${itemId}&is_verified=${newStatus}`,
+                { method: "PUT", headers: myHeaders }
             );
-            
-            // 3. Optional: Re-fetch in background to ensure sync, 
-            // but local state update handles the UI immediately.
-            // fetchItems(); 
+
+            const result = await response.json();
+
+            if (result.status === "success" || response.ok) {
+                // 2. SUCCESS: Update the local state instead of reloading
+                setItems(prevItems =>
+                    prevItems.map(item =>
+                        item._id === itemId ? { ...item, is_verified: newStatus } : item
+                    )
+                );
+
+                // 3. Optional: Re-fetch in background to ensure sync, 
+                // but local state update handles the UI immediately.
+                // fetchItems(); 
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+            alert("Failed to update status");
+        } finally {
+            setLoadingId(null);
+            // 4. CRITICAL: Remove window.location.reload();
+            // This was preventing the state update and resetting scroll.
         }
-    } catch (error) {
-        console.error("Error updating status:", error);
-        alert("Failed to update status");
-    } finally {
-        setLoadingId(null);
-        // 4. CRITICAL: Remove window.location.reload();
-        // This was preventing the state update and resetting scroll.
-    }
-};
+    };
 
 
     return (
@@ -324,7 +463,66 @@ export default function StoreItemsTable({ storeId }) {
                     </button>
                 </Link>
             </div>
+            {/* --- Filters Section --- */}
+            <div className="flex flex-wrap gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                <div className="flex-1 min-w-[250px]">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Search ID / Barcode</label>
+                    <input
+                        type="text"
+                        placeholder="Enter Item ID or Barcode..."
+                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </div>
 
+                <div className="w-64">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Filter by Item Name</label>
+                    <select
+                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                        value={nameFilter}
+                        onChange={(e) => setNameFilter(e.target.value)}
+                    >
+                        <option value="">All Items</option>
+                        {uniqueNames.map(name => (
+                            <option key={name} value={name}>{name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="flex items-end">
+                    <button
+                        onClick={() => { setSearchQuery(""); setNameFilter(""); }}
+                        className="text-xs text-blue-600 hover:underline pb-3"
+                    >
+                        Reset Filters
+                    </button>
+                </div>
+            </div>
+
+            {/* Update the Table Map to use filteredItems */}
+            {loading ? (
+                <div className="flex justify-center py-20"><FaSpinner className="animate-spin text-3xl text-blue-600" /></div>
+            ) : (
+                <div className="overflow-x-auto border rounded-xl shadow-sm">
+                    <table className="min-w-full text-sm text-left">
+                        {/* ... thead ... */}
+                        <tbody className="divide-y divide-gray-100">
+                            {filteredItems.length > 0 ? (
+                                filteredItems.map((item) => {
+                                    // ... your existing row logic ...
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="p-10 text-center text-gray-400">
+                                        No items found matching your filters.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            )}
             {loading ? (
                 <div className="flex justify-center py-20"><FaSpinner className="animate-spin text-3xl text-blue-600" /></div>
             ) : (
@@ -340,13 +538,13 @@ export default function StoreItemsTable({ storeId }) {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {items.map((item) => {
+                            {filteredItems.map((item) => {
                                 const isEditing = editingId === item._id;
                                 return (
                                     <tr key={item._id} className={`text-xl ${isEditing ? 'bg-blue-50/50' : 'hover:bg-gray-50/50'}`}>
-                                        <td className="p-4">
+                                        <td className="p-4 flex flex-col gap-y-1">
                                             <p className="font-bold text-gray-900">{item.item_name}</p>
-                                            <p className=" text-gray-400">ID: {item._id} | {item.barcode}</p>
+                                            <p className=" text-gray-700">ID: {item._id} | {item.barcode}</p>
                                             <p className=" text-blue-500 mt-1">{item.created_on}</p>
                                         </td>
                                         <td className=" pt-1">
@@ -392,7 +590,7 @@ export default function StoreItemsTable({ storeId }) {
                                                 <div className="grid grid-cols-5 gap-1">
                                                     {editFormData.size_data.map((s, i) => (
                                                         <div key={i} className="flex flex-col border p-1 rounded bg-white">
-                                                            <span className="text-[9px] font-black text-gray-400">{s.size}</span>
+                                                            <span className="text-[12px] font-black text-gray-400">{s.size}</span>
                                                             <input
                                                                 type="number"
                                                                 className="w-full text-[10px] outline-none"
@@ -431,7 +629,7 @@ export default function StoreItemsTable({ storeId }) {
                                                 ) : (
                                                     <>
                                                         <button onClick={() => openPrintModal(item)} className="p-2 text-gy-500 hover:bg-gray-100 rounded" title="Print Labels">
-                                                            <FaPrint size={40}/>
+                                                            <FaPrint size={40} />
                                                         </button>
                                                         <button
                                                             onClick={() => {
@@ -515,7 +713,7 @@ export default function StoreItemsTable({ storeId }) {
                             >
                                 <option value="">Select Store...</option>
                                 {availableStores.map(s => (
-                                    <option key={s.store_id} value={s.store_id}>{s.store_name}</option>
+                                    <option className="capitalize" key={s.store_id} value={s.store_id}>{s.store_name} - {s.store_id}</option>
                                 ))}
                             </select>
                         </div>

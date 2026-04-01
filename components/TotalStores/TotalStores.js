@@ -118,9 +118,9 @@ const TotalStores = () => {
                         </button>
                     </li>
 
-                    <li className='pl-4'>Location : {store?.area_name}</li>
-                    <li className='pl-4'>Store Id: {store?._id}</li>
-                    <li className='pl-4 pb-4'>Submitted At {store?.created_on?.slice(0, 10)}</li>
+                    <li className='pl-4 capitalize font-bold text-lg'>Location : {store?.area_name}</li>
+                    <li className='pl-4 capitalize font-bold text-lg'>Store Id: {store?._id}</li>
+                    <li className='pl-4 pb-4'>Submitted On {store?.created_on}</li>
                     {/* <li className={`absolute bottom-2 right-10 ${store.status=='approved'?'hidden':''}`}><button onClick={() => { deleteStore(8) }}><MdDeleteForever className='cursor-pointer lg:hover:scale-105' color='red' size={40} /></button></li> */}
                     <li className='absolute bottom-28 right-10 '><Link target='_blank' href={`/total-items/${store?._id}`} className='cursor-pointer p-2 rounded-md bg-blue-400'>View Items</Link></li>
                 </ul>
