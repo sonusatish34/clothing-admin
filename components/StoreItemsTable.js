@@ -19,6 +19,7 @@ export default function StoreItemsTable({ storeId }) {
     // --- Search & Filter State ---
     const [searchQuery, setSearchQuery] = useState(""); // For item_id and barcode
     const [nameFilter, setNameFilter] = useState("");   // For item_name dropdown
+    const [isVerified, setIsVerified] = useState(null);   // For item_name dropdown
 
     const filteredItems = items.filter((item) => {
         // 1. Ensure we are checking strings and handle potential nulls
@@ -26,13 +27,16 @@ export default function StoreItemsTable({ storeId }) {
         const barcodeString = String(item?.barcode || "").toLowerCase();
         const query = searchQuery.toLowerCase().trim();
 
-        // 2. Check if query matches ID or Barcode
         const matchesSearch = idString.includes(query) || barcodeString.includes(query);
 
-        // 3. Check if name matches dropdown
         const matchesName = nameFilter === "" || item.item_name === nameFilter;
 
-        return matchesSearch && matchesName;
+        // --- Verified Filter Logic ---
+        const matchesVerified =
+            isVerified === "" ||
+            item.is_verified === (isVerified === "true");
+
+        return matchesSearch && matchesName && matchesVerified;
     });
 
     // Get unique names for the dropdown
@@ -476,6 +480,18 @@ export default function StoreItemsTable({ storeId }) {
                     />
                 </div>
 
+                <div className="w-64">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Status Filter</label>
+                    <select
+                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                        value={isVerified}
+                        onChange={(e) => setIsVerified(e.target.value)} // Added 'e' here
+                    >
+                        <option value="">All Items</option>
+                        <option value="true">Verified</option>
+                        <option value="false">Not Verified</option>
+                    </select>
+                </div>
                 <div className="w-64">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Filter by Item Name</label>
                     <select
