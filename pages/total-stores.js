@@ -5,7 +5,6 @@ const ComponentName = (props) => {
   return (
     <Layout>
       <div className="">
-        {/* <PendingStores /> */}
         <TotalStores />
       </div>
     </Layout>
