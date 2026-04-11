@@ -76,12 +76,6 @@ export default function DiscountsPage() {
                 store_id={STORE_ID}
                 onSuccess={() => fetchDiscountsStatus('active')}
             />
-            <DiscountComboManager
-                tokenAuth={tokenAuth}
-                app_user_id={APP_USER_ID}
-                store_id={STORE_ID}
-                availableDiscounts={activeDiscounts} // Passes current fetched discounts
-            />
 
             <h2 className="text-sm font-bold mb-4 capitalize">{status} Discounts</h2>
 
@@ -102,6 +96,12 @@ export default function DiscountsPage() {
                 loading={loading}
                 onUpdateStatus={handleUpdateStatus}
                 onUpdateDiscount={handleUpdateDiscount}
+            />
+            <DiscountComboManager
+                tokenAuth={tokenAuth}
+                app_user_id={APP_USER_ID}
+                store_id={STORE_ID}
+                availableDiscounts={activeDiscounts} // Passes current fetched discounts
             />
         </div>
     );

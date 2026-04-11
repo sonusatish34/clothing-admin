@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Pencil, Pause, XCircle, Check, X } from "lucide-react";
 import { formatDateTime } from "@/utils/convertDate";
+import Image from "next/image";
 
 const DISCOUNT_OPTIONS = {
     "Price Based": ["Percentage Discount", "Flat Discount", "Cart Value Discount", "Tiered / Slab Discount", "Max Discount Cap"],
@@ -31,7 +32,7 @@ export default function DiscountsTable({ discounts, onUpdateStatus, onUpdateDisc
     const tableInputClass = "w-full border border-gray-300 rounded px-1 py-1 text-xs focus:ring-1 focus:ring-purple-500 outline-none h-8";
 
     return (
-        <div className="overflow-x-auto h-[800px]">
+        <div className="overflow-x-auto h-[400px]">
             <table className="w-full text-left table-fixed border border-gray-300 border-collapse ">
                 <thead className="bg-gray-50 border-b border-gray-300 text-gray-600 font-semibold text-[11px] uppercase">
                     <tr>
@@ -48,7 +49,7 @@ export default function DiscountsTable({ discounts, onUpdateStatus, onUpdateDisc
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     {discounts.map((d) => {
                         const isEditing = inlineEditingId === (d._id || d.discount_id);
                         return (
@@ -80,7 +81,7 @@ export default function DiscountsTable({ discounts, onUpdateStatus, onUpdateDisc
                                         <td className="p-3 border border-gray-200">{d.offer_on}</td>
                                         <td className="p-3 border border-gray-200">{d.gender}</td>
                                         <td className="p-3 border border-gray-200">{d.discount_type}</td>
-                                        <td className="p-3 border border-gray-200 truncate max-w-[120px] text-blue-500 text-[10px]">{d.image_link || "No Image"}</td>
+                                        <td className="p-3 border border-gray-200 truncate max-w-[120px] text-blue-500 text-[10px]"><Image src={d.image_link} className="w-12 h-12 rounded-md" width={500} height={500} /></td>
                                         <td className="p-3 border border-gray-200 font-bold">{d.discount}</td>
                                         <td className="p-3 border border-gray-200">
                                             <div className="flex justify-center items-center gap-4">

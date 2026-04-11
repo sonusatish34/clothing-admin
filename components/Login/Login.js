@@ -4,7 +4,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-const Login = ({ role }) => {
+const Login = ({ role="approval" }) => {
   const router = useRouter();
   console.log(router.asPath, 'kk');
 
