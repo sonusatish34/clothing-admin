@@ -246,7 +246,7 @@ const Orders = () => {
               <div>
                 <div className='lg:flex hidden flex-col  items-center gap-y-3'>
                   {order?.items_json?.slice(0, 2).map((item, index) => (
-                    <Image key={index} src={item?.item_image} className='h-12 w-12 rounded-md' height={100} width={200} />
+                    <Image alt='dksl' key={index} src={item?.item_image} className='h-12 w-12 rounded-md' height={100} width={200} />
                   ))}
                   {(order?.items_json.length > 2 && <span><CiSquarePlus size={30} /></span>)}
                 </div>

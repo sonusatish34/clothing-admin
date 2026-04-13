@@ -47,7 +47,21 @@ export default function StoreItemsTable({ storeId }) {
 
     // Get unique names for the dropdown
     console.log(items, 'items-----------');
+    // 1. Add state for the global name list
+    const [allItemNames, setAllItemNames] = useState([]);
 
+    console.log(allItemNames, "allItemNames");
+
+    // 2. Fetch the list on mount
+    useEffect(() => {
+        fetch(`${API_BASE}/util/item_name_list`, { headers: getAuthHeaders() })
+            .then(res => res.json())
+            .then(data => setAllItemNames(data?.data?.results || []))
+            .catch(console.error);
+    }, [1]);
+
+    // 3. Update the handleInlineChange equivalent for item_name
+    // Inside the table row mapping:
     const uniqueNames = [...new Set(items.map(item => item.item_name))].sort();
     // --- Existing Forward State ---
     const [availableStores, setAvailableStores] = useState([]);
@@ -632,9 +646,74 @@ export default function StoreItemsTable({ storeId }) {
                                 return (
                                     <tr key={item._id} className={`text-xl ${isEditing ? 'bg-blue-50/50' : 'hover:bg-gray-50/50'}`}>
                                         <td className="p-4 flex flex-col gap-y-1">
-                                            <p className="font-bold text-gray-900">{item.item_name}</p>
-                                            <p className=" text-gray-700">ID: {item._id} | {item.barcode}</p>
-                                            <p className=" text-blue-500 mt-1">{item.created_on}</p>
+                                            {isEditing ? (
+                                                <div className="space-y-2 relative">
+                                                    <label className="text-[10px] font-bold text-blue-600 uppercase">Item Name</label>
+
+                                                    <div className="relative">
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Search or select item name..."
+                                                            className="w-full p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none border-blue-200"
+                                                            value={editFormData.item_name || ""}
+                                                            // Show list on focus
+                                                            onFocus={() => setEditingId(item._id)}
+                                                            onChange={(e) => {
+                                                                setEditFormData({ ...editFormData, item_name: e.target.value });
+                                                            }}
+                                                        />
+
+                                                        {editFormData.item_name && (
+                                                            <button
+                                                                onClick={() => setEditFormData({ ...editFormData, item_name: "" })}
+                                                                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                            >
+                                                                <FaTimes size={12} />
+                                                            </button>
+                                                        )}
+                                                    </div>
+
+                                                    {/* DROPDOWN: Shows if editing and focused */}
+                                                    <ul className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-xl max-h-56 overflow-y-auto mt-1 custom-scrollbar">
+                                                        {/* 1. Filtered List */}
+                                                        {allItemNames
+                                                            .filter((nameObj) =>
+                                                                // Shows all if input is empty, otherwise filters
+                                                                !editFormData.item_name ||
+                                                                nameObj?.name?.toLowerCase().includes(editFormData.item_name.toLowerCase())
+                                                            )
+                                                            .map((nameObj, i) => (
+                                                                <li
+                                                                    key={i}
+                                                                    className={`p-2 text-sm cursor-pointer border-b border-gray-50 last:border-none flex items-center justify-between group
+              ${editFormData.item_name === nameObj?.name ? 'bg-blue-100 font-bold' : 'hover:bg-blue-50'}
+            `}
+                                                                    onClick={() => {
+                                                                        setEditFormData({ ...editFormData, item_name: nameObj?.name });
+                                                                    }}
+                                                                >
+                                                                    <span className="text-gray-700">{nameObj?.name}</span>
+                                                                    {editFormData.item_name === nameObj?.name && <FaCheckSquare className="text-blue-600 text-[10px]" />}
+                                                                </li>
+                                                            ))}
+
+                                                        {/* 2. No Results / Empty State */}
+                                                        {allItemNames.length > 0 && allItemNames.filter((nameObj) =>
+                                                            !editFormData.item_name || nameObj?.name?.toLowerCase().includes(editFormData.item_name.toLowerCase())
+                                                        ).length === 0 && (
+                                                                <li className="p-3 text-xs text-gray-400 italic bg-gray-50">
+                                                                     {editFormData.item_name}  not in list. Using as custom name.
+                                                                </li>
+                                                            )}
+                                                    </ul>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col gap-y-1">
+                                                    <p className="font-bold text-gray-900">{item.item_name}</p>
+                                                    <p className="text-gray-700 text-sm">ID: {item._id} | {item.barcode}</p>
+                                                    <p className="text-blue-500 text-[10px] mt-1">{item.created_on}</p>
+                                                </div>
+                                            )}
                                         </td>
                                         <td className=" pt-1">
                                             {/* <p>{item.is_verified ? <FcApprove size={40} /> : <FcDisapprove size={40} />}</p> */}
@@ -663,6 +742,7 @@ export default function StoreItemsTable({ storeId }) {
                                                             src={isEditing ? (idx === 0 ? (editFormData.front_preview || item.item_image) : (editFormData.back_preview || item.item_video)) : img}
                                                             className="w-full h-full object-cover cursor-pointer"
                                                             onClick={() => setPreviewImage(img)}
+                                                            alt="Item Preview"
                                                         />
                                                         {isEditing && (
                                                             <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
@@ -920,7 +1000,7 @@ export default function StoreItemsTable({ storeId }) {
             {/* --- PREVIEW MODAL --- */}
             {previewImage && (
                 <div className="fixed inset-0 bg-black/90 z-[999] flex items-center justify-center p-4" onClick={() => setPreviewImage(null)}>
-                    <img src={previewImage} className="max-w-full max-h-[90vh] rounded shadow-2xl" />
+                    <img alt="Item Preview" src={previewImage} className="max-w-full max-h-[90vh] rounded shadow-2xl" />
                 </div>
             )}
         </div>

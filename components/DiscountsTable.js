@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Pencil, Pause, XCircle, Check, X } from "lucide-react";
+import { Pencil, Pause, XCircle, Check, X ,CircleCheck} from "lucide-react";
 import { formatDateTime } from "@/utils/convertDate";
 import Image from "next/image";
 
@@ -12,7 +12,8 @@ const DISCOUNT_OPTIONS = {
     "Item Gift": ["Free Gift Item"]
 };
 
-export default function DiscountsTable({ discounts, onUpdateStatus, onUpdateDiscount, loading }) {
+export default function DiscountsTable({ discounts, onUpdateStatus, onUpdateDiscount, loading, status }) {
+    console.log(status, "0000000status0000000000")
     const [inlineEditingId, setInlineEditingId] = useState(null);
     const [editBuffer, setEditBuffer] = useState({});
 
@@ -30,22 +31,23 @@ export default function DiscountsTable({ discounts, onUpdateStatus, onUpdateDisc
     };
 
     const tableInputClass = "w-full border border-gray-300 rounded px-1 py-1 text-xs focus:ring-1 focus:ring-purple-500 outline-none h-8";
-
+    // <div className="overflow-x-auto overflow-y-auto max-h-[500px]">
+    //             <table className="w-full text-left border-collapse min-w-[1000px]"></table>
     return (
-        <div className="overflow-x-auto h-[400px]">
-            <table className="w-full text-left table-fixed border border-gray-300 border-collapse ">
+        <div className="overflow-x-auto overflow-y-auto max-h-[700px]">
+            <table className="w-full text-left border-collapse min-w-[1000px] table-fixed border border-gray-300 ">
                 <thead className="bg-gray-50 border-b border-gray-300 text-gray-600 font-semibold text-[11px] uppercase">
                     <tr>
-                        <th className="p-3 border border-gray-200 w-[12%]">Offer Type</th>
-                        <th className="p-3 border border-gray-200 w-[12%]">Created On</th>
-                        <th className="p-3 border border-gray-200 w-[12%]">Status</th>
-                        <th className="p-3 border border-gray-200 w-[12%]">Offer Name</th>
-                        <th className="p-3 border border-gray-200 w-[10%]">Offer On</th>
-                        <th className="p-3 border border-gray-200 w-[10%]">Gender</th>
-                        <th className="p-3 border border-gray-200 w-[15%]">Discount Type</th>
-                        <th className="p-3 border border-gray-200 w-[12%]">Image Link</th>
-                        <th className="p-3 border border-gray-200 w-[12%]">Discount</th>
-                        <th className="p-3 border border-gray-200 w-[17%] text-center">Actions</th>
+                        <th className="p-3 border border-gray-200 w-[10%]">Offer Type</th>
+                        <th className="p-3 border border-gray-200 w-[10%]">Created On</th>
+                        <th className="p-3 border border-gray-200 w-[8%]">Status</th>
+                        <th className="p-3 border border-gray-200 w-[14%]">Offer Name</th>
+                        <th className="p-3 border border-gray-200 w-[8%]">Offer On</th>
+                        <th className="p-3 border border-gray-200 w-[8%]">Gender</th>
+                        <th className="p-3 border border-gray-200 w-[10%]">Discount Type</th>
+                        <th className="p-3 border border-gray-200 w-[10%]">Image Link</th>
+                        <th className="p-3 border border-gray-200 w-[8%]">Discount</th>
+                        <th className="p-3 border border-gray-200 w-[22%] text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,17 +79,79 @@ export default function DiscountsTable({ discounts, onUpdateStatus, onUpdateDisc
                                         <td className="p-3 border border-gray-200">{d.offer_type}</td>
                                         <td className="p-3 border border-gray-200 text-[10px]">{formatDateTime(d.created_on)}</td>
                                         <td className="p-3 border border-gray-200">{d.status}</td>
-                                        <td className="p-3 border border-gray-200 text-gray-400 capitalize">{d.offer_name}({d._id})</td>
+                                        <td className="p-3 border border-gray-200 text-gray-400 capitalize">{d.offer_name} ({d._id})</td>
                                         <td className="p-3 border border-gray-200">{d.offer_on}</td>
                                         <td className="p-3 border border-gray-200">{d.gender}</td>
                                         <td className="p-3 border border-gray-200">{d.discount_type}</td>
-                                        <td className="p-3 border border-gray-200 truncate max-w-[120px] text-blue-500 text-[10px]"><Image src={d.image_link} className="w-12 h-12 rounded-md" width={500} height={500} /></td>
+                                        <td className="p-3 border border-gray-200 truncate max-w-[80px] text-blue-500 text-[10px]">
+                                            {d.image_link ? <Image alt="image discount" src={d.image_link} className="w-20 h-20 rounded-md" width={500} height={500} /> : ''}
+                                        </td>
                                         <td className="p-3 border border-gray-200 font-bold">{d.discount}</td>
                                         <td className="p-3 border border-gray-200">
-                                            <div className="flex justify-center items-center gap-4">
-                                                <Pencil size={20} className="cursor-pointer text-blue-400 hover:text-blue-600" onClick={() => startEdit(d)} />
-                                                <div className="bg-purple-100 p-1 rounded-full cursor-pointer hover:bg-purple-200" onClick={() => onUpdateStatus(d._id, "inactive")}><Pause size={20} className="text-purple-600 fill-purple-600" /></div>
-                                                <XCircle size={20} className="cursor-pointer text-red-400 hover:text-red-600" onClick={() => onUpdateStatus(d._id, "deleted")} />
+                                            <div className="flex justify-center items-center gap-x-3 text-sm">
+                                                {status === 'active' && (
+                                                    <button
+                                                        onClick={() => startEdit(d)}
+                                                        className="group cursor-pointer flex items-center gap-x-1 px-1.5 py-1 bg-blue-50 text-blue-600 rounded-lg border border-blue-100 hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm"
+                                                    >
+                                                        <Pencil
+                                                            size={16}
+                                                            className="transition-colors duration-200"
+                                                        />
+                                                        <span className="text-xs font-medium">Edit</span>
+                                                    </button>
+                                                )}
+                                                {/* {() => onUpdateStatus(d._id, "inactive")} */}
+                                                {status === 'active' && (
+                                                    <button
+                                                        onClick={() => { onUpdateStatus(d._id, "inactive") }}
+                                                        className="group cursor-pointer flex items-center gap-x-1 px-1.5 py-1 bg-purple-50 text-purple-600 rounded-lg border border-purple-100 hover:bg-purple-600 hover:text-white transition-all duration-200 shadow-sm"
+                                                    >
+                                                        <Pause
+                                                            size={16}
+                                                            className="transition-colors duration-200"
+                                                        />
+                                                        <span className="text-xs font-medium">Pause</span>
+                                                    </button>
+                                                )}
+                                                {(status === 'active' || status === 'inactive') && (
+                                                    <button
+                                                        onClick={() => { onUpdateStatus(d._id, "deleted")}}
+                                                        className="group cursor-pointer flex items-center gap-x-1 px-1.5 py-1 bg-red-50 text-red-600 rounded-lg border border-red-100 hover:bg-red-600 hover:text-white transition-all duration-200 shadow-sm"
+                                                    >
+                                                        <XCircle
+                                                            size={16}
+                                                            className="transition-colors duration-200"
+                                                        />
+                                                        <span className="text-xs font-medium">Close</span>
+                                                    </button>
+                                                )}
+                                                {(status === 'inactive' || status === 'deleted')  && (
+                                                    <button
+                                                        onClick={() => { onUpdateStatus(d._id, "active")}}
+                                                        className="group cursor-pointer flex items-center gap-x-1 px-1.5 py-1 bg-green-50 text-green-600 rounded-lg border border-green-100 hover:bg-green-600 hover:text-white transition-all duration-200 shadow-sm"
+                                                    >
+                                                        <CircleCheck
+                                                            size={16}
+                                                            className="transition-colors duration-200"
+                                                        />
+                                                        <span className="text-xs font-medium">Active It</span>
+                                                    </button>
+                                                )}
+                                                {/* {status === 'active' && (
+                                                    <button
+                                                        onClick={() => startEdit(d)}
+                                                        className="group cursor-pointer flex items-center gap-x-2 px-3 py-1.5 bg-purple-50 text-purple-600 rounded-lg border border-purple-100 hover:bg-purple-600 hover:text-white transition-all duration-200 shadow-sm"
+                                                    >
+                                                        <Pause
+                                                            size={16}
+                                                            className="transition-colors duration-200"
+                                                        />
+                                                        <span className="text-sm font-medium">Pause</span>
+                                                    </button>
+                                                )} */}
+
+
                                             </div>
                                         </td>
                                     </>
