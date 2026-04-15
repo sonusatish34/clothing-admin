@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-
+import Image from "next/image";
 export default function InstallPage() {
   useEffect(() => {
     const ua = navigator.userAgent || navigator.vendor || window.opera;
@@ -23,18 +23,19 @@ export default function InstallPage() {
 
     // Desktop fallback
     else {
-      window.location.href = " http://localhost:3001/app-download";
+      // window.location.href = " http://localhost:3001/app-download";
     }
   }, []);
 
   return (
-    <div className="h-screen flex items-center justify-center text-center">
-      <div>
-        <h1 className="text-2xl font-bold mb-4">
-          Redirecting...
-        </h1>
-        <p>Please wait</p>
-      </div>
+    <div className="relative h-screen w-full overflow-hidden">
+      <Image
+        src="/casebeer.webp"
+        alt="Dozzy App Promotion"
+        fill
+        priority
+        className="h-fit w-fit" // This makes the image fill the area like a background
+      />
     </div>
   );
 }
