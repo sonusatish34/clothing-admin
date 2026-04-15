@@ -22,13 +22,14 @@ export default function InstallPage() {
   }, []);
 
   return (
-    <div className="relative h-screen w-full overflow-hidden">
+    <div className="relative h-screen w-full overflow-hidden flex justify-center items-center" >
       <Image
         src="/casebeer.webp"
         alt="Dozzy App Promotion"
-        fill
+        width={500}
+        height={500}
         priority
-        className="h-fit w-fit" // This makes the image fill the area like a background
+        className="h-full" // This makes the image fill the area like a background
       />
     </div>
   );
