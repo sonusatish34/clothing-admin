@@ -8,16 +8,16 @@ export default function InstallPage() {
     // Android
     if (/android/i.test(ua)) {
       window.location.href =
-        "https://play.google.com/store/apps/details?id=com.dozzy_customer";
+        "https://play.google.com/store/apps/details?id=com.long_drive_cars.car&pcampaignid=web_share";
     }
 
     else if (/iPad|iPhone|iPod/.test(ua)) {
       window.location.href =
-        "https://apps.apple.com/app/dozzy-farmhouse-rental/id6670319530";
+        "https://apps.apple.com/in/app/long-drive-cars-car-rental/id6466695391";
     }
 
     else {
-      // window.location.href = " http://localhost:3001/app-download";
+      window.location.href = " http://localhost:3001/app-download";
     }
   }, []);
 
