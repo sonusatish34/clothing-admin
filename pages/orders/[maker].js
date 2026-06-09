@@ -20,7 +20,7 @@ const ComponentName = () => {
     async function fetchOrderDetails() {
       try {
         const res = await fetch(
-          `https://api.zuget.com/admin/order-details?order_id=${router.query.maker}`,
+          `https://dev.zuget.com/admin/order-details?order_id=${router.query.maker}`,
           {
             headers: {
               accept: "application/json",
@@ -50,7 +50,7 @@ const ComponentName = () => {
         const storeId = orderDetails.store_details[0].store_id;
 
         const res = await fetch(
-          `https://api.zuget.com/admin/delivery-partner-details?order_id=${router.query.maker}&store_id=${storeId}`,
+          `https://dev.zuget.com/admin/delivery-partner-details?order_id=${router.query.maker}&store_id=${storeId}`,
           {
             headers: {
               accept: "application/json",

@@ -34,7 +34,7 @@ export default function ProfilePage() {
           redirect: "follow"
         };
 
-        const response = await fetch("https://api.zuget.com/admin/assign-profile", requestOptions);
+        const response = await fetch("https://dev.zuget.com/admin/assign-profile", requestOptions);
         const result = await response.json();
         setProfileData(result);
       } catch (err) {
@@ -61,7 +61,7 @@ export default function ProfilePage() {
           redirect: "follow"
         };
 
-        const response = await fetch(`https://api.zuget.com/admin/${tab}-profiles`, requestOptions);
+        const response = await fetch(`https://dev.zuget.com/admin/${tab}-profiles`, requestOptions);
         const result = await response.json();
         setPendingData(result);
       } catch (err) {
@@ -116,7 +116,7 @@ export default function ProfilePage() {
         };
 
         const response = await fetch(
-          "https://api.zuget.com/admin/update-profile-details",
+          "https://dev.zuget.com/admin/update-profile-details",
           requestOptions
         );
         const result = await response.json();
@@ -169,7 +169,7 @@ export default function ProfilePage() {
         };
 
         const response = await fetch(
-          "https://api.zuget.com/admin/update-profile-details",
+          "https://dev.zuget.com/admin/update-profile-details",
           requestOptions
         );
         const result = await response.json();
@@ -299,6 +299,32 @@ export default function ProfilePage() {
                 </button>
                 <button
                   onClick={() => handleApproveReject('license_status', 'approved')}
+                  className="bg-green-500 text-white py-2 px-4 rounded-lg"
+                >
+                  Approve
+                </button>
+              </div>
+            </div>
+
+            <div className={`p-4 rounded-lg border ${profileData?.data?.results?.rc_image_status === 'approved' ? 'bg-green-100' : 'bg-gray-100'}`}>
+              <div className="font-semibold mb-2 capitalize">RC Status : {profileData?.data?.results?.rc_image_status}</div>
+              <div className="font-semibold mb-2 capitalize">Bike Number : {profileData?.data?.results?.vehicle_number}</div>
+              <ul className='flex flex-col gap-y-2 py-2'>
+                <li>RC Image :</li>
+                <li>
+                  <Image width={1000} height={1000} src={profileData?.data?.results?.rc_image_link} alt="Licence Front" className="w-full h-48 object-cover rounded-lg mb-4" />
+                </li>
+                
+              </ul>
+              <div className="flex flex-col gap-y-3">
+                <button
+                  onClick={() => handleApproveReject('rc_image_status', 'rejected')}
+                  className="bg-red-500 text-white py-2 px-4 rounded-lg"
+                >
+                  Rejected
+                </button>
+                <button
+                  onClick={() => handleApproveReject('rc_image_status', 'approved')}
                   className="bg-green-500 text-white py-2 px-4 rounded-lg"
                 >
                   Approve

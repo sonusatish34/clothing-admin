@@ -6,7 +6,8 @@ const SystemConfig = () => {
     const [settings, setSettings] = useState(null);
     const [formData, setFormData] = useState({
         delivery_base_value: '',
-        km_delivery_value: ''
+        km_delivery_value: '',
+        trail_buy_charges:''
     });
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
@@ -28,7 +29,7 @@ const SystemConfig = () => {
             };
 
             try {
-                const response = await fetch("https://api.zuget.com/admin/other-points-system", requestOptions);
+                const response = await fetch("https://dev.zuget.com/admin/other-points-system", requestOptions);
                 const result = await response.json();
                 setSettings(result);
             } catch (error) {
@@ -42,7 +43,8 @@ const SystemConfig = () => {
         if (settings?.data) {
             setFormData({
                 delivery_base_value: settings.data.delivery_base_value ?? '',
-                km_delivery_value: settings.data.km_delivery_value ?? ''
+                km_delivery_value: settings.data.km_delivery_value ?? '',
+                trail_buy_charges: settings.data.trail_buy_charges ?? ''
             });
         }
     }, [settings]);
@@ -65,7 +67,8 @@ const SystemConfig = () => {
         const raw = JSON.stringify({
             app_user_id: 1,
             delivery_base_value: parseFloat(formData.delivery_base_value),
-            km_delivery_value: parseFloat(formData.km_delivery_value)
+            km_delivery_value: parseFloat(formData.km_delivery_value),
+            trail_buy_charges: parseFloat(formData.trail_buy_charges)
         });
 
         const requestOptions = {
@@ -76,7 +79,7 @@ const SystemConfig = () => {
         };
 
         try {
-            const response = await fetch("https://api.zuget.com/admin/other-points-system", requestOptions);
+            const response = await fetch("https://dev.zuget.com/admin/other-points-system", requestOptions);
             const result = await response.json();
 
             if (response.ok) {
@@ -123,7 +126,7 @@ const SystemConfig = () => {
                         <input
                             id="deliveryBaseValue"
                             name="delivery_base_value"
-                            className={`w-fit outline-none px-2 py-1 ${!editDetails ? 'border' : ''} rounded`}
+                            className={`w-fit outline-none bg-blue-200 px-2 py-1 ${!editDetails ? 'border' : ''} rounded`}
 
                             type="number"
                             step="0.01"
@@ -142,12 +145,29 @@ const SystemConfig = () => {
                         <input
                             id="kmDeliveryValue"
                             name="km_delivery_value"
-                            className={`w-fit outline-none px-2 py-1 ${!editDetails ? 'border' : ''} rounded`}
+                            className={`w-fit outline-none bg-blue-200 px-2 py-1 ${!editDetails ? 'border' : ''} rounded`}
                             type="number"
                             step="0.01"
                             value={formData.km_delivery_value}
                             onChange={(e) => handleFormChange("km_delivery_value", e.target.value)}
                             aria-label="Kilometer delivery value"
+                            readOnly={editDetails}
+
+                        />
+                    </div>
+                    <div className="flex flex-col gap-2 mb-4">
+                        <label htmlFor="trail_buy_charges" className="font-medium">
+                            trail_buy_charges Value:
+                        </label>
+                        <input
+                            id="trail_buy_charges"
+                            name="trail_buy_charges"
+                            className={`w-fit outline-none bg-blue-200 px-2 py-1 ${!editDetails ? 'border' : ''} rounded`}
+                            type="number"
+                            step="0.01"
+                            value={formData.trail_buy_charges}
+                            onChange={(e) => handleFormChange("trail_buy_charges", e.target.value)}
+                            aria-label="trail_buy_charges"
                             readOnly={editDetails}
 
                         />

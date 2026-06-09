@@ -27,7 +27,7 @@ export default function DiscountsPage() {
             const usertoken = usermobile
                 ? window.localStorage.getItem(`${usermobile}_token`)
                 : null;
-            const response = await fetch(`https://api.zuget.com/admin/stores?status=approved`, {
+            const response = await fetch(`https://dev.zuget.com/admin/stores?status=approved`, {
 
                 headers: {
                     'accept': 'application/json',

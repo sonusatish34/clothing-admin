@@ -32,7 +32,7 @@ const TotalStores = () => {
             const usertoken = usermobile
                 ? window.localStorage.getItem(`${usermobile}_token`)
                 : null;
-            const response = await fetch(`https://api.zuget.com/admin/stores?status=${status}`, {
+            const response = await fetch(`https://dev.zuget.com/admin/stores?status=${status}`, {
 
                 headers: {
                     'accept': 'application/json',
@@ -74,7 +74,7 @@ const TotalStores = () => {
                     redirect: "follow"
                 };
 
-                const res = await fetch(`https://api.zuget.com/admin/delete-store?store_id=8`, requestOptions);
+                const res = await fetch(`https://dev.zuget.com/admin/delete-store?store_id=8`, requestOptions);
                 if (res.ok) {
                     Swal.fire('Deleted!', 'Bank updated successfully.', 'success');
                     setCount(prev => prev + 1)
