@@ -1,25 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Loader from '../../components/Loader'
-import { useKeenSlider } from "keen-slider/react"
-import "keen-slider/keen-slider.min.css"
+import Loader from '../../components/Loader';
 import { formatDateTime } from '@/utils/convertDate';
 import Image from 'next/image';
 import { CiSquarePlus } from "react-icons/ci";
 
 const Orders = () => {
-
   const router = useRouter();
-  const [orderStatus, setOrderStatus] = useState('all')
+  const [orderStatus, setOrderStatus] = useState('all');
   const [orders, setOrders] = useState([]);
   const [count, setCount] = useState([]);
-  const [intervalId, setIntervalId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  const statuses = ["all", "in_cart", "booked", "order_assigned", "delivered", "returned", "canceled"];
+
+  // Fetch Order counts
   useEffect(() => {
-    async function kk(params) {
+    async function fetchCounts() {
       const myHeaders = new Headers();
       myHeaders.append("accept", "application/json");
+      // Note: Move this hardcoded string token to an environment variable (.env) for security production builds
       myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiOTE4MjQ1MDc3MCJ9.RjEl6Sl5oNBj-_lW7-gKHqS5PcBU6TVYHwaPFPdmsTg");
 
       const requestOptions = {
@@ -28,21 +29,30 @@ const Orders = () => {
         redirect: "follow"
       };
 
-      fetch("https://dev.zuget.com/admin/orders-count", requestOptions)
-        .then((response) => response.json())
-        .then((result) => setCount(result?.data?.count_results?.reverse()))
-        .catch((error) => console.error(error));
+      try {
+        const response = await fetch("https://dev.zuget.com/admin/orders-count", requestOptions);
+        const result = await response.json();
+        if (result?.data?.count_results) {
+          setCount(result.data.count_results.reverse());
+        }
+      } catch (error) {
+        console.error("Error fetching counts:", error);
+      }
     }
-    kk()
-  }, [])
+    fetchCounts();
+  }, []);
 
+  // Fetch Orders based on status
   useEffect(() => {
-    const fetchOrders = () => {
+    const fetchOrders = (showLoader = false) => {
+      if (showLoader) setIsLoading(true);
+      
       const phone = localStorage.getItem('user_phone');
       const token = localStorage.getItem(`${phone}_token`);
 
       if (!phone || !token) {
         console.error('Phone or token missing in localStorage');
+        setIsLoading(false);
         return;
       }
 
@@ -59,212 +69,158 @@ const Orders = () => {
             setOrders(data.data.results?.reverse() || []);
           }
         })
-        .catch(err => console.error('Error fetching orders:', err));
+        .catch(err => console.error('Error fetching orders:', err))
+        .finally(() => {
+          setIsLoading(false);
+        });
     };
 
-    // Fetch orders initially
-    fetchOrders();
+    // Trigger initial load with spinner visibility turned on
+    fetchOrders(true);
 
-    // Set an interval to fetch orders every 20 seconds
-    const id = setInterval(fetchOrders, 10000);
-    setIntervalId(id);
+    // Continuous polling updates in background without jarring loading animations
+    const id = setInterval(() => {
+      fetchOrders(false);
+    }, 10000);
 
-    // Clean up the interval when the component is unmounted or when `orderStatus` changes
-    return () => {
-      clearInterval(id);
-    };
-  }, [orderStatus]); // The effect runs every time `orderStatus` changes
+    return () => clearInterval(id);
+  }, [orderStatus]);
 
-  const [sliderRef, slider] = useKeenSlider({
-    loop: false,
-    slides: {
-      perView: 4.5,
-      spacing: 5,
-    },
-    breakpoints: {
-      "(min-width: 768px)": {
-        slides: {
-          perView: 9,
-          spacing: 5,
-        },
-      },
-    },
-  })
-
-
-  const statuses = ["all", "in_cart", "booked", "order_assigned", "delivered", "returned", "canceled"];
-
-
-
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'in_cart': return 'text-blue-600 bg-blue-50 border-blue-200';
+      case 'canceled': return 'text-red-600 bg-red-50 border-red-200';
+      case 'booked': return 'text-green-600 bg-green-50 border-green-200';
+      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+    }
+  };
 
   return (
-    <div className='flex flex-col gap-y-6'>
+    <div className='flex flex-col gap-y-6 p-4 max-w-7xl mx-auto w-full'>
       {/* Top Tabs */}
-      <div className=''>
-        {/* <Loader/> */}
-        <div className="relative w-full">
-          <div className="text-xs xl:text-sm lg:text-xs">
-            {/* <ul className='gap-x-10 flex  bg-red- border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden'>
-              
-
-              {count.filter((item => item.status === "all"))?.length ? count.filter((item => item.status === "all")).map((item) => (
-                <li onClick={() => { setOrderStatus(item?.status) }}
-                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
-                </li>
-              )) :
-                <li onClick={() => { setOrderStatus('all') }}
-                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
-                  key={`1 index`}>all dummy (0)
-                </li>
-              }
-               {count.filter((item => item.status === "in_cart"))?.length ? count.filter((item => item.status === "in_cart")).map((item) => (
-                <li onClick={() => { setOrderStatus(item?.status) }}
-                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
-                </li>
-              )) :
-                <li onClick={() => { setOrderStatus('in_cart') }}
-                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
-                  key={`1 index`}>in cart (0)
-                </li>
-              }
-              {count.filter((item => item.status === "booked"))?.length ? count.filter((item => item.status === "booked")).map((item) => (
-                <li onClick={() => { setOrderStatus(item?.status) }}
-                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
-                </li>
-              )) :
-                <li onClick={() => { setOrderStatus('booked') }}
-                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
-                  key={`1 index`}>booked (0)
-                </li>
-              }
-              {count.filter((item => item.status === "order_assigned"))?.length ? count.filter((item => item.status === "order_assigned")).map((item) => (
-                <li onClick={() => { setOrderStatus(item?.status) }}
-                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
-                </li>
-              )) :
-                <li onClick={() => { setOrderStatus('order_assigned') }}
-                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
-                  key={`1 index`}>order assigned (0)
-                </li>
-              }
-              {count.filter((item => item.status === "delivered"))?.length ? count.filter((item => item.status === "delivered")).map((item) => (
-                <li onClick={() => { setOrderStatus(item?.status) }}
-                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
-                </li>
-              )) :
-                <li onClick={() => { setOrderStatus('delivered') }}
-                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
-                  key={`1 index`}>delivered (0)
-                </li>
-              }
-              {count.filter((item => item.status === "returned"))?.length ? count.filter((item => item.status === "returned")).map((item) => (
-                <li onClick={() => { setOrderStatus(item?.status) }}
-                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
-                </li>
-              )) :
-                <li onClick={() => { setOrderStatus('returned') }}
-                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
-                  key={`1 index`}>returned (0)
-                </li>
-              }
-              {count.filter((item => item.status === "canceled"))?.length ? count.filter((item => item.status === "canceled")).map((item) => (
-                <li onClick={() => { setOrderStatus(item?.status) }}
-                  className={`capitalize lg:text-sm cursor-pointer ${item.status == orderStatus && 'text-[#793FDF] font-bold'}`}
-                  key={`${item?.status} index`}>{item?.status?.replaceAll('_', ' ')} ({item?.count})
-                </li>
-              )) :
-                <li onClick={() => { setOrderStatus('canceled') }}
-                  className={`capitalize lg:text-sm cursor-pointer ${'text-[#793FDF] font-bold'}`}
-                  key={`1 index`}>canceled (0)
-                </li>
-              }
-             
-
-            </ul> */}
-
-            <ul className="gap-x-10 flex bg-red- border-2 border-[#F5F5F5] p-3 rounded-t-2xl overflow-hidden">
-              {statuses.map((status) => {
-                const filtered = count.filter((item) => item.status === status);
-                const item = filtered[0];
-                return (
-                  <li
-                    key={status}
-                    onClick={() => setOrderStatus(status)}
-                    className={`hover:underline capitalize lg:text-sm cursor-pointer ${orderStatus === status ? 'text-[#793FDF] font-bold' : ''}`}
-                  >
-                    {status.replaceAll('_', ' ')} ({item ? item.count : 0})
-                  </li>
-                );
-              })}
-            </ul>
-
-
-          </div>
-        </div>
+      <div className="w-full border-b border-gray-200">
+        <ul className="flex gap-x-6 overflow-x-auto no-scrollbar pb-px whitespace-nowrap scroll-smooth-touch">
+          {statuses.map((status) => {
+            const filtered = count.filter((item) => item.status === status);
+            const item = filtered[0];
+            const isActive = orderStatus === status;
+            return (
+              <li
+                key={status}
+                onClick={() => setOrderStatus(status)}
+                className={`capitalize text-sm pb-3 cursor-pointer border-b-2 font-medium transition-all duration-200 ease-in-out select-none
+                  ${isActive 
+                    ? 'border-[#793FDF] text-[#793FDF] font-bold scale-105' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+              >
+                {status.replaceAll('_', ' ')} 
+                <span className={`ml-1 text-xs px-2 py-0.5 rounded-full ${isActive ? 'bg-[#793FDF] text-white' : 'bg-gray-100 text-gray-600'}`}>
+                  {item ? item.count : 0}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       </div>
 
-      {/* Filters */}
-
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
-        {orders?.map(order => (
-          <div key={order._id} className='border-2 border-[#f2f2f2] rounded-lg p-3 px-3 lg:hover:scale-95 delay- transition-all ease-in-out'>
-            <div className='flex justify-evenly'>
-              <div className='flex flex-col gap-y-1'>
-                <p className='font-bold text-xl'>Order Id : {order._id}</p>
-                {order.items_json?.length > 0 && (
-                  <p className='text-xs lg:text-sm xl:text-lg text-[#6B767B] font-bold capitalize'>
-                    {
-                      (() => {
+      {/* Main Contents Area */}
+      {isLoading ? (
+        <div className="flex justify-center items-center min-h-[300px]">
+          <Loader />
+        </div>
+      ) : orders.length === 0 ? (
+        <div className="text-center py-12 text-gray-500 font-medium">
+          No orders found for this status.
+        </div>
+      ) : (
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          {orders.map(order => (
+            <div 
+              key={order._id} 
+              className='bg-white border border-gray-100 shadow-sm hover:shadow-md rounded-xl p-4 lg:p-5 transition-all duration-200 flex flex-col justify-between gap-y-4'
+            >
+              {/* Card Header Information */}
+              <div className='flex flex-col sm:flex-row justify-between items-start gap-2 border-b border-gray-50 pb-3'>
+                <div>
+                  <h3 className='font-bold text-base lg:text-lg text-gray-900 break-all sm:break-normal'>
+                    Order ID: <span className="text-gray-600 font-medium text-sm sm:text-base">{order._id}</span>
+                  </h3>
+                  {order.items_json?.length > 0 && (
+                    <p className='text-xs sm:text-sm text-gray-500 font-semibold mt-0.5 capitalize'>
+                      {(() => {
                         const uniqueStoreNames = [
                           ...new Set(order.items_json?.map(item => item?.store_name).filter(Boolean))
                         ];
-
-                        return uniqueStoreNames.length > 0
-                          ? uniqueStoreNames.map((storeName, i) => (
-                            <span key={i}>
-                              {storeName}{i < uniqueStoreNames.length - 1 && ', '}
-                            </span>
-                          ))
-                          : 'N/A';
-                      })()
-                    }
-                  </p>
-                )}
-                <p className='font-medium'>Custome Number : {order?.user_phone}</p>
-                <p className='w-40 lg:w-52 xl:w-72 flex flex-col lg:text-sm text-xs'>
-                  <span>Delivery Location :</span>
-                  {order.delivery_location || 'N/A'}
-                </p>
+                        return uniqueStoreNames.length > 0 ? uniqueStoreNames.join(', ') : 'N/A';
+                      })()}
+                    </p>
+                  )}
+                </div>
+                <span className={`text-xs px-2.5 py-1 rounded-full border font-semibold capitalize ${getStatusColor(order.status)}`}>
+                  {order?.status?.replaceAll('_', ' ')}
+                </span>
               </div>
-              {/* <div><Image src={order?.items_json[0]?.item_image} className='h-32 w-32' height={100} width={200}/></div> */}
-              <div>
-                <div className='lg:flex hidden flex-col  items-center gap-y-3'>
-                  {order?.items_json?.slice(0, 2).map((item, index) => (
-                    <Image alt='dksl' key={index} src={item?.item_image} className='h-12 w-12 rounded-md' height={100} width={200} />
-                  ))}
-                  {(order?.items_json.length > 2 && <span><CiSquarePlus size={30} /></span>)}
+
+              {/* Card Body Core Metadata */}
+              <div className='flex flex-row justify-between items-center gap-4'>
+                <div className='flex flex-col gap-y-1.5 flex-1 min-w-0'>
+                  <p className='text-xs sm:text-sm text-gray-700 font-medium'>
+                    <span className="text-gray-400">Customer:</span> {order?.user_phone}
+                  </p>
+                  <div className='text-xs sm:text-sm text-gray-600 flex flex-col'>
+                    <span className="text-gray-400 font-medium">Delivery Location:</span>
+                    <p className="truncate-2-lines text-gray-700 mt-0.5 font-medium">
+                      {order.delivery_location || 'N/A'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Optional Micro Thumbnails Preview Array */}
+                {order?.items_json?.length > 0 && (
+                  <div className='hidden sm:flex flex-col items-center justify-center gap-1.5 flex-shrink-0 bg-gray-50 p-2 rounded-lg'>
+                    {order.items_json.slice(0, 2).map((item, index) => (
+                      <Image 
+                        alt='item preview' 
+                        key={index} 
+                        src={item?.item_image || '/placeholder-image.png'} 
+                        className='h-10 w-10 object-cover rounded-md border border-gray-200' 
+                        height={40} 
+                        width={40} 
+                      />
+                    ))}
+                    {order?.items_json.length > 2 && (
+                      <span className="text-gray-400 hover:text-gray-600 cursor-pointer">
+                        <CiSquarePlus size={24} />
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Card Footer Actions */}
+              <div className='flex flex-row justify-between items-center border-t border-gray-50 pt-3 mt-auto'>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400 font-medium">Total Price</span>
+                  <p className='text-rose-500 font-bold text-lg sm:text-xl'>
+                    {order.product_price ? `₹${order.product_price}/-` : '₹0/-'}
+                  </p>
+                </div>
+                
+                <div className="flex flex-col items-end gap-y-1">
+                  <Link 
+                    className='px-4 py-2 bg-[#793FDF] hover:bg-[#6432b8] text-white font-medium text-xs sm:text-sm rounded-lg transition-colors shadow-sm' 
+                    href={`/orders/${order._id}`}
+                  >
+                    View Items
+                  </Link>
+                  <p className='text-[10px] text-gray-400 font-medium mt-1'>{formatDateTime(order.created_on)}</p>
                 </div>
               </div>
-              <div className='flex flex-col lg:gap-y-6 items-end'>
-                <p className={`capitalize font-semibold text-sm ${order.status == 'in_cart' && 'text-blue-700' || order.status == 'canceled' && 'text-red-700' || order.status == 'booked' && 'text-green-700'}`}>
-                  {order?.status?.replaceAll('_', ' ')}
-                </p>
-                <p className='text-pink-500 font-bold text-xl'>
-                  {order.product_price ? `${order.product_price}/-` : '0/-'}
-                </p>
-                <Link className='p-2 bg-[#793FDF] text-white rounded-lg' href={`/orders/${order._id}`}>View Items</Link>
-                <p className='text-xs'>{formatDateTime(order.created_on)}</p>
-              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

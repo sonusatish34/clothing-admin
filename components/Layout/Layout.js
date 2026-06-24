@@ -11,6 +11,10 @@ import { CgProfile } from "react-icons/cg";
 import { FaUserCircle } from "react-icons/fa";
 import { IoIosArrowForward, IoIosDisc } from "react-icons/io";
 import { useRouter } from "next/router";
+import { GrUserAdmin } from "react-icons/gr";
+import { FcApproval } from "react-icons/fc";
+import { FaUserCheck } from "react-icons/fa";
+
 const Layout = ({ Content, children }) => {
   useEffect(() => {
     const usermobile = window.localStorage.getItem("user_phone");
@@ -34,6 +38,14 @@ const Layout = ({ Content, children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [role, setRole] = useState("");
   const sidebarRef = useRef(null);
+
+  const allowedPathsForApproval = ["/pending-stores-detailing", "/delivery-boy"];
+  const showLink = (path) => {
+    if (!role) return false;
+    if (role === "admin") return true;
+    if (role === "approval") return allowedPathsForApproval.includes(path);
+    return false;
+  };
 
   // Close sidebar on outside click
   useEffect(() => {
@@ -60,6 +72,23 @@ const Layout = ({ Content, children }) => {
     };
   }, [isOpen]);
 
+  // Enforce access rules: admin -> all pages; approval -> only specific pages
+  useEffect(() => {
+    if (!role) return;
+    try {
+      const path = router.asPath ? router.asPath.split("?")[0].split("#")[0] : "/";
+      if (role === "approval") {
+        const allowed = ["/pending-stores-detailing", "/delivery-boy"];
+        const allowedMatch = allowed.some((p) => path.startsWith(p));
+        if (!allowedMatch) {
+          router.push("/pending-stores-detailing");
+        }
+      }
+    } catch (err) {
+      // router may be undefined briefly; ignore
+    }
+  }, [role, router.asPath]);
+
   return (
 
     <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
@@ -72,37 +101,39 @@ const Layout = ({ Content, children }) => {
 
       <div className="flex h-full lg:pl-4 px-4 pt-8 pb-5 relative text-black bg-white/90">
         {/* desktop side bar */}
-        <p className="fixed top-1 w-fit  lg:left-16 right-4 capitalize border text-sm lg:text-lg p-1 py-[1px] rounded-md">{role}</p>
+        {/* <p className="fixed top-1 w-fit  lg:left-16 right-4 capitalize border text-sm lg:text-lg p-1 py-[1px] rounded-md">{role =='admin' ?<GrUserAdmin/>:<FcApproval/>}</p> */}
 
         <nav className="h-screen pb-10 text-2xl  lg:flex hidden flex-col gap-2 items-start w-48  rounded-t-xl rounded-b-xl fixed top-10 ">
           <div className="h-full w-full overflow-hidden pt-2">
-            <div className="h-20 bg-black w-full rounded-lg">
+            <div className="text-center bg-[#793FDF] text-white hover:scale-95 rounded-full py-2">
               <Link href={"/"}>
-                <Image
-                  src={'/logo.png'}
+                {/* <Image
+                  src={'/loggo.png'}
                   alt="line"
                   width={500}
                   height={300}
-                  className="rounded-t-lg w-full h-full object-cover"
-                />
+                  className="rounded-t-lg w-full h-full object-contain"
+                /> */}Zuget
               </Link>
             </div>
-            <ul className="px-2 text-sm pt-6 flex flex-col gap-1 z-50">
+            <ul className="px-2 text-sm lg:pt-2 flex flex-col gap-1 z-50">
 
-              <li className=" py-1">
-                <Link
-                  href={"/dashboard"}
-                  className={`py-2 px-3 ${router.asPath === "/dashboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Dashboard</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>
+              {showLink('/dashboard') && (
+                <li className=" py-1">
+                  <Link
+                    href={"/dashboard"}
+                    className={`py-2 px-3 ${router.asPath === "/dashboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                      }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  >
+                    <span>Dashboard</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
 
               {/* <li className=" py-1">
                 <Link
@@ -119,21 +150,23 @@ const Layout = ({ Content, children }) => {
                 </Link>
               </li> */}
 
-              <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/orders"}
-                  className={` py-2 px-3 ${router.asPath.includes('orders')
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Orders</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>
-              {role === "approval" && (
+              {showLink('/orders') && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/orders"}
+                    className={` py-2 px-3 ${router.asPath.includes('orders')
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                      }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  >
+                    <span>Orders</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {showLink('/pending-stores-detailing') && (
                 <li className=" py-1 border-t-2 border-t-gray-50">
                   <Link
                     href={"/pending-stores-detailing"}
@@ -149,7 +182,7 @@ const Layout = ({ Content, children }) => {
                   </Link>
                 </li>
               )}
-              {role == "approval" && (
+              {showLink('/total-stores') && (
                 <li className=" py-1 border-t-2 border-t-gray-50">
                   <Link
                     href={"/total-stores"}
@@ -165,104 +198,118 @@ const Layout = ({ Content, children }) => {
                   </Link>
                 </li>
               )}
-              <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/delivery-boy"}
-                  className={` py-2 px-3 ${router.asPath === "/delivery-boy"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Delivery Boys</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>
-              <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/store-admin"}
-                  className={` py-2 px-3 ${router.asPath === "/store-admin"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Store Admin</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>
-              <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/system-configs"}
-                  className={` py-2 px-3 ${router.asPath === "/system-configs"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>System Configs</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>
-              <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/discounts"}
-                  className={` py-2 px-3 ${router.asPath === "/discounts"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Discounts</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>
-              <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/store-bank-details"}
-                  className={` py-2 px-3 ${(router.asPath.includes('store-bank-details'))
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Store Bank Details</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>
-              <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Ads Manager</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>
-              <li className=" py-1 border-t-2 border-t-gray-50">
-                <Link
-                  href={"/dashboard"}
-                  className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                    ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                    : ""
-                    }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                >
-                  <span>Customer Details</span>
-                  <span>
-                    <IoIosArrowForward />
-                  </span>
-                </Link>
-              </li>
+              {showLink('/delivery-boy') && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/delivery-boy"}
+                    className={` py-2 px-3 ${router.asPath === "/delivery-boy"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                      }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  >
+                    <span>Delivery Boys</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {showLink('/store-admin') && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/store-admin"}
+                    className={` py-2 px-3 ${router.asPath === "/store-admin"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                      }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  >
+                    <span>Store Admin</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {showLink('/system-configs') && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/system-configs"}
+                    className={` py-2 px-3 ${router.asPath === "/system-configs"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                      }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  >
+                    <span>System Configs</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {showLink('/discounts') && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/discounts"}
+                    className={` py-2 px-3 ${router.asPath === "/discounts"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                      }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  >
+                    <span>Discounts</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {showLink('/store-bank-details') && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/store-bank-details"}
+                    className={` py-2 px-3 ${(router.asPath.includes('store-bank-details'))
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                      }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  >
+                    <span>Store Bank Details</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {showLink('/dashboard') && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/dashboard"}
+                    className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                      }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  >
+                    <span>Ads Manager</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )}
+              {/* {showLink('/dashboard') && (
+                <li className=" py-1 border-t-2 border-t-gray-50">
+                  <Link
+                    href={"/dashboard"}
+                    className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                      ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                      : ""
+                      }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                  >
+                    <span>Customer Details</span>
+                    <span>
+                      <IoIosArrowForward />
+                    </span>
+                  </Link>
+                </li>
+              )} */}
               <li
                 onClick={() => {
                   localStorage.clear();
@@ -304,7 +351,8 @@ const Layout = ({ Content, children }) => {
                   <option value="option4">Option 4</option>
                   <option value="option5">Option 5</option>
                 </select>
-                <FaUserCircle className="text-gray-500" size={30} />
+                {/* <FaUserCircle className="text-gray-500" size={30} /> */}
+                <p className="border-black bg-gray-200 rounded-full p-2 flex justify-center items-center">{role =='admin' ?<GrUserAdmin className="text-gray-900" size={20} />:<FaUserCheck className="text-gray-900" size={20}/>}</p>
               </div>
             </div>
           </div>
@@ -350,35 +398,39 @@ const Layout = ({ Content, children }) => {
                 </button>
                 <div className="lg:p-6 flex flex-col h-full space-y-6">
                   <ul className="px-2 text-sm  pt-12 flex flex-col gap-1">
-                    <li className=" py-1">
-                      <Link
-                        href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/dashboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                      >
-                        <span>Dashboard</span>
-                        <span>
-                          <IoIosArrowForward />
-                        </span>
-                      </Link>
-                    </li>
-                    <li className=" py-1 border-t-2 border-t-gray-50">
-                      <Link
-                        href={"/orders"}
-                        className={` py-2 px-3 ${router.asPath === "/orders"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                      >
-                        <span>Orders</span>
-                        <span>
-                          <IoIosArrowForward />
-                        </span>
-                      </Link>
-                    </li>
-                    {
+                    {showLink('/dashboard') && (
+                      <li className=" py-1">
+                        <Link
+                          href={"/dashboard"}
+                          className={` py-2 px-3 ${router.asPath === "/dashboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                            }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        >
+                          <span>Dashboard</span>
+                          <span>
+                            <IoIosArrowForward />
+                          </span>
+                        </Link>
+                      </li>
+                    )}
+                    {showLink('/orders') && (
+                      <li className=" py-1 border-t-2 border-t-gray-50">
+                        <Link
+                          href={"/orders"}
+                          className={` py-2 px-3 ${router.asPath === "/orders"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                            }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        >
+                          <span>Orders</span>
+                          <span>
+                            <IoIosArrowForward />
+                          </span>
+                        </Link>
+                      </li>
+                    )}
+                    {showLink('/pending-stores-detailing') && (
                       <li className=" py-1 border-t-2 border-t-gray-50">
                         <Link
                           href={"/pending-stores-detailing"}
@@ -393,35 +445,39 @@ const Layout = ({ Content, children }) => {
                           </span>
                         </Link>
                       </li>
-                    }
-                    <li className=" py-1 border-t-2 border-t-gray-50">
-                      <Link
-                        href={"/dashboard"}
-                        className={` py-2 px-3 ${router.asPath === "/das2hboard"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                      >
-                        <span>Total Stores</span>
-                        <span>
-                          <IoIosArrowForward />
-                        </span>
-                      </Link>
-                    </li>
-                    <li className=" py-1 border-t-2 border-t-gray-50">
-                      <Link
-                        href={"/delivery-boy"}
-                        className={` py-2 px-3 ${router.asPath === "/delivery-boy"
-                          ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
-                          : ""
-                          }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
-                      >
-                        <span>Delivery Boys</span>
-                        <span>
-                          <IoIosArrowForward />
-                        </span>
-                      </Link>
-                    </li>
+                    )}
+                    {showLink('/total-stores') && (
+                      <li className=" py-1 border-t-2 border-t-gray-50">
+                        <Link
+                          href={"/total-stores"}
+                          className={` py-2 px-3 ${router.asPath === "/das2hboard"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                            }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        >
+                          <span>Total Stores</span>
+                          <span>
+                            <IoIosArrowForward />
+                          </span>
+                        </Link>
+                      </li>
+                    )}
+                    {showLink('/delivery-boy') && (
+                      <li className=" py-1 border-t-2 border-t-gray-50">
+                        <Link
+                          href={"/delivery-boy"}
+                          className={` py-2 px-3 ${router.asPath === "/delivery-boy"
+                            ? "text-[#793FDF] shadow-[0_0_10px_#493D9E4D] font-bold"
+                            : ""
+                            }  h-9 rounded-lg p-1  hover:shadow-[0_0_10px_#493D9E4D] hover:text-[#793FDF] hover:font-bold cursor-pointer flex items-center justify-between w-full`}
+                        >
+                          <span>Delivery Boys</span>
+                          <span>
+                            <IoIosArrowForward />
+                          </span>
+                        </Link>
+                      </li>
+                    )}
                     <li className=" py-1 border-t-2 border-t-gray-50">
                       <Link
                         href={"/dashboard"}

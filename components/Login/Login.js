@@ -3,8 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
-const Login = ({ role="approval" }) => {
+import Image from "next/image";
+const Login = ({ role="admin" }) => {
   const router = useRouter();
   console.log(router.asPath, 'kk');
 
@@ -12,7 +12,7 @@ const Login = ({ role="approval" }) => {
     const userRoleId = localStorage.getItem('user_role_id'); // Correct way to retrieve data from localStorage
     if (router.asPath === '/approval-login' && userRoleId === '5') {
       return;
-    } else if (router.asPath === '/' && userRoleId === '3') {
+    } else if (router.asPath === '/' && (userRoleId === '3' || userRoleId === '5')) {
       return;
     }
     else {
@@ -68,7 +68,7 @@ const Login = ({ role="approval" }) => {
       setApprovalTeam("5");
       window.localStorage.setItem("user_role_id", "5");
     } else {
-      setApprovalTeam("0");
+      setApprovalTeam("3");
       window.localStorage.setItem("user_role_id", "3");
     }
 
@@ -223,7 +223,7 @@ const Login = ({ role="approval" }) => {
     >
       <div className="flex justify-center items-center h-full w-full">
         <div className="flex flex-col lg:flex-row justify-center items-center">
-          <div className="bg-black xl:h-[500px] xl:w-[500px] lg:h-[400px] lg:w-[400px] h-[150px] w-full lg:rounded-l-md rounded-tl-md rounded-tr-md lg:rounded-tr-none "></div>
+          <div className=" xl:h-[500px] xl:w-[500px] lg:h-[400px] lg:w-[400px] h-[150px] w-full lg:rounded-l-md rounded-tl-md rounded-tr-md lg:rounded-tr-none "><Image src={'/loggo.png'} height={1000} width={1000} className="object-cover lg:rounded-l-md rounded-tl-md"/> </div>
 
           {!otpSuccess ? (
             <form
