@@ -53,7 +53,7 @@ const BankDetailsForm = () => {
             myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
             myHeaders.append("Content-Type", "application/json");
 
-            const raw = JSON.stringify({ app_user_id: 27, role_id: 5 });
+            const raw = JSON.stringify({ app_user_id: localStorage.getItem('app_user_id'), role_id: 5 });
 
             const requestOptions = {
                 method: "POST",
