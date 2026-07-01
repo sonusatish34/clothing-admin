@@ -14,7 +14,7 @@
 // }
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import "@/styles/globals.css";
+import "../styles/globals.css";
 import Head from "next/head";
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';

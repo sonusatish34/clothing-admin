@@ -1,69 +1,58 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp, FaSpinner } from "react-icons/fa";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-const Login = ({ role="admin" }) => {
+
+const Login = ({ role = "admin" }) => {
   const router = useRouter();
-  console.log(router.asPath, 'kk');
-
-  useEffect(() => {
-    const userRoleId = localStorage.getItem('user_role_id'); // Correct way to retrieve data from localStorage
-    if (router.asPath === '/approval-login' && userRoleId === '5') {
-      return;
-    } else if (router.asPath === '/' && (userRoleId === '3' || userRoleId === '5')) {
-      return;
-    }
-    else {
-      localStorage.clear();
-    }
-  }, [router.asPath]);
-
 
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [approvalteam, setApprovalTeam] = useState("");
   const [error, setError] = useState("");
   const [otpSuccess, setOtpSuccess] = useState(false);
-  const [otpValidated, setOtpValidated] = useState(false);
   const [otpError, setOtpError] = useState("");
-  const [resendotp, setResendOtp] = useState(0);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isValidatingOtp, setIsValidatingOtp] = useState(false);
+
+  const mobilenofocus = useRef(null);
+  const otpInputRefs = useRef([]);
+
+  useEffect(() => {
+    const userRoleId = localStorage.getItem('user_role_id');
+    if (router.asPath === '/approval-login' && userRoleId === '5') {
+      return;
+    } else if (router.asPath === '/' && (userRoleId === '3' || userRoleId === '5')) {
+      return;
+    } else {
+      localStorage.clear();
+    }
+  }, [router.asPath]);
+
   useEffect(() => {
     function clearLocalStorageIfNewDay() {
       const storedTimestamp = window.localStorage.getItem("login_time");
-
       if (storedTimestamp) {
         const storedDate = new Date(parseInt(storedTimestamp));
         const currentDate = new Date();
-
-        const storedDateStr = storedDate.toDateString();
-        const currentDateStr = currentDate.toDateString();
-
-        if (storedDateStr !== currentDateStr) {
+        if (storedDate.toDateString() !== currentDate.toDateString()) {
           window.localStorage.clear();
           console.log("New day detected. LocalStorage cleared.");
-        } else {
-          console.log("Same day. No action taken.");
         }
-      } else {
-        console.log("No stored login time found.");
       }
     }
 
     clearLocalStorageIfNewDay();
     const usermobile = window.localStorage.getItem("user_phone");
-    const usertoken = usermobile
-      ? window.localStorage.getItem(`${usermobile}_token`)
-      : null;
+    const usertoken = usermobile ? window.localStorage.getItem(`${usermobile}_token`) : null;
 
     if (usermobile && usertoken) {
-      // Already logged in
       router.push("/dashboard");
       return;
     }
 
-    // Not logged in, set role data
     if (role === "approval") {
       setApprovalTeam("5");
       window.localStorage.setItem("user_role_id", "5");
@@ -73,41 +62,48 @@ const Login = ({ role="admin" }) => {
     }
 
     window.localStorage.setItem("login_time", Date.now());
-  }, []);
+  }, [role, router]);
 
+  // Handle focus on components loading/switching
+  useEffect(() => {
+    if (!otpSuccess && mobilenofocus.current) {
+      mobilenofocus.current.focus();
+    }
+  }, [otpSuccess]);
 
   useEffect(() => {
-    const handleOtpResend = async () => {
-      if (phoneNumber.length === 10) {
-        await sendOtp();
-      } else {
-        setError("Please enter a valid phone number");
-      }
-    };
-    if (resendotp) {
-      handleOtpResend();
+    if (otpSuccess && otpInputRefs.current[0]) {
+      setTimeout(() => {
+        otpInputRefs.current[0]?.focus();
+      }, 50);
     }
-  }, [resendotp]);
+  }, [otpSuccess]);
 
   const handleChange = (e, index) => {
     const value = e.target.value;
     if (/[^0-9]/.test(value)) return;
 
     const newOtp = [...otp];
-    newOtp[index] = value;
+    newOtp[index] = value.slice(-1); // Only take last character if user types fast
+    setOtp(newOtp);
+    setOtpError("");
 
     if (value !== "" && index < 3) {
-      document.getElementById(`otp-input-${index + 1}`).focus();
+      otpInputRefs.current[index + 1]?.focus();
     }
-
-    setOtp(newOtp);
-    setOtpError(""); // clear error on input
   };
 
   const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && otp[index] === "") {
-      if (index > 0) {
+    if (e.key === "Backspace") {
+      if (otp[index] === "" && index > 0) {
+        const newOtp = [...otp];
+        newOtp[index - 1] = "";
+        setOtp(newOtp);
         otpInputRefs.current[index - 1]?.focus();
+      } else {
+        const newOtp = [...otp];
+        newOtp[index] = "";
+        setOtp(newOtp);
       }
     }
 
@@ -120,17 +116,18 @@ const Login = ({ role="admin" }) => {
     }
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (phoneNumber.length === 10) {
-      await sendOtp();
-    } else {
-      setError("Please enter a valid phone number");
+    if (phoneNumber.length !== 10) {
+      setError("Please enter a valid 10-digit phone number");
+      return;
     }
+    await sendOtp();
   };
 
   const sendOtp = async () => {
+    setIsSendingOtp(true);
+    setError("");
     const url = `https://dev.zuget.com/admin/send-otp`;
 
     try {
@@ -155,17 +152,25 @@ const Login = ({ role="admin" }) => {
         window.localStorage.setItem("user_role_id", roleId);
         window.localStorage.setItem("app_user_id", userId);
         setOtpSuccess(true);
-        setError("");
       } else {
-        setError(data?.message);
+        setError(data?.message || "Failed to send OTP. Try again.");
       }
     } catch (err) {
       console.error("Error sending OTP:", err);
       setError("An error occurred while sending OTP.");
+    } finally {
+      setIsSendingOtp(false);
     }
   };
 
   const validateOtp = async () => {
+    if (otp.join("").length !== 4) {
+      setOtpError("Please fill out all 4 digits.");
+      return;
+    }
+
+    setIsValidatingOtp(true);
+    setOtpError("");
     const url = `https://dev.zuget.com/admin/otp-validate`;
     const userroleid = window.localStorage.getItem("user_role_id");
 
@@ -187,136 +192,173 @@ const Login = ({ role="admin" }) => {
       const data = await response.json();
 
       if (data.status === "success") {
-        setOtpValidated(true);
         window.localStorage.setItem("user_phone", phoneNumber);
         window.localStorage.setItem(`${phoneNumber}_token`, data.jwt_token);
         router.push("/dashboard");
       } else {
-        setOtpError("Invalid OTP.");
+        setOtpError(data?.message || "Invalid OTP verification failed.");
       }
     } catch (err) {
       console.error("Error validating OTP:", err);
       setOtpError("An error occurred while validating OTP.");
+    } finally {
+      setIsValidatingOtp(false);
     }
   };
-  const mobilenofocus = useRef(null);
-  const otpInputRefs = useRef([]);
-
-  useEffect(() => {
-    if (mobilenofocus.current) {
-      mobilenofocus.current.focus();
-    }
-  }, [])
-  useEffect(() => {
-    if (otpSuccess && otpInputRefs.current[0]) {
-      otpInputRefs.current[0].focus();
-    }
-  }, [otpSuccess]);
 
   return (
     <div
-      className="h-screen w-screen min-h-screen"
-      style={{
-        backgroundImage: "url('/images/bglogin.png')",
-        backgroundSize: "cover",
-      }}
+      className="min-h-screen w-screen flex justify-center items-center bg-cover bg-center p-4 bg-no-repeat"
+      style={{ backgroundImage: "url('/images/bglogin.png')" }}
     >
-      <div className="flex justify-center items-center h-full w-full">
-        <div className="flex flex-col lg:flex-row justify-center items-center">
-          <div className=" xl:h-[500px] xl:w-[500px] lg:h-[400px] lg:w-[400px] h-[150px] w-full lg:rounded-l-md rounded-tl-md rounded-tr-md lg:rounded-tr-none "><Image src={'/loggo.png'} height={1000} width={1000} className="object-cover lg:rounded-l-md rounded-tl-md"/> </div>
+      <div className="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden min-h-[500px]">
+        {/* Left Side: Brand/Image */}
+        <div className="relative w-full md:w-1/2 min-h-[200px] md:min-h-full bg-slate-100">
+          <Image
+            src="/loggo.png"
+            alt="Logo Display"
+            fill
+            priority
+            className="object-cover"
+          />
+        </div>
 
+        {/* Right Side: Dynamic Form Container */}
+        <div className="w-full md:w-1/2 flex flex-col justify-center p-8 lg:p-12 bg-white">
           {!otpSuccess ? (
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col lg:gap-y-7 gap-y-4 justify-center items-left bg-white xl:h-[500px] xl:w-[550px] h-[250px] w-full lg:h-[400px] lg:w-[500px] lg:px-14 lg:p-6 px-2 lg:rounded-r-md rounded-br-md rounded-bl-md lg:rounded-bl-none  shadow-lg"
-            >
-              <Link className="text-white w-fit" href={'/approval-login'}>Approval Link</Link>
-              <p className="font-bold xl:text-2xl lg:text-xl text-lg">
-                {role === "approval" && "Approval Team"}
-              </p>
-              <p className="font-bold xl:text-5xl lg:text-4xl text-xl">
-                Please Login!
-              </p>
-              <input
-                ref={mobilenofocus}
-                type="text"
-                value={phoneNumber}
-                onChange={(e) => {
-                  const formattedValue = e.target.value.replace(/[^0-9]/g, "");
-                  if (formattedValue.length <= 10) {
-                    setPhoneNumber(formattedValue);
-                    setError("");
-                  }
-                }}
-                className="rounded-md outline-none bg-[#F5F5F5] text-black placeholder-black placeholder:text-base lg:text-2xl text-xl p-3"
-                placeholder="Enter your WhatsApp number"
-                maxLength={10}
-              />
-              {error && (
-                <p className="text-xs lg:text-lg text-red-400">{error}</p>
-              )}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
+              <div className="flex justify-between items-center">
+                <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold">
+                  {role === "approval" ? "Approval" : "Admin"}
+                </span>
+                <Link
+                  className="text-xs font-medium text-[#793FDF] hover:underline"
+                  href="/approval-login"
+                >
+                  Approval Link
+                </Link>
+              </div>
+
+              <div>
+                <h1 className="text-3xl font-black text-slate-800 tracking-tight">
+                  Welcome Back
+                </h1>
+                {/* <p className="text-sm text-slate-500 mt-1">
+                  Please verify your identity to access your account.
+                </p> */}
+              </div>
+
+              <div className="flex flex-col gap-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wide">
+                  WhatsApp Mobile Number
+                </label>
+                <input
+                  ref={mobilenofocus}
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    const formattedValue = e.target.value.replace(/[^0-9]/g, "");
+                    if (formattedValue.length <= 10) {
+                      setPhoneNumber(formattedValue);
+                      setError("");
+                    }
+                  }}
+                  className="w-full rounded-xl outline-none border border-slate-200 focus:border-[#793FDF] focus:ring-4 focus:ring-purple-100 transition-all text-slate-800 text-lg px-4 py-3 placeholder:text-slate-400"
+                  placeholder="Enter 10-digit number"
+                  maxLength={10}
+                  disabled={isSendingOtp}
+                />
+                {error && <p className="text-xs font-medium text-rose-500 mt-1">{error}</p>}
+              </div>
+
               <button
                 type="submit"
-                className="w-full bg-[#793FDF] text-white py-2 rounded-md cursor-pointer"
+                disabled={isSendingOtp || phoneNumber.length !== 10}
+                className="w-full flex items-center justify-center gap-x-2 bg-[#793FDF] hover:bg-[#612ec4] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold py-3.5 px-4 rounded-xl shadow-md shadow-purple-100 transition-all cursor-pointer"
               >
-                Send WhatsApp OTP
+                {isSendingOtp ? (
+                  <>
+                    <FaSpinner className="animate-spin text-lg" />
+                    <span>Sending code...</span>
+                  </>
+                ) : (
+                  <span>Send WhatsApp OTP</span>
+                )}
               </button>
             </form>
           ) : (
-            <div className="flex flex-col lg:gap-y-3 gap-y-1 justify-center items-left bg-white xl:h-[500px] xl:w-[500px] h-[200px] w-[250px] lg:h-[400px] lg:w-[400px] lg:px-14 lg:p-6 px-2 rounded-r-md shadow-lg">
-              <p className="font-bold xl:text-xl lg:text-lg text-sm flex gap-x-2 items-center">
-                <span>WhatsApp OTP</span>
-                <FaWhatsapp className="text-[#075E54] size-6" />
-              </p>
-              <p className="lg:text-3xl text-lg font-bold">{phoneNumber}</p>
-              <div className="lg:py-4 py-2">
+            <div className="flex flex-col gap-y-6">
+              <div className="flex items-center gap-x-2 text-emerald-600 font-semibold text-sm bg-emerald-50 w-fit px-3 py-1 rounded-full">
+                <FaWhatsapp className="text-lg" />
+                <span>Code Sent via WhatsApp</span>
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-black text-slate-800 tracking-tight">
+                  Enter 4-Digit OTP
+                </h2>
+                <p className="text-sm text-slate-500 mt-1">
+                  Sent to <span className="font-bold text-slate-700">{phoneNumber}</span>
+                </p>
+              </div>
+
+              {/* OTP Grid */}
+              <div className="flex gap-x-3 my-2 justify-start">
                 {otp.map((digit, index) => (
                   <input
                     key={index}
                     ref={(el) => (otpInputRefs.current[index] = el)}
-                    id={`otp-input-${index}`}
                     type="text"
                     value={digit}
                     onChange={(e) => handleChange(e, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     maxLength={1}
-                    className="xl:w-[80px] xl:h-[60px] lg:w-[60px] lg:h-[40px] h-10 w-10 text-center mx-[5px] text-[20px] border border-[#ccc] rounded-[10px] bg-[#F5F5F5]"
+                    disabled={isValidatingOtp}
+                    className="w-14 h-14 text-center font-bold text-xl border border-slate-200 rounded-xl bg-slate-50 text-slate-900 focus:bg-white focus:border-[#793FDF] focus:ring-4 focus:ring-purple-100 outline-none transition-all"
                   />
                 ))}
               </div>
+
+              {otpError && <p className="text-xs font-medium text-rose-500">{otpError}</p>}
+
               <button
-                onClick={() => {
-                  if (otp.join("").length === 4) {
-                    validateOtp();
-                  } else {
-                    setOtpError("Please enter a valid 4-digit OTP.");
-                  }
-                }}
-                className="w-full lg:px-4 lg:py-4 py-1 bg-[#793FDF] text-white rounded-md cursor-pointer text-xl"
+                onClick={validateOtp}
+                disabled={isValidatingOtp || otp.join("").length !== 4}
+                className="w-full flex items-center justify-center gap-x-2 bg-[#793FDF] hover:bg-[#612ec4] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-semibold py-3.5 px-4 rounded-xl shadow-md transition-all cursor-pointer text-lg"
               >
-                Login
+                {isValidatingOtp ? (
+                  <>
+                    <FaSpinner className="animate-spin text-lg" />
+                    <span>Verifying...</span>
+                  </>
+                ) : (
+                  <span>Verify & Login</span>
+                )}
               </button>
-              {otpError && (
-                <p className="text-xs text-red-500 pt-2">{otpError}</p>
-              )}
-              <div className="flex justify-between pt-3 text-xs">
-                <span
+
+              <div className="flex justify-between items-center pt-2 border-t border-slate-100 text-xs font-medium text-slate-500">
+                <button
+                  type="button"
+                  disabled={isValidatingOtp}
                   onClick={() => {
                     setOtpSuccess(false);
                     setOtp(["", "", "", ""]);
+                    setOtpError("");
                   }}
-                  className="underline cursor-pointer"
+                  className="hover:text-[#793FDF] underline disabled:opacity-50"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer' }}
                 >
                   Change Number
-                </span>
-                <span
-                  onClick={() => {
-                    setResendOtp(resendotp + 1);
-                  }}
-                  className="underline cursor-pointer"
+                </button>
+                <button
+                  type="button"
+                  disabled={isSendingOtp || isValidatingOtp}
+                  onClick={sendOtp}
+                  className="hover:text-[#793FDF] underline disabled:opacity-50"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer' }}
                 >
-                  Resend OTP
-                </span>
+                  {isSendingOtp ? "Resending..." : "Resend OTP"}
+                </button>
               </div>
             </div>
           )}

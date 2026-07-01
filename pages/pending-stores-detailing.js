@@ -148,7 +148,7 @@ const ComponentName = () => {
               width={1000}
               height={1000}
               className="object-contain w-full h-full py-4"
-              src={assignDoc?.data?.results?.gst_certificate}
+              src={assignDoc?.data?.results?.gst_certificate || '/no_image.png'}
               alt="GST"
             />
           </div>
@@ -172,7 +172,7 @@ const ComponentName = () => {
                   className="rounded-lg w-full h-[250px] sm:h-[300px] lg:h-[400px] object-cover"
                 />
                 {/* <p className="py-2">store_image</p> */}
-                {uploadingKey === "store_image" && (
+                {/* {uploadingKey === "store_image" && (
                   <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white rounded-lg">
                     Uploading...
                   </div>
@@ -188,7 +188,7 @@ const ComponentName = () => {
                   id="upload-store_image"
                   className="hidden"
                   onChange={(e) => uploadImg(e, "store_image")}
-                />
+                /> */}
               </div>
 
               <div className="w-full flex flex-col gap-y-3">
@@ -220,18 +220,17 @@ const ComponentName = () => {
               {["store_top_image_1", "store_top_image_2", "store_top_image_3", "store_top_image_4"].map((key) => (
                 <div key={key} className="relative w-full keen-slider__slide">
                   <Image
-                    src={assignDoc?.data?.results?.[key] || "/placeholder.png"}
+                    src={assignDoc?.data?.results?.[key] || "/no_image.png"}
                     alt={key}
                     width={500}
                     height={300}
                     className="rounded-lg w-full h-[200px] sm:h-[250px] object-cover"
                   />
-                  {uploadingKey === key && (
+                  {/* {uploadingKey === key && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white rounded-lg">
                       Uploading...
                     </div>
                   )}
-                  {/* <p className="py-2">{key}</p> */}
                   <label
                     htmlFor={`upload-${key}`}
                     className="absolute bottom-4 right-4 text-sm rounded cursor-pointer bg-black/20 text-white border justify-center shadow-md flex items-center p-1"
@@ -243,7 +242,7 @@ const ComponentName = () => {
                     id={`upload-${key}`}
                     className="hidden"
                     onChange={(e) => uploadImg(e, key)}
-                  />
+                  /> */}
                 </div>
               ))}
             </div>
@@ -251,7 +250,7 @@ const ComponentName = () => {
             <div className="flex flex-col sm:flex-row gap-2 mt-6">
               <button
                 onClick={() => setShowReject(true)}
-                className="p-3 w-full sm:w-1/2 border-2 rounded-lg hover:bg-red-500 hover:text-white"
+                className="cursor-pointer p-3 w-full sm:w-1/2 border-2 rounded-lg hover:bg-red-500 hover:text-white"
               >
                 Reject
               </button>
@@ -269,7 +268,7 @@ const ComponentName = () => {
                     }
                   });
                 }}
-                className="p-3 w-full sm:w-1/2 bg-[#793FDF] text-white rounded-lg"
+                className="cursor-pointer p-3 w-full sm:w-1/2 bg-[#793FDF] text-white rounded-lg"
               >
                 Approve
               </button>
@@ -324,12 +323,10 @@ const ComponentName = () => {
         }
 
       </div>}
-      {
-        !assignDoc?.data?.assigned_id &&
+      {!assignDoc?.data?.assigned_id &&
         <p className="">
           {assignDoc?.message}
-        </p>
-      }
+        </p>}
     </Layout>
   );
 };

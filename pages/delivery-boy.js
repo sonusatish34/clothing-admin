@@ -46,6 +46,7 @@ export default function ProfilePage() {
 
     fetchProfileData();
   }, [count]);
+
   useEffect(() => {
     const fetchPendingProfile = async () => {
       try {
@@ -74,6 +75,67 @@ export default function ProfilePage() {
       fetchPendingProfile();
     }
   }, [tab]);
+
+  useEffect(() => {
+
+  }, [])
+
+  const updateAssignStatus = async () => {
+  try {
+    const myHeaders = new Headers();
+
+    myHeaders.append("accept", "application/json");
+    myHeaders.append(
+      "Authorization",
+      localStorage.getItem(`${localStorage.getItem("user_phone")}_token`)
+    );
+    myHeaders.append("Content-Type", "application/json");
+
+
+    const raw = JSON.stringify({
+      app_user_id: Number(localStorage.getItem("app_user_id")),
+      assign_id: profileData?.data?.assigned_id,
+    });
+
+
+    const requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+
+    const response = await fetch(
+      "https://dev.zuget.com/admin/update-assign-status",
+      requestOptions
+    );
+
+
+    const result = await response.json();
+
+    console.log(result);
+
+
+    if (response.ok) {
+      console.log("Status updated successfully");
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
+    } else {
+      console.log(result.message || "Something went wrong");
+    }
+
+
+  } catch (error) {
+    console.error("API Error:", error);
+
+  }
+};
+
+
 
 
   const handleApproveReject = async (docType, status) => {
@@ -122,7 +184,7 @@ export default function ProfilePage() {
         const result = await response.json();
 
         if (result.status === "success") {
-          Swal.fire("Rejected!", "The document has been rejected successfully.", "error");
+          Swal.fire("Rejected!", "The document has been rejected successfully.", "warning");
         } else {
           Swal.fire("Error!", "Failed to reject the document.", "error");
         }
@@ -188,6 +250,7 @@ export default function ProfilePage() {
   };
 
 
+
   // Display loading or error message
   if (isLoading) {
     return <Loading />;
@@ -196,6 +259,8 @@ export default function ProfilePage() {
   if (error) {
     return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
   }
+          // console.log(,"profileData?.assigned_id");
+
 
   return (
     <Layout>
@@ -219,7 +284,7 @@ export default function ProfilePage() {
           Pending
         </button>
       </div>
-      {profileData?.data?.assigned_id && tab === "assign_profile" &&
+      {profileData?.data?.results?._id && tab === "assign_profile" &&
         <div className="container mx-auto p-6">
 
 
@@ -314,7 +379,7 @@ export default function ProfilePage() {
                 <li>
                   <Image width={1000} height={1000} src={profileData?.data?.results?.rc_image_link} alt="Licence Front" className="w-full h-48 object-cover rounded-lg mb-4" />
                 </li>
-                
+
               </ul>
               <div className="flex flex-col gap-y-3">
                 <button
@@ -334,12 +399,13 @@ export default function ProfilePage() {
           </div>
         </div>
       }
-      {
-        !profileData?.data?.assigned_id && tab == 'assign_profile' &&
+      {/* {
+        !profileData?.data?._id && tab == 'assign_profile' &&
         <p className="">
-          {profileData?.message}
+          No profiles to assign
         </p>
-      }
+      } */}
+      { tab === "assign_profile" && profileData?.data?.results?._id && <p onClick={() => { updateAssignStatus() }} className='px-4 pb-10'><button className='bg-green-500 p-2 rounded-4xl'>Completed</button> </p>}
       {
         tab === "approved" &&
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 pt-4'>{PendingData?.data?.results?.map((item, index) => (
@@ -392,6 +458,7 @@ export default function ProfilePage() {
           </div>
         ))}</div>
       }
+      {tab == 'assign_profile' && !profileData?.data?.results?._id && <p>{profileData.message}</p>}
     </Layout>
 
   );
