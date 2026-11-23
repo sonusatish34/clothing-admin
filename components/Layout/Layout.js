@@ -9,6 +9,7 @@ import { FaUserCircle, FaUserCheck } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { GrUserAdmin } from "react-icons/gr";
 import { IoIosArrowForward, IoIosArrowDown } from "react-icons/io";
+import Swal from "sweetalert2";
 
 const Layout = ({ Content, children }) => {
   const router = useRouter();
@@ -81,8 +82,21 @@ const Layout = ({ Content, children }) => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
-    router.push("/");
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of your session.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#793FDF",
+      cancelButtonColor: "#DA3647",
+      confirmButtonText: "Yes, logout!",
+      cancelButtonText: "Cancel"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        router.push("/");
+      }
+    });
   };
 
   const getLinkClass = (path) => {
@@ -101,12 +115,12 @@ const Layout = ({ Content, children }) => {
       <div className="flex h-full lg:pl-4 px-4 pt-8 pb-5 relative text-black bg-white/90">
 
         {/* Desktop Sidebar */}
-        <nav className="h-screen pb-10 text-2xl lg:flex hidden flex-col gap-2 items-start w-48 rounded-t-xl rounded-b-xl fixed top-10">
-          <div className="h-full w-full overflow-y-auto overflow-x-hidden pt-2 pr-1">
-            <div className="text-center bg-[#793FDF] text-white hover:scale-95 rounded-full py-2">
+        <nav className="h-screen pb-10 text-2xl lg:flex hidden flex-col gap-2 items-start w-52 rounded-t-xl rounded-b-xl fixed top-10">
+            <div className="text-center w-32 bg-[#793FDF] text-white hover:scale-95 rounded-full py-2">
               <Link href="/">Zuget</Link>
             </div>
-            <ul className="px-2 text-sm lg:pt-2 flex flex-col gap-1 z-50">
+          <div className="h-full w-full overflow-y-auto custom-scrollbar overflow-x-hidden pt-2 pr-1">
+            <ul className="px-2 text-sm flex flex-col gap-1 z-50 lg:py-10">
               {showLink('/dashboard') && (
                 <li className="py-1">
                   <Link href="/dashboard" className={getLinkClass("/dashboard")}>
@@ -165,14 +179,14 @@ const Layout = ({ Content, children }) => {
                   </Link>
                 </li>
               )}
-              {showLink('/discounts') && (
+              {/* {showLink('/discounts') && (
                 <li className="py-1 border-t-2 border-t-gray-50">
                   <Link href="/discounts" className={getLinkClass("/discounts")}>
                     <span>Discounts</span>
                     <IoIosArrowForward />
                   </Link>
                 </li>
-              )}
+              )} */}
               {showLink('/store-bank-details') && (
                 <li className="py-1 border-t-2 border-t-gray-50">
                   <Link href="/store-bank-details" className={getLinkClass("store-bank-details")}>

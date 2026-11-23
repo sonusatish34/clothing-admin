@@ -34,7 +34,7 @@ export default function ProfilePage() {
           redirect: "follow"
         };
 
-        const response = await fetch("https://dev.zuget.com/admin/assign-profile", requestOptions);
+        const response = await fetch("https://api.zuget.com/admin/assign-profile", requestOptions);
         const result = await response.json();
         setProfileData(result);
       } catch (err) {
@@ -62,7 +62,7 @@ export default function ProfilePage() {
           redirect: "follow"
         };
 
-        const response = await fetch(`https://dev.zuget.com/admin/${tab}-profiles`, requestOptions);
+        const response = await fetch(`https://api.zuget.com/admin/${tab}-profiles`, requestOptions);
         const result = await response.json();
         setPendingData(result);
       } catch (err) {
@@ -107,7 +107,7 @@ export default function ProfilePage() {
 
 
     const response = await fetch(
-      "https://dev.zuget.com/admin/update-assign-status",
+      "https://api.zuget.com/admin/update-assign-status",
       requestOptions
     );
 
@@ -178,7 +178,7 @@ export default function ProfilePage() {
         };
 
         const response = await fetch(
-          "https://dev.zuget.com/admin/update-profile-details",
+          "https://api.zuget.com/admin/update-profile-details",
           requestOptions
         );
         const result = await response.json();
@@ -231,7 +231,7 @@ export default function ProfilePage() {
         };
 
         const response = await fetch(
-          "https://dev.zuget.com/admin/update-profile-details",
+          "https://api.zuget.com/admin/update-profile-details",
           requestOptions
         );
         const result = await response.json();

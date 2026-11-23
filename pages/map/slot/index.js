@@ -69,7 +69,7 @@ const ZoneSlotForm = () => {
       const token = String(localStorage.getItem(`${phoneKey}_token`));
 
       const response = await fetch(
-        `https://dev.zuget.com/admin/slots?search_start_date=${startDate}&search_end_date=${endDate}&zone_type=${activeZone}`,
+        `https://api.zuget.com/admin/slots?search_start_date=${startDate}&search_end_date=${endDate}&zone_type=${activeZone}`,
         {
           method: 'GET',
           headers: {
@@ -177,7 +177,7 @@ const ZoneSlotForm = () => {
       const phoneKey = localStorage.getItem('user_phone');
       const token = String(localStorage.getItem(`${phoneKey}_token`));
 
-      const response = await fetch('https://dev.zuget.com/admin/add-zone-slots', {
+      const response = await fetch('https://api.zuget.com/admin/add-zone-slots', {
         method: 'POST',
         headers: {
           'accept': 'application/json',

@@ -32,7 +32,7 @@ const TotalStores = () => {
             const usertoken = usermobile
                 ? window.localStorage.getItem(`${usermobile}_token`)
                 : null;
-            const response = await fetch(`https://dev.zuget.com/admin/stores?status=${status}`, {
+            const response = await fetch(`https://api.zuget.com/admin/stores?status=${status}`, {
 
                 headers: {
                     'accept': 'application/json',
@@ -74,7 +74,7 @@ const TotalStores = () => {
                     redirect: "follow"
                 };
 
-                const res = await fetch(`https://dev.zuget.com/admin/delete-store?store_id=8`, requestOptions);
+                const res = await fetch(`https://api.zuget.com/admin/delete-store?store_id=8`, requestOptions);
                 if (res.ok) {
                     Swal.fire('Deleted!', 'Bank updated successfully.', 'success');
                     setCount(prev => prev + 1)
@@ -94,7 +94,7 @@ const TotalStores = () => {
                 <ul className='flex relative flex-col gap-y-2 border-2 border-[#F5F5F5] rounded-lg'>
                     <li>
                         <Image
-                            src={store?.store_image?.includes('ldcars') ? store.store_image : 'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
+                            src={store.store_image || 'https://assets.bwbx.io/images/users/iqjWHBFdfxIU/iOeosYVL8qds/v0/-1x-1.webp'}
                             alt="line"
                             width={500}
                             height={300}
@@ -130,12 +130,24 @@ const TotalStores = () => {
 
     return (
         <div>
-            <ul className='hidden lg:flex xl:gap-x-10 lg:gap-x-2 border-2 border-[#F5F5F5] p-3 rounded-t-2xl'>
-                <li className={` cursor-pointer ${status === 'in_progress' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('in_progress') }} href={'/'}>Pending Stores</p></li>
-                <li className={` cursor-pointer ${status === 'rejected' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('rejected') }} href={'/'}>Rejected Stores</p></li>
-                <li className={` cursor-pointer ${status === 'approved' ? 'text-[#793FDF]' : ''}`}><p onClick={() => { setStatus('approved') }} href={'/'}>Approved Stores</p></li>
+            <ul className='flex flex-wrap gap-x-4 gap-y-2 xl:gap-x-10 border-2 border-[#F5F5F5] p-3 rounded-t-2xl'>
+                <li>
+                    <button type="button" aria-pressed={status === 'in_progress'} className={status === 'in_progress' ? 'text-[#793FDF]' : ''} onClick={() => setStatus('in_progress')}>
+                        Pending Stores
+                    </button>
+                </li>
+                <li>
+                    <button type="button" aria-pressed={status === 'rejected'} className={status === 'rejected' ? 'text-[#793FDF]' : ''} onClick={() => setStatus('rejected')}>
+                        Rejected Stores
+                    </button>
+                </li>
+                <li>
+                    <button type="button" aria-pressed={status === 'approved'} className={status === 'approved' ? 'text-[#793FDF]' : ''} onClick={() => setStatus('approved')}>
+                        Approved Stores
+                    </button>
+                </li>
             </ul>
-            <div className='grid grid-cols-2 gap-7'>
+            <div className='grid lg:grid-cols-2 grid-cols-1 gap-7'>
                 {
                     data?.length >= 1 ? data?.map((item, index) => (
                         <div key={index} className=''>

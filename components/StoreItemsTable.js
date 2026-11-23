@@ -9,7 +9,7 @@ import { FcApprove, FcDisapprove } from "react-icons/fc";
 
 // import heic2any from "heic2any";
 
-const API_BASE = "https://dev.zuget.com";
+const API_BASE = "https://api.zuget.com";
 const ALPHA_SIZES = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"];
 const NUMERIC_SIZES = Array.from({ length: 11 }, (_, i) => (28 + i * 2).toString());
 
@@ -537,6 +537,8 @@ export default function StoreItemsTable({ storeId }) {
             // This was preventing the state update and resetting scroll.
         }
     };
+    console.log(filteredItems,"filteredItems");
+    
 
 
     return (
@@ -545,7 +547,7 @@ export default function StoreItemsTable({ storeId }) {
                 <div>
                     <h1 className="text-2xl font-bold text-gray-800">Inventory Management</h1>
                     <h2 className="text-xl text-gray-700 uppercase">
-                        Store: {availableStores.find(s => s.store_id == storeId)?.store_name || storeId} ({storeId})
+                        Store: {availableStores.find(s => s.store_id == storeId)?.store_name || storeId}( id : {storeId} )
                     </h2>
                 </div>
                 <Link target="_blank" href='/barcode-search'>
@@ -554,8 +556,13 @@ export default function StoreItemsTable({ storeId }) {
                     </button>
                 </Link>
             </div>
+            
             {/* --- Filters Section --- */}
+            <h2 className="text-xl text-gray-700">
+                        Total Count <span className="text-blue-700">({items.length})</span>
+                    </h2>
             <div className="flex flex-wrap gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                
                 <div className="flex-1 min-w-[250px]">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Search ID / Barcode</label>
                     <input

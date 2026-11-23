@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaWhatsapp, FaSpinner } from "react-icons/fa";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import Image from "next/image";
 
 const Login = ({ role = "admin" }) => {
@@ -20,11 +19,10 @@ const Login = ({ role = "admin" }) => {
   const mobilenofocus = useRef(null);
   const otpInputRefs = useRef([]);
 
+  // Removed /approval-login routing logic entirely
   useEffect(() => {
     const userRoleId = localStorage.getItem('user_role_id');
-    if (router.asPath === '/approval-login' && userRoleId === '5') {
-      return;
-    } else if (router.asPath === '/' && (userRoleId === '3' || userRoleId === '5')) {
+    if (router.asPath === '/' && (userRoleId === '3' || userRoleId === '5')) {
       return;
     } else {
       localStorage.clear();
@@ -79,12 +77,18 @@ const Login = ({ role = "admin" }) => {
     }
   }, [otpSuccess]);
 
+  const handleRoleChange = (e) => {
+    const selectedRole = e.target.value;
+    setApprovalTeam(selectedRole);
+    window.localStorage.setItem("user_role_id", selectedRole);
+  };
+
   const handleChange = (e, index) => {
     const value = e.target.value;
     if (/[^0-9]/.test(value)) return;
 
     const newOtp = [...otp];
-    newOtp[index] = value.slice(-1); // Only take last character if user types fast
+    newOtp[index] = value.slice(-1); 
     setOtp(newOtp);
     setOtpError("");
 
@@ -128,7 +132,7 @@ const Login = ({ role = "admin" }) => {
   const sendOtp = async () => {
     setIsSendingOtp(true);
     setError("");
-    const url = `https://dev.zuget.com/admin/send-otp`;
+    const url = `https://api.zuget.com/admin/send-otp`;
 
     try {
       const response = await fetch(url, {
@@ -171,7 +175,7 @@ const Login = ({ role = "admin" }) => {
 
     setIsValidatingOtp(true);
     setOtpError("");
-    const url = `https://dev.zuget.com/admin/otp-validate`;
+    const url = `https://api.zuget.com/admin/otp-validate`;
     const userroleid = window.localStorage.getItem("user_role_id");
 
     try {
@@ -227,25 +231,26 @@ const Login = ({ role = "admin" }) => {
         <div className="w-full md:w-1/2 flex flex-col justify-center p-8 lg:p-12 bg-white">
           {!otpSuccess ? (
             <form onSubmit={handleSubmit} className="flex flex-col gap-y-6">
-              <div className="flex justify-between items-center">
-                <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold">
-                  {role === "approval" ? "Approval" : "Admin"}
-                </span>
-                <Link
-                  className="text-xs font-medium text-[#793FDF] hover:underline"
-                  href="/approval-login"
+              
+              <div className="flex flex-col gap-y-2">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wide">
+                  Select Login Role
+                </label>
+                <select
+                  value={approvalteam}
+                  onChange={handleRoleChange}
+                  disabled={isSendingOtp}
+                  className="w-full rounded-xl outline-none border border-slate-200 focus:border-[#793FDF] focus:ring-4 focus:ring-purple-100 transition-all text-slate-800 text-sm px-4 py-3 bg-white"
                 >
-                  Approval Link
-                </Link>
+                  <option value="3">Admin</option>
+                  <option value="5">Approval</option>
+                </select>
               </div>
 
               <div>
                 <h1 className="text-3xl font-black text-slate-800 tracking-tight">
                   Welcome Back
                 </h1>
-                {/* <p className="text-sm text-slate-500 mt-1">
-                  Please verify your identity to access your account.
-                </p> */}
               </div>
 
               <div className="flex flex-col gap-y-2">

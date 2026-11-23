@@ -1,6 +1,6 @@
 import React from "react";
 import Lottie from "lottie-react";
-import animationData from "../public/shopping-cart.json"; // replace with your actual path
+import animationData from "../public/Add to basket.json"; // replace with your actual path
 
 const Loader = () => {
   return (

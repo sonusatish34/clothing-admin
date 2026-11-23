@@ -15,7 +15,7 @@ export default function DiscountComboManager({ tokenAuth, app_user_id, store_id,
 
     const fetchCombos = async () => {
         try {
-            const res = await axios.get(`https://dev.zuget.com/admin/combined-discounts?app_user_id=${app_user_id}&store_id=${store_id}`, {
+            const res = await axios.get(`https://api.zuget.com/admin/combined-discounts?app_user_id=${app_user_id}&store_id=${store_id}`, {
                 headers: { Authorization: `${tokenAuth}` }
             });
             setCombinedData(res.data?.data || []);
@@ -33,7 +33,7 @@ export default function DiscountComboManager({ tokenAuth, app_user_id, store_id,
         if (selectedIds.length < 2) return Swal.fire("Info", "Select at least 2 discounts", "info");
         setLoading(true);
         try {
-            await axios.post('https://dev.zuget.com/admin/store-combined-discounts', {
+            await axios.post('https://api.zuget.com/admin/store-combined-discounts', {
                 app_user_id, store_id,
                 discount_ids: selectedIds.map(Number)
             }, { headers: { Authorization: `${tokenAuth}` } });
@@ -48,7 +48,7 @@ export default function DiscountComboManager({ tokenAuth, app_user_id, store_id,
     const handleUpdateCombo = async (comboId) => {
         setLoading(true);
         try {
-            await axios.put('https://dev.zuget.com/admin/update-combined-discounts', {
+            await axios.put('https://api.zuget.com/admin/update-combined-discounts', {
                 combined_discount_id: Number(comboId), // This comboId comes from combo._id
                 app_user_id,
                 store_id,

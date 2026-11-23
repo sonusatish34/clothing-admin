@@ -76,7 +76,7 @@ function Page() {
         };
 
         try {
-            const response = await fetch("https://dev.zuget.com/admin/zones", requestOptions);
+            const response = await fetch("https://api.zuget.com/admin/zones", requestOptions);
             const result = await response.json();
             if (result && result.data) {
                 setZonesData(result.data);
@@ -126,7 +126,7 @@ function Page() {
 
                 try {
                     const response = await fetch(
-                        `https://dev.zuget.com/admin/zone?zone_id=${zoneId}&app_user_id=${appUserId}`, 
+                        `https://api.zuget.com/admin/zone?zone_id=${zoneId}&app_user_id=${appUserId}`, 
                         requestOptions
                     );
                     
@@ -195,7 +195,7 @@ function Page() {
         };
 
         try {
-            const response = await fetch("https://dev.zuget.com/admin/edit-zone", requestOptions);
+            const response = await fetch("https://api.zuget.com/admin/edit-zone", requestOptions);
             if (response.ok) {
                 alert("Zone parameters synchronized successfully!");
                 setEditingZone(null);

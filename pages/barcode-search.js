@@ -24,7 +24,7 @@ export default function BarcodeSearchPage() {
 
   // 1. Fetch Store Names
   useEffect(() => {
-    fetch(`https://dev.zuget.com/admin/approved-store-names`, {
+    fetch(`https://api.zuget.com/admin/approved-store-names`, {
       headers: getAuthHeaders(),
     })
       .then((res) => res.json())
@@ -39,7 +39,7 @@ export default function BarcodeSearchPage() {
 
     try {
       const response = await fetch(
-        `https://dev.zuget.com/admin/update-item-verified?item_id=${itemId}&is_verified=${newStatus}`,
+        `https://api.zuget.com/admin/update-item-verified?item_id=${itemId}&is_verified=${newStatus}`,
         {
           method: "PUT",
           headers: getAuthHeaders(),
@@ -73,7 +73,7 @@ export default function BarcodeSearchPage() {
         setLoading(true);
         setError(null);
         const response = await fetch(
-          `https://dev.zuget.com/admin/barcode-item-search?barcode=${barcode}`,
+          `https://api.zuget.com/admin/barcode-item-search?barcode=${barcode}`,
           {
             method: 'GET',
             headers: getAuthHeaders(),

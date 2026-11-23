@@ -26,7 +26,7 @@ const BankDetailsForm = () => {
         formdata.append("file", file);
 
         try {
-            const res = await fetch("https://dev.zuget.com/s3/image-file", {
+            const res = await fetch("https://api.zuget.com/s3/image-file", {
                 method: "POST",
                 headers: {
                     accept: "application/json",
@@ -53,7 +53,7 @@ const BankDetailsForm = () => {
             myHeaders.append("Authorization", localStorage.getItem(`${localStorage.getItem('user_phone')}_token`));
             myHeaders.append("Content-Type", "application/json");
 
-            const raw = JSON.stringify({ app_user_id: localStorage.getItem('app_user_id'), role_id: 5 });
+            const raw = JSON.stringify({ app_user_id: 27, role_id: 5 });
 
             const requestOptions = {
                 method: "POST",
@@ -63,7 +63,7 @@ const BankDetailsForm = () => {
             };
 
             try {
-                const response = await fetch("https://dev.zuget.com/admin/assign-bank-details", requestOptions);
+                const response = await fetch("https://api.zuget.com/admin/assign-bank-details", requestOptions);
                 const result = await response.json();
                 const data = result?.data;
                 setBankData(data);
@@ -108,7 +108,7 @@ const BankDetailsForm = () => {
 
         try {
             setLoading(true);
-            const response = await fetch("https://dev.zuget.com/admin/update-bank-data", requestOptions);
+            const response = await fetch("https://api.zuget.com/admin/update-bank-data", requestOptions);
             const result = await response.json();
             setCount(count + 1)
             alert("Bank details saved!");
@@ -153,7 +153,7 @@ const BankDetailsForm = () => {
                     redirect: "follow"
                 };
 
-                const res = await fetch(`https://dev.zuget.com/admin/update-bank-details`, requestOptions);
+                const res = await fetch(`https://api.zuget.com/admin/update-bank-details`, requestOptions);
                 if (res.ok) {
                     Swal.fire('Deleted!', 'Bank updated successfully.', 'success');
                 } else {
@@ -256,7 +256,7 @@ const BankDetailsForm = () => {
                         height={1000}
                         src={(bankData?.results?.cancelled_check_url) == 'string' ? "/logo.png" : bankData?.results?.cancelled_check_url}
                         alt="Cheque"
-                        className="w-full object-cover h-80"
+                        className="w-full object-contain h-80"
                     />
                     <p>
                         {editMode && <label htmlFor="upload-store_image" className="cursor-pointer text-blue-600 hover:underline">

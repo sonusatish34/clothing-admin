@@ -31,6 +31,14 @@
           protocol: 'http',
           hostname: 'ldcars.blr1.digitaloceanspaces.com',
         },
+        {
+          protocol: 'https',
+          hostname: 'cdn.longdrivecars.com',
+        },
+        {
+          protocol: 'https',
+          hostname: 'cdn.zuget.com',
+        },
       ],
     },
   };

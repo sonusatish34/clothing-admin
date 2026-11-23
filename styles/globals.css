@@ -85,12 +85,42 @@ body {
   cursor: pointer;
   padding: 0 5px;
 }
+
+
+/* Thin Scrollbar Style */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px; /* Adjust width as needed */
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* Tailwind slate-300 */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #793fdf; /* Primary accent color */
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+
 @media screen and (min-width: 1000px) {
   
   .navbar-carousel {
     display: none;
   }
 }
+
+
 /* 
 .dots {
   width: 56px;
