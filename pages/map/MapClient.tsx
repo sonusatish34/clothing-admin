@@ -45,7 +45,7 @@ function DeliveryZoneMap() {
 
   const fetchZones = useCallback(async () => {
     try {
-      const res = await fetch("https://api.zuget.com/admin/zones", {
+      const res = await fetch("https://dev.zuget.com/admin/zones", {
         method: "GET",
         headers: {
           "accept": "application/json",
@@ -349,7 +349,7 @@ const finishDrawing = useCallback(() => {
     };
 
     try {
-      const response = await fetch('https://api.zuget.com/admin/add-zone', {
+      const response = await fetch('https://dev.zuget.com/admin/add-zone', {
         method: 'POST',
         headers: {
           'accept': 'application/json',

@@ -18,7 +18,7 @@ export default function MerchantEnquiriesTable() {
     const token = savedToken || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Bob25lIjoiNzk4OTAzMDc0MSJ9.ZXYVhHb5N3ZQA7Y4Ph57lwtQ2_SLOAtUuMlUCekDas4";
 
     try {
-      const response = await fetch("https://api.zuget.com/admin/merchant-enquiries", {
+      const response = await fetch("https://dev.zuget.com/admin/merchant-enquiries", {
         method: "GET",
         headers: {
           Accept: "application/json",

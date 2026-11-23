@@ -23,7 +23,7 @@ const DISCOUNT_OPTIONS = {
     "Item Gift": ["Free Gift Item"]
 };
 // const AUTH_TOKEN = localStorage.getItem(`token_${localStorage.getItem('user_phone')}`);
-const BASE_URL = "https://api.zuget.com/admin";
+const BASE_URL = "https://dev.zuget.com/admin";
 
 export default function DiscountsPage() {
     const [tokenAuth, setAuthToken] = useState('')
@@ -78,7 +78,7 @@ export default function DiscountsPage() {
             };
 
             await axios.post(
-                'https://api.zuget.com/admin/add-discount',
+                'https://dev.zuget.com/admin/add-discount',
                 payload,
                 {
                     headers: {

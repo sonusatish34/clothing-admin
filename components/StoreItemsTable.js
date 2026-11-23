@@ -9,7 +9,7 @@ import { FcApprove, FcDisapprove } from "react-icons/fc";
 
 // import heic2any from "heic2any";
 
-const API_BASE = "https://api.zuget.com";
+const API_BASE = "https://dev.zuget.com";
 const ALPHA_SIZES = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"];
 const NUMERIC_SIZES = Array.from({ length: 11 }, (_, i) => (28 + i * 2).toString());
 

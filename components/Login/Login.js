@@ -132,7 +132,7 @@ const Login = ({ role = "admin" }) => {
   const sendOtp = async () => {
     setIsSendingOtp(true);
     setError("");
-    const url = `https://api.zuget.com/admin/send-otp`;
+    const url = `https://dev.zuget.com/admin/send-otp`;
 
     try {
       const response = await fetch(url, {
@@ -175,7 +175,7 @@ const Login = ({ role = "admin" }) => {
 
     setIsValidatingOtp(true);
     setOtpError("");
-    const url = `https://api.zuget.com/admin/otp-validate`;
+    const url = `https://dev.zuget.com/admin/otp-validate`;
     const userroleid = window.localStorage.getItem("user_role_id");
 
     try {

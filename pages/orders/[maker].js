@@ -27,7 +27,7 @@ const OrderDetailsPage = () => {
         const token = localStorage.getItem(`${phone}_token`);
 
         const res = await fetch(
-          `https://api.zuget.com/admin/order-details?order_id=${orderId}`,
+          `https://dev.zuget.com/admin/order-details?order_id=${orderId}`,
           {
             headers: {
               accept: "application/json",
@@ -65,7 +65,7 @@ const OrderDetailsPage = () => {
         const token = localStorage.getItem(`${phone}_token`);
 
         const res = await fetch(
-          `https://api.zuget.com/admin/delivery-partner-details?order_id=${orderId}&store_id=${storeId}`,
+          `https://dev.zuget.com/admin/delivery-partner-details?order_id=${orderId}&store_id=${storeId}`,
           {
             headers: {
               accept: "application/json",

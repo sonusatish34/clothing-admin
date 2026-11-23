@@ -36,7 +36,7 @@ export default function AddDiscountForm({ tokenAuth, app_user_id, store_id, onSu
         const formdata = new FormData();
         formdata.append("file", file);
         
-        const res = await fetch(`https://api.zuget.com/s3/image-file`, {
+        const res = await fetch(`https://dev.zuget.com/s3/image-file`, {
             method: "POST",
             headers: { Authorization: tokenAuth },
             body: formdata,
@@ -73,7 +73,7 @@ export default function AddDiscountForm({ tokenAuth, app_user_id, store_id, onSu
                 min_order_value: Number(createForm.min_order_value)
             };
 
-            await axios.post('https://api.zuget.com/admin/add-discount', payload, {
+            await axios.post('https://dev.zuget.com/admin/add-discount', payload, {
                 headers: {
                     'Authorization': tokenAuth,
                     'Content-Type': 'application/json'

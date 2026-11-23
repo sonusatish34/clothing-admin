@@ -30,7 +30,7 @@ const Orders = () => {
       };
 
       try {
-        const response = await fetch("https://api.zuget.com/admin/orders-count", requestOptions);
+        const response = await fetch("https://dev.zuget.com/admin/orders-count", requestOptions);
         const result = await response.json();
         if (result?.data?.count_results) {
           setCount(result.data.count_results.reverse());
@@ -56,7 +56,7 @@ const Orders = () => {
         return;
       }
 
-      fetch(`https://api.zuget.com/admin/orders?status=${orderStatus}`, {
+      fetch(`https://dev.zuget.com/admin/orders?status=${orderStatus}`, {
         method: 'GET',
         headers: {
           'Authorization': ` ${token}`,
